@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const Navbar = () => {
   return (
-    <nav className="w-full bg-white py-4 px-6">
+    <nav className="w-full bg-white py-4 px-6 shadow-md">
       <div className="max-w-7xl mx-auto flex items-center justify-around">
         {/* Left menu items */}
 

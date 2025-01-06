@@ -1,0 +1,283 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { MapPin, ArrowLeft, ArrowRight } from "lucide-react";
+
+interface Vehicle {
+  id: number;
+  vehicle: string;
+  carNumber: string;
+}
+
+interface SelectVehicleProps {
+  onNext: () => void;
+  selectedVehicle: Vehicle | null;
+  setSelectedVehicle: (vehicle: Vehicle | null) => void;
+}
+
+interface SelectServiceLocationProps {
+  onNext: () => void;
+  onBack: () => void;
+  serviceLocation: string;
+  setServiceLocation: (location: string) => void;
+}
+
+interface SelectTowingLocationProps {
+  onNext: () => void;
+  onBack: () => void;
+  towingLocation: string;
+  setTowingLocation: (location: string) => void;
+}
+
+// Step 1: Vehicle Selection Component
+const SelectVehicle: React.FC<SelectVehicleProps> = ({
+  onNext,
+  selectedVehicle,
+  setSelectedVehicle,
+}) => {
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+
+  useEffect(() => {
+    // Replace with your actual API call
+    const fetchVehicles = async () => {
+      const mockVehicles = [
+        { id: 1, vehicle: "Proton Saga", carNumber: "JBC 1234" },
+        { id: 2, vehicle: "Proton Wira", carNumber: "WRT 5678" },
+        { id: 3, vehicle: "Honda Civic", carNumber: "ABC 9012" },
+      ];
+      setVehicles(mockVehicles);
+    };
+    fetchVehicles();
+  }, []);
+
+  return (
+    <div className="max-w-2xl mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-6">Select Vehicle For Towing</h1>
+      <Card>
+        <CardContent className="p-6">
+          <RadioGroup
+            value={selectedVehicle?.id?.toString()}
+            onValueChange={(value) => {
+              const vehicle = vehicles.find((v) => v.id.toString() === value);
+              setSelectedVehicle(vehicle || null);
+            }}
+            className="space-y-4"
+          >
+            {vehicles.map((vehicle) => (
+              <div
+                key={vehicle.id}
+                className="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50"
+              >
+                <RadioGroupItem
+                  value={vehicle.id.toString()}
+                  id={`vehicle-${vehicle.id}`}
+                />
+                <label
+                  htmlFor={`vehicle-${vehicle.id}`}
+                  className="flex-1 cursor-pointer"
+                >
+                  <div className="font-medium">{vehicle.vehicle}</div>
+                  <div className="text-sm text-gray-500">
+                    {vehicle.carNumber}
+                  </div>
+                </label>
+              </div>
+            ))}
+          </RadioGroup>
+        </CardContent>
+      </Card>
+      <div className="mt-6 flex justify-end">
+        <Button
+          onClick={onNext}
+          disabled={!selectedVehicle}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+        >
+          Next <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+// Step 2: Service Location Selection Component
+const SelectServiceLocation: React.FC<SelectServiceLocationProps> = ({
+  onNext,
+  onBack,
+  serviceLocation,
+  setServiceLocation,
+}) => {
+  const [mapCenter, setMapCenter] = useState({ lat: 2.9319, lng: 101.6841 }); // MMU Cyberjaya coordinates
+
+  const handleLocationChange = (e: { target: { value: string } }) => {
+    setServiceLocation(e.target.value);
+    // Here you would typically use a geocoding service to update map center
+    // For now, we'll just mock it
+  };
+
+  return (
+    <div className="max-w-5xl mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-6">Select Service Location</h1>
+      <div className="grid grid-cols-1 gap-6">
+        <div className="flex space-x-4 mb-4">
+          <Input
+            placeholder="Type service location"
+            value={serviceLocation}
+            onChange={handleLocationChange}
+            className="flex-1"
+          />
+        </div>
+        <div className="h-[400px] bg-gray-100 rounded-lg relative">
+          {/* Replace this div with your actual map component */}
+          <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+            Map Component Goes Here
+            <br />
+            Center: {mapCenter.lat}, {mapCenter.lng}
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <Button
+            onClick={onBack}
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back
+          </Button>
+          <Button
+            onClick={onNext}
+            disabled={!serviceLocation}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          >
+            Next <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Step 3: Towing Location Selection Component
+const SelectTowingLocation: React.FC<SelectTowingLocationProps> = ({
+  onNext,
+  onBack,
+  towingLocation,
+  setTowingLocation,
+}) => {
+  const [mapCenter, setMapCenter] = useState({ lat: 2.9319, lng: 101.6841 });
+
+  const handleLocationChange = (e: { target: { value: string } }) => {
+    setTowingLocation(e.target.value);
+    // Here you would typically use a geocoding service to update map center
+  };
+
+  return (
+    <div className="max-w-5xl mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-6">Select Towing Location</h1>
+      <div className="grid grid-cols-1 gap-6">
+        <div className="flex space-x-4 mb-4">
+          <Input
+            placeholder="Type towing location"
+            value={towingLocation}
+            onChange={handleLocationChange}
+            className="flex-1"
+          />
+        </div>
+        <div className="h-[400px] bg-gray-100 rounded-lg relative">
+          {/* Replace this div with your actual map component */}
+          <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+            Map Component Goes Here
+            <br />
+            Center: {mapCenter.lat}, {mapCenter.lng}
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <Button
+            onClick={onBack}
+            className="bg-gray-200 hover:bg-gray-300 text-gray-800"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back
+          </Button>
+          <Button
+            onClick={onNext}
+            disabled={!towingLocation}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          >
+            Next <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Main Booking Flow Component
+const BookingFlow = () => {
+  const router = useRouter();
+  const [step, setStep] = useState(1);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+  const [serviceLocation, setServiceLocation] = useState("");
+  const [towingLocation, setTowingLocation] = useState("");
+
+  const handleNext = () => {
+    if (step === 1 && selectedVehicle) {
+      setStep(2);
+    } else if (step === 2 && serviceLocation) {
+      setStep(3);
+    } else if (step === 3 && towingLocation && selectedVehicle) {
+      const queryParams = {
+        vehicleId: selectedVehicle.id.toString(),
+        carNumber: selectedVehicle.carNumber,
+        serviceLocation: serviceLocation,
+        towingLocation: towingLocation,
+        vehicle: selectedVehicle.vehicle,
+      };
+
+      // Encode the entire object using btoa
+      const encodedParams = btoa(JSON.stringify(queryParams));
+      // Construct the URL with only the encoded data
+      router.push(`/confirmation?data=${encodedParams}`);
+    } else {
+      console.error("Missing required information");
+    }
+  };
+
+  const handleBack = () => {
+    if (step === 2) {
+      setStep(1); // Go back to vehicle selection
+    } else if (step === 3) {
+      setStep(2); // Go back to service location selection
+    }
+  };
+
+  return (
+    <div>
+      {step === 1 && (
+        <SelectVehicle
+          onNext={handleNext}
+          selectedVehicle={selectedVehicle}
+          setSelectedVehicle={setSelectedVehicle}
+        />
+      )}
+      {step === 2 && (
+        <SelectServiceLocation
+          onNext={handleNext}
+          onBack={handleBack}
+          serviceLocation={serviceLocation}
+          setServiceLocation={setServiceLocation}
+        />
+      )}
+      {step === 3 && (
+        <SelectTowingLocation
+          onNext={handleNext}
+          onBack={handleBack}
+          towingLocation={towingLocation}
+          setTowingLocation={setTowingLocation}
+        />
+      )}
+    </div>
+  );
+};
+
+export default BookingFlow;
