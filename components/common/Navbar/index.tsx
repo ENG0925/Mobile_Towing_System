@@ -12,19 +12,14 @@ const Navbar = () => {
         <Link href="/feedback" className="text-gray-600 hover:text-green-800">
           Feedback
         </Link>
-        <Link
-          href="/help-support"
-          className="text-gray-600 hover:text-green-800"
-        >
-          Help & Support
-        </Link>
-        <Link href="/about" className="text-gray-600 hover:text-green-800">
+
+        <Link href="/aboutus" className="text-gray-600 hover:text-green-800">
           About Us
         </Link>
 
         {/* Center logo */}
         <div className="relative ">
-          <Link href="/">
+          <Link href="/home">
             <div className="relative w-16 h-16">
               <Image
                 src="/image/logo/logo.png"
@@ -38,13 +33,13 @@ const Navbar = () => {
         </div>
 
         {/* Right menu items */}
+        <Link
+          href="/helpandsupport"
+          className="text-gray-600 hover:text-green-800"
+        >
+          Help & Support
+        </Link>
 
-        <Link href="/career" className="text-gray-600 hover:text-green-800">
-          Career
-        </Link>
-        <Link href="/contact" className="text-gray-600 hover:text-green-800">
-          Contact
-        </Link>
         <Button variant="ghost" className="text-green-800 hover:bg-green-50">
           Sign In
         </Button>

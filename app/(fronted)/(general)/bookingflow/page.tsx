@@ -110,49 +110,36 @@ const SelectServiceLocation: React.FC<SelectServiceLocationProps> = ({
   serviceLocation,
   setServiceLocation,
 }) => {
-  const [mapCenter, setMapCenter] = useState({ lat: 2.9319, lng: 101.6841 }); // MMU Cyberjaya coordinates
-
-  const handleLocationChange = (e: { target: { value: string } }) => {
-    setServiceLocation(e.target.value);
-    // Here you would typically use a geocoding service to update map center
-    // For now, we'll just mock it
-  };
-
   return (
-    <div className="max-w-5xl mx-auto p-8">
+    <div className="max-w-2xl mx-auto p-8">
       <h1 className="text-2xl font-bold mb-6">Select Service Location</h1>
-      <div className="grid grid-cols-1 gap-6">
-        <div className="flex space-x-4 mb-4">
-          <Input
-            placeholder="Type service location"
-            value={serviceLocation}
-            onChange={handleLocationChange}
-            className="flex-1"
-          />
-        </div>
-        <div className="h-[400px] bg-gray-100 rounded-lg relative">
-          {/* Replace this div with your actual map component */}
-          <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-            Map Component Goes Here
-            <br />
-            Center: {mapCenter.lat}, {mapCenter.lng}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex space-x-4 mb-4 items-center">
+            <MapPin className="h-5 w-5 text-gray-500 " />
+            <Input
+              placeholder="Enter your current location"
+              value={serviceLocation}
+              onChange={(e) => setServiceLocation(e.target.value)}
+              className="flex-1"
+            />
           </div>
-        </div>
-        <div className="flex justify-between">
-          <Button
-            onClick={onBack}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back
-          </Button>
-          <Button
-            onClick={onNext}
-            disabled={!serviceLocation}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
-          >
-            Next <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+        </CardContent>
+      </Card>
+      <div className="mt-6 flex justify-between">
+        <Button
+          onClick={onBack}
+          className="bg-gray-200 hover:bg-gray-300 text-gray-800"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back
+        </Button>
+        <Button
+          onClick={onNext}
+          disabled={!serviceLocation}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+        >
+          Next <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
       </div>
     </div>
   );
@@ -165,48 +152,36 @@ const SelectTowingLocation: React.FC<SelectTowingLocationProps> = ({
   towingLocation,
   setTowingLocation,
 }) => {
-  const [mapCenter, setMapCenter] = useState({ lat: 2.9319, lng: 101.6841 });
-
-  const handleLocationChange = (e: { target: { value: string } }) => {
-    setTowingLocation(e.target.value);
-    // Here you would typically use a geocoding service to update map center
-  };
-
   return (
-    <div className="max-w-5xl mx-auto p-8">
+    <div className="max-w-2xl mx-auto p-8">
       <h1 className="text-2xl font-bold mb-6">Select Towing Location</h1>
-      <div className="grid grid-cols-1 gap-6">
-        <div className="flex space-x-4 mb-4">
-          <Input
-            placeholder="Type towing location"
-            value={towingLocation}
-            onChange={handleLocationChange}
-            className="flex-1"
-          />
-        </div>
-        <div className="h-[400px] bg-gray-100 rounded-lg relative">
-          {/* Replace this div with your actual map component */}
-          <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-            Map Component Goes Here
-            <br />
-            Center: {mapCenter.lat}, {mapCenter.lng}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex space-x-4 mb-4 items-center">
+            <MapPin className="h-5 w-5 text-gray-500" />
+            <Input
+              placeholder="Enter destination location"
+              value={towingLocation}
+              onChange={(e) => setTowingLocation(e.target.value)}
+              className="flex-1"
+            />
           </div>
-        </div>
-        <div className="flex justify-between">
-          <Button
-            onClick={onBack}
-            className="bg-gray-200 hover:bg-gray-300 text-gray-800"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back
-          </Button>
-          <Button
-            onClick={onNext}
-            disabled={!towingLocation}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
-          >
-            Next <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+        </CardContent>
+      </Card>
+      <div className="mt-6 flex justify-between">
+        <Button
+          onClick={onBack}
+          className="bg-gray-200 hover:bg-gray-300 text-gray-800"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back
+        </Button>
+        <Button
+          onClick={onNext}
+          disabled={!towingLocation}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+        >
+          Next <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
       </div>
     </div>
   );
@@ -220,34 +195,46 @@ const BookingFlow = () => {
   const [serviceLocation, setServiceLocation] = useState("");
   const [towingLocation, setTowingLocation] = useState("");
 
-  const handleNext = () => {
+  const validateLocation = async (location: string) => {
+    // Basic validation to ensure location is not empty
+    return location.trim().length > 0;
+  };
+
+  const handleNext = async () => {
     if (step === 1 && selectedVehicle) {
       setStep(2);
     } else if (step === 2 && serviceLocation) {
+      const isValidLocation = await validateLocation(serviceLocation);
+      if (!isValidLocation) {
+        alert("Please enter a valid service location");
+        return;
+      }
       setStep(3);
-    } else if (step === 3 && towingLocation && selectedVehicle) {
+    } else if (step === 3 && towingLocation) {
+      const isValidLocation = await validateLocation(towingLocation);
+      if (!isValidLocation) {
+        alert("Please enter a valid towing location");
+        return;
+      }
+
       const queryParams = {
-        vehicleId: selectedVehicle.id.toString(),
-        carNumber: selectedVehicle.carNumber,
+        vehicleId: selectedVehicle?.id.toString(),
+        carNumber: selectedVehicle?.carNumber,
         serviceLocation: serviceLocation,
         towingLocation: towingLocation,
-        vehicle: selectedVehicle.vehicle,
+        vehicle: selectedVehicle?.vehicle,
       };
 
-      // Encode the entire object using btoa
       const encodedParams = btoa(JSON.stringify(queryParams));
-      // Construct the URL with only the encoded data
       router.push(`/confirmation?data=${encodedParams}`);
-    } else {
-      console.error("Missing required information");
     }
   };
 
   const handleBack = () => {
     if (step === 2) {
-      setStep(1); // Go back to vehicle selection
+      setStep(1);
     } else if (step === 3) {
-      setStep(2); // Go back to service location selection
+      setStep(2);
     }
   };
 

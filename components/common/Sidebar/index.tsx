@@ -17,18 +17,17 @@ const Sidebar: React.FC<SidebarProps> = ({ userEmail, userName }) => {
 
   return (
     <div className="w-64 bg-emerald-800 text-white flex flex-col min-h-screen">
-      <div className="p-6 space-y-6">
-        <div className="text-center">
-          <div className="w-24 h-24 mx-auto bg-white rounded-full mb-4"></div>
-          <h2 className="font-semibold">{userName}</h2>
+      <div className="p-6 space-y-8">
+        <div className="border-b border-emerald-700 pb-4">
+          <h2 className="text-lg font-semibold mb-1 text-center">{userName}</h2>
           <p className="text-sm text-emerald-200">{userEmail}</p>
         </div>
 
-        <nav className="space-y-2">
+        <nav className="space-y-3">
           <button
-            className={`w-full p-3 rounded flex items-center space-x-3 ${
+            className={`w-full p-3 rounded-lg flex items-center transition-colors ${
               currentPath === "/user/bookinghistory"
-                ? "bg-emerald-600"
+                ? "bg-emerald-600 font-medium"
                 : "hover:bg-emerald-700"
             }`}
             onClick={() => handleNavigation("/user/bookinghistory")}
@@ -36,9 +35,9 @@ const Sidebar: React.FC<SidebarProps> = ({ userEmail, userName }) => {
             <span>Booking History</span>
           </button>
           <button
-            className={`w-full p-3 rounded flex items-center space-x-3 ${
+            className={`w-full p-3 rounded-lg flex items-center transition-colors ${
               currentPath === "/user/addvehicle"
-                ? "bg-emerald-600"
+                ? "bg-emerald-600 font-medium"
                 : "hover:bg-emerald-700"
             }`}
             onClick={() => handleNavigation("/user/addvehicle")}
@@ -46,9 +45,9 @@ const Sidebar: React.FC<SidebarProps> = ({ userEmail, userName }) => {
             <span>Add Vehicle</span>
           </button>
           <button
-            className={`w-full p-3 rounded flex items-center space-x-3 ${
+            className={`w-full p-3 rounded-lg flex items-center transition-colors ${
               currentPath === "/user/accountsetting"
-                ? "bg-emerald-600"
+                ? "bg-emerald-600 font-medium"
                 : "hover:bg-emerald-700"
             }`}
             onClick={() => handleNavigation("/user/accountsetting")}
@@ -58,8 +57,11 @@ const Sidebar: React.FC<SidebarProps> = ({ userEmail, userName }) => {
         </nav>
       </div>
 
-      <div className="mt-auto p-4">
-        <button className="w-full p-3 text-emerald-800 bg-white rounded-lg hover:bg-emerald-50">
+      <div className="mt-auto p-6">
+        <button
+          className="w-full p-3 text-emerald-800 bg-white rounded-lg hover:bg-emerald-50 transition-colors font-medium"
+          onClick={() => handleNavigation("/home")}
+        >
           Log Out
         </button>
       </div>

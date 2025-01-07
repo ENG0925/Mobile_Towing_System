@@ -7,11 +7,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 const Confirmation: React.FC = () => {
   const searchParams = useSearchParams();
-
-  // Decode the data parameter from the URL
-  const encodedObject = searchParams.get("data") || "";
-  const decodedString = atob(encodedObject);
-  const parsedData = JSON.parse(decodedString); // Parse the JSON string back into an object
+  const data = searchParams?.get("data");
+  const decodedString = data ? atob(data) : "";
+  const parsedData = decodedString ? JSON.parse(decodedString) : {};
 
   // Extract the values from the parsed data
   const { vehicleId, vehicle, carNumber, serviceLocation, towingLocation } =

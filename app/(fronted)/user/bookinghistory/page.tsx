@@ -1,8 +1,21 @@
 "use client";
 import React from "react";
-import { MoreVertical, Clock, CheckCircle, XCircle } from "lucide-react";
+import {
+  MoreVertical,
+  Clock,
+  CheckCircle,
+  XCircle,
+  FileText,
+  CreditCard,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const BookingHistory = () => {
   const router = useRouter();
@@ -35,28 +48,32 @@ const BookingHistory = () => {
 
   const getBookings = () => [
     {
-      id: "250106001",
+      id: 1,
+      bookingID: "250106001",
       status: "In Progress",
       date: "06-01-2025",
       vehicle: "Proton Saga",
       price: "RM 20.00",
     },
     {
-      id: "250106002",
+      id: 2,
+      bookingID: "250106002",
       status: "Booking Complete",
       date: "06-01-2025",
       vehicle: "Toyota Camry",
       price: "RM 50.00",
     },
     {
-      id: "250106003",
+      id: 3,
+      bookingID: "250106003",
       status: "In Pending",
       date: "06-01-2025",
       vehicle: "Honda Civic",
       price: "RM 30.00",
     },
     {
-      id: "250106004",
+      id: 4,
+      bookingID: "250106004",
       status: "Cancel",
       date: "06-01-2025",
       vehicle: "Nissan Altima",
@@ -64,8 +81,13 @@ const BookingHistory = () => {
     },
   ];
 
-  const handleBookingClick = (bookingId: string) => {
-    router.push(`/user/bookinghistory/${bookingId}`);
+  const handleBookingClick = (id: number) => {
+    router.push(`/user/${id}`);
+  };
+
+  const handlePayment = (bookingID: number) => {
+    const encodedData = btoa(JSON.stringify(bookingID));
+    router.push(`/user/payment?data=${encodedData}`);
   };
 
   return (
@@ -92,7 +114,7 @@ const BookingHistory = () => {
                         {booking.status}
                       </span>
                       <span className="text-sm text-gray-500">
-                        Booking ID: {booking.id}
+                        Booking ID: {booking.bookingID}
                       </span>
                     </div>
 
@@ -112,12 +134,27 @@ const BookingHistory = () => {
                     </div>
                   </div>
 
-                  <button
-                    className="p-2 hover:bg-gray-100 rounded-full"
-                    onClick={() => handleBookingClick(booking.id)}
-                  >
-                    <MoreVertical className="w-5 h-5 text-gray-500" />
-                  </button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="p-2 hover:bg-gray-100 rounded-full">
+                        <MoreVertical className="w-5 h-5 text-gray-500" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={() => handleBookingClick(booking.id)}
+                      >
+                        <FileText className="w-4 h-4 mr-2" />
+                        View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handlePayment(booking.id)}
+                      >
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Make Payment
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </CardContent>
             </Card>
