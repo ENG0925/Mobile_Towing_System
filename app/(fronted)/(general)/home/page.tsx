@@ -1,3 +1,4 @@
+"use client";
 // pages/index.tsx
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -17,8 +18,10 @@ import {
   Phone,
   Mail,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const feedbacks = [
     {
       name: "Emily Johnson",
@@ -86,7 +89,10 @@ export default function Home() {
               Experience the thrill of booking your towing system with just one
               click!
             </p>
-            <Button className="main-bg-yellow text-black text-lg px-8">
+            <Button
+              className="main-bg-yellow text-black text-lg px-8"
+              onClick={() => router.push("/bookingflow")}
+            >
               Book Now
             </Button>
           </div>
@@ -125,10 +131,14 @@ export default function Home() {
               <Button
                 variant="outline"
                 className="main-bg-yellow border border-black border-[3px] w-full"
+                onClick={() => router.push("/aboutus")}
               >
                 LEARN MORE
               </Button>
-              <Button className="bg-white text-black border border-black border-[3px] w-full">
+              <Button
+                className="bg-white text-black border border-black border-[3px] w-full"
+                // onClick={() => router.push("/")}
+              >
                 CONTACT US
               </Button>
             </div>

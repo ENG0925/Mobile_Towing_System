@@ -2,8 +2,10 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
   return (
     <nav className="w-full bg-white py-4 px-6 shadow-md">
       <div className="max-w-7xl mx-auto flex items-center justify-around">
@@ -40,7 +42,11 @@ const Navbar = () => {
           Help & Support
         </Link>
 
-        <Button variant="ghost" className="text-green-800 hover:bg-green-50">
+        <Button
+          variant="ghost"
+          className="text-green-800 hover:bg-green-50"
+          onClick={() => router.push("/authorization/signin")}
+        >
           Sign In
         </Button>
       </div>
