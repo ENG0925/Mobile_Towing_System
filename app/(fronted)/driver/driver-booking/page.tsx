@@ -13,7 +13,7 @@ interface Booking {
   serviceLocation: string;
   towingLocation: string;
   status: "pending" | "in-progress" | "completed";
-  timestamp: string;
+  bookingDate: string;
 }
 
 const DriverBookings = () => {
@@ -28,7 +28,7 @@ const DriverBookings = () => {
       serviceLocation: "MITM, Cyberjaya",
       towingLocation: "KFC, Puchong",
       status: "in-progress",
-      timestamp: "2025-01-08 10:30",
+      bookingDate: "2025-01-08 10:30",
     },
     {
       id: "B002",
@@ -38,7 +38,7 @@ const DriverBookings = () => {
       serviceLocation: "Sunway Pyramid",
       towingLocation: "Honda Service Center",
       status: "pending",
-      timestamp: "2025-01-08 11:45",
+      bookingDate: "2025-01-08 11:45",
     },
     {
       id: "B003",
@@ -48,7 +48,7 @@ const DriverBookings = () => {
       serviceLocation: "IOI City Mall",
       towingLocation: "AutoCity Service",
       status: "completed",
-      timestamp: "2025-01-08 09:15",
+      bookingDate: "2025-01-08 09:15",
     },
   ];
 
@@ -80,7 +80,7 @@ const DriverBookings = () => {
                       Booking #{booking.id}
                     </h2>
                     <p className="text-sm text-emerald-600">
-                      {booking.timestamp}
+                      {booking.bookingDate}
                     </p>
                   </div>
                   <Badge

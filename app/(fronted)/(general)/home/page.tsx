@@ -101,6 +101,8 @@ export default function Home() {
               src="/image/home/Flatbed-Tow-Truck-Hauling-A-Classic-Car.png"
               alt="Towing Service"
               layout="fill"
+              // width={1200}
+              // height={1200}
               objectFit="cover"
               className="rounded-lg absolute -top-10 left-0"
             />
@@ -115,8 +117,8 @@ export default function Home() {
             <Image
               src="/image/home/profesional-person.jpg"
               alt="Professional Staff"
-              layout="fill"
-              objectFit="cover"
+              width={600}
+              height={600}
               className="rounded-lg"
             />
           </div>

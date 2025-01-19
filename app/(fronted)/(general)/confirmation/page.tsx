@@ -12,14 +12,14 @@ const Confirmation: React.FC = () => {
   const parsedData = decodedString ? JSON.parse(decodedString) : {};
 
   // Extract the values from the parsed data
-  const { vehicleId, vehicle, carNumber, serviceLocation, towingLocation } =
+  const { vehicleId, vehicle, plateNumber, serviceLocation, towingLocation } =
     parsedData;
 
   // States for user data
   const [userData, setUserData] = useState({
-    name: "",
+    username: "",
     vehicle: "",
-    carNumber: "",
+    plateNumber: "",
     email: "",
     insurance: false,
   });
@@ -36,9 +36,9 @@ const Confirmation: React.FC = () => {
       try {
         // Mock data fetching
         const mockData = {
-          name: "Lim Jie Qing",
+          username: "Lim Jie Qing",
           vehicle: vehicle,
-          carNumber: carNumber,
+          plateNumber: plateNumber,
           email: "limjieqing.123456@gmail.com",
           insurance: true,
         };
@@ -93,10 +93,10 @@ const Confirmation: React.FC = () => {
       serviceLocation,
       towingLocation,
       estimateCost,
-      eta,
+      vehicleId,
     };
 
-    console.log("Order Confirmed:", orderData);
+    console.log(orderData);
     // Here you would submit the order to your backend
   };
 
@@ -124,7 +124,7 @@ const Confirmation: React.FC = () => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm text-gray-500">Name</p>
-              <p className="font-medium">{userData.name}</p>
+              <p className="font-medium">{userData.username}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Vehicle</p>
@@ -132,7 +132,7 @@ const Confirmation: React.FC = () => {
             </div>
             <div>
               <p className="text-sm text-gray-500">Car Number</p>
-              <p className="font-medium">{userData.carNumber}</p>
+              <p className="font-medium">{userData.plateNumber}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Insurance Status</p>

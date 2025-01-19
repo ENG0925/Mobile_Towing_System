@@ -14,7 +14,7 @@ export default function RootLayout({
           src="/image/auth/HD-wallpaper-cars-disney-cars.jpg"
           alt="Towing Service"
           layout="fill"
-          objectFit="cover" // Ensures the image covers the entire div
+          objectFit="cover"
           className="rounded-lg"
         />
       </div>

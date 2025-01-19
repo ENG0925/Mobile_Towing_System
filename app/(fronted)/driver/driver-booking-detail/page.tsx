@@ -15,7 +15,7 @@ interface BookingDetail {
   serviceLocation: string;
   towingLocation: string;
   status: "pending" | "in-progress" | "completed";
-  timestamp: string;
+  bookingDate: string;
   completionCheck: boolean;
 }
 
@@ -39,7 +39,7 @@ const DriverBookingDetail = () => {
     serviceLocation: "MITM, Cyberjaya",
     towingLocation: "KFC, Puchong",
     status: "in-progress",
-    timestamp: "2025-01-08 10:30",
+    bookingDate: "2025-01-08 10:30",
     completionCheck: false,
   };
 
@@ -119,7 +119,7 @@ const DriverBookingDetail = () => {
               Booking #{booking.id}
             </CardTitle>
             <span className="text-sm text-emerald-600">
-              {booking.timestamp}
+              {booking.bookingDate}
             </span>
           </div>
         </CardHeader>

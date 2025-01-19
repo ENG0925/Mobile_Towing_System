@@ -10,7 +10,7 @@ import { MapPin, ArrowLeft, ArrowRight } from "lucide-react";
 interface Vehicle {
   id: number;
   vehicle: string;
-  carNumber: string;
+  plateNumber: string;
 }
 
 interface SelectVehicleProps {
@@ -45,9 +45,9 @@ const SelectVehicle: React.FC<SelectVehicleProps> = ({
     // Replace with your actual API call
     const fetchVehicles = async () => {
       const mockVehicles = [
-        { id: 1, vehicle: "Proton Saga", carNumber: "JBC 1234" },
-        { id: 2, vehicle: "Proton Wira", carNumber: "WRT 5678" },
-        { id: 3, vehicle: "Honda Civic", carNumber: "ABC 9012" },
+        { id: 1, vehicle: "Proton Saga", plateNumber: "JBC 1234" },
+        { id: 2, vehicle: "Proton Wira", plateNumber: "WRT 5678" },
+        { id: 3, vehicle: "Honda Civic", plateNumber: "ABC 9012" },
       ];
       setVehicles(mockVehicles);
     };
@@ -82,7 +82,7 @@ const SelectVehicle: React.FC<SelectVehicleProps> = ({
                 >
                   <div className="font-medium">{vehicle.vehicle}</div>
                   <div className="text-sm text-gray-500">
-                    {vehicle.carNumber}
+                    {vehicle.plateNumber}
                   </div>
                 </label>
               </div>
@@ -219,10 +219,11 @@ const BookingFlow = () => {
 
       const queryParams = {
         vehicleId: selectedVehicle?.id.toString(),
-        carNumber: selectedVehicle?.carNumber,
+        plateNumber: selectedVehicle?.plateNumber,
         serviceLocation: serviceLocation,
         towingLocation: towingLocation,
         vehicle: selectedVehicle?.vehicle,
+        vehicleID: selectedVehicle?.id,
       };
 
       const encodedParams = btoa(JSON.stringify(queryParams));

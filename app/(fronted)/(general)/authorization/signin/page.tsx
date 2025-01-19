@@ -1,57 +1,95 @@
 "use client";
-
-// SignInPage.tsx
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const SignInPage = () => {
   const router = useRouter();
-  const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
+  const formSchema = z.object({
+    inputValue: z.string().min(3),
+    password: z.string().min(3),
   });
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    console.log(e);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      inputValue: "",
+      password: "",
+    },
+  });
 
-    e.preventDefault();
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+    //const response = await userLogin(values.inputValue, values.password);
 
-    // Add authentication logic here
+    console.log(values);
   };
 
   return (
     <div className="min-h-screen content-center mx-12">
-      <div className="text-6xl bold">Sign In</div>
+      <div className="text-6xl font-bold">Sign In</div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <FormField
+            control={form.control}
+            name="inputValue"
+            render={({ field }) => {
+              return (
+                <FormItem className="mt-6">
+                  <FormLabel className="text-lg">
+                    Username/ Email Address
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Username/ EmailAddress"
+                      type="text"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
 
-      <form onSubmit={handleSignIn} className="space-y-4 mt-8">
-        <Input
-          placeholder="Username"
-          value={credentials.username}
-          onChange={(e) =>
-            setCredentials({ ...credentials, username: e.target.value })
-          }
-        />
-        <Input
-          type="password"
-          placeholder="Password"
-          value={credentials.password}
-          onChange={(e) =>
-            setCredentials({ ...credentials, password: e.target.value })
-          }
-        />
-        <Button type="submit" className="w-full">
-          Sign In Account
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={() => router.push("/register-vehicle")}
-        >
-          Register Account
-        </Button>
-      </form>
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => {
+              return (
+                <FormItem className="mt-6">
+                  <FormLabel className="text-lg">Password</FormLabel>
+                  <FormControl>
+                    <Input placeholder="password" type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+
+          <Button type="submit" className="w-full mt-6">
+            Sign In Account
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full mt-6"
+            onClick={() => router.push("/authorization/registration")}
+          >
+            Register Account
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 };
