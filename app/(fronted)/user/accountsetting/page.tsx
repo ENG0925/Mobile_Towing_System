@@ -6,7 +6,7 @@ import { Edit2, Mail, Phone, Lock, User } from "lucide-react";
 const AccountSetting = () => {
   // Updated initial user data structure
   const [userData, setUserData] = useState({
-    name: "Lim Jie Qing",
+    username: "Lim Jie Qing",
     email: "limjieqing.123456@gmail.com",
     contact: "+60 12-345 6789",
     password: "123456", // This would come from your backend
@@ -14,7 +14,7 @@ const AccountSetting = () => {
 
   // Updated form states
   const [formData, setFormData] = useState({
-    name: userData.name,
+    username: userData.username,
     email: userData.email,
     contact: userData.contact,
     currentPassword: "",
@@ -41,7 +41,7 @@ const AccountSetting = () => {
 
       setUserData((prev) => ({
         ...prev,
-        name: formData.name,
+        username: formData.username,
         email: formData.email,
         contact: formData.contact,
         password: formData.newPassword || prev.password,
@@ -82,9 +82,12 @@ const AccountSetting = () => {
                   <label className="text-sm text-gray-500">Name</label>
                   <input
                     type="text"
-                    value={formData.name}
+                    value={formData.username}
                     onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, name: e.target.value }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        username: e.target.value,
+                      }))
                     }
                     className="w-full p-2 border rounded-lg mt-1"
                   />
@@ -132,7 +135,7 @@ const AccountSetting = () => {
                   <User className="w-5 h-5 text-gray-400" />
                   <div>
                     <p className="text-sm text-gray-500">Name</p>
-                    <p className="font-medium">{userData.name}</p>
+                    <p className="font-medium">{userData.username}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">

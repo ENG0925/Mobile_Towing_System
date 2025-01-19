@@ -23,27 +23,30 @@ const AddVehicle = () => {
 
   const getVehicles = () => [
     {
+      id: 1,
       vehicle: "Proton Saga",
-      carNumber: "JBC 1234",
+      plateNumber: "JBC 1234",
       color: "Red",
       hasInsurance: true,
     },
     {
+      id: 2,
       vehicle: "Toyota Vios",
-      carNumber: "WXY 5678",
+      plateNumber: "WXY 5678",
       color: "Black",
       hasInsurance: false,
     },
     {
+      id: 3,
       vehicle: "Honda City",
-      carNumber: "ABC 9012",
+      plateNumber: "ABC 9012",
       color: "White",
       hasInsurance: true,
     },
   ];
 
-  const handleVehicleClick = (carNumber: string) => {
-    router.push(`/user/vehicles/${carNumber}`);
+  const handleVehicleClick = (plateNumber: string) => {
+    router.push(`/user/vehicles/${plateNumber}`);
   };
 
   return (
@@ -87,7 +90,7 @@ const AddVehicle = () => {
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Car Number</p>
-                        <p className="font-medium">{vehicle.carNumber}</p>
+                        <p className="font-medium">{vehicle.plateNumber}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Color</p>
@@ -98,7 +101,7 @@ const AddVehicle = () => {
 
                   <button
                     className="p-2 hover:bg-gray-100 rounded-full"
-                    onClick={() => handleVehicleClick(vehicle.carNumber)}
+                    onClick={() => handleVehicleClick(vehicle.plateNumber)}
                   >
                     <MoreVertical className="w-5 h-5 text-gray-500" />
                   </button>

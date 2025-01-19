@@ -53,7 +53,7 @@ const BookingHistory = () => {
       status: "In Progress",
       date: "06-01-2025",
       vehicle: "Proton Saga",
-      price: "RM 20.00",
+      estimateCost: "RM 20.00",
     },
     {
       id: 2,
@@ -61,7 +61,7 @@ const BookingHistory = () => {
       status: "Booking Complete",
       date: "06-01-2025",
       vehicle: "Toyota Camry",
-      price: "RM 50.00",
+      estimateCost: "RM 50.00",
     },
     {
       id: 3,
@@ -69,7 +69,7 @@ const BookingHistory = () => {
       status: "In Pending",
       date: "06-01-2025",
       vehicle: "Honda Civic",
-      price: "RM 30.00",
+      estimateCost: "RM 30.00",
     },
     {
       id: 4,
@@ -77,7 +77,7 @@ const BookingHistory = () => {
       status: "Cancel",
       date: "06-01-2025",
       vehicle: "Nissan Altima",
-      price: "RM 40.00",
+      estimateCost: "RM 40.00",
     },
   ];
 
@@ -129,7 +129,7 @@ const BookingHistory = () => {
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Price</p>
-                        <p className="font-medium">{booking.price}</p>
+                        <p className="font-medium">{booking.estimateCost}</p>
                       </div>
                     </div>
                   </div>
