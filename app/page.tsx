@@ -56,7 +56,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center h-screen">
           <div className="text-9xl font-bold text-red-500">404</div>
           <div className="text-5xl font-bold text-gray-800">
-            Sorry, page not found
+            Sorry, page not found 
           </div>
         </div>
       )}
