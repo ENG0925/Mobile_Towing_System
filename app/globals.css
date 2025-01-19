@@ -76,19 +76,3 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
-.main-bg-yellow {
-  background-color: #f0f68d;
-}
-
-.main-bg-green {
-  background-color: #1b4b38;
-}
-
-.main-text-yellow {
-  color: #f0f68d;
-}
-
-.main-text-green {
-  color: #1b4b38;
-}
