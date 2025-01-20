@@ -74,8 +74,9 @@ CREATE TABLE Vehicle (
 
 -- Table: InsurancePolicy
 CREATE TABLE InsurancePolicy (
-    policyNo VARCHAR(255) PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     vehicleID INT NOT NULL,
+    policyNo VARCHAR(255) NOT NULL,
     policyholderName VARCHAR(255) NOT NULL,
     icNumber BIGINT NOT NULL,
     policyFile BLOB NOT NULL,
