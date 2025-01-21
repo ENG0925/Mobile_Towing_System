@@ -219,7 +219,7 @@ const Feedback = () => {
       {!loading && (
         <>
           <div className="text-6xl text-center pt-8">
-            <b>Our Best Service of rating and review</b>
+            <b>Our Best Service of feedback</b>
           </div>
           <div className="flex flex-wrap mx-[50px] mt-12 place-content-center">
             {ratingItem.slice(startIndex, endIndex).map((item) => (
@@ -228,15 +228,7 @@ const Feedback = () => {
                 className="min-h-[200px] md:w-1/3 flex md:max-w-md pt-4 pr-4"
               >
                 <div className="border-[1px] m-[6px] drop-shadow flex w-full">
-                  <div className="md:w-1/3 md:max-w-md content-center web-center">
-                    {/* <Image
-                      src={Profile}
-                      alt="profile"
-                      width={130}
-                      height={130}
-                    /> */}
-                  </div>
-                  <div className="md:w-2/3 content-center my-[15px]">
+                  <div className="w-full content-center my-[15px] ml-[3rem] mr-1">
                     <div>
                       <b>{item.userName}</b>
                     </div>

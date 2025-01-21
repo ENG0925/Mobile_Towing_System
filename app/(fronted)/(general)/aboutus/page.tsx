@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -6,16 +7,20 @@ import { BicepsFlexed } from "lucide-react";
 
 const teamMembers = [
   {
-    name: "Homelander",
-    position: "CEO",
-    image: "",
+    name: "Joker",
+    position: "Joke",
+    image: "/image/aboutus/Joker.png",
   },
   {
-    name: "Test",
+    name: "Homelander",
     position: "CEO",
-    image: "/path/to/image3.jpg",
+    image: "/image/aboutus/Homelander-S4.webp",
   },
-  { name: "City Wang", position: "CEO", image: "/path/to/image3.jpg" },
+  {
+    name: "Walter White",
+    position: "Techinique",
+    image: "/image/aboutus/Walter-White.png",
+  },
 ];
 
 const AboutUs = () => {
@@ -30,16 +35,20 @@ const AboutUs = () => {
 
       <div className="flex space-x-4 mb-8">
         {teamMembers.map((member, index) => (
-          <Card key={index} className="flex flex-col items-center p-4">
-            <Image
-              src={member.image}
-              alt={member.name}
-              width={150}
-              height={150}
-              className="rounded-full mb-2"
-            />
+          <Card
+            key={index}
+            className="flex flex-col items-center p-4 h-[30rem] w-[20rem]"
+          >
+            <div className="relative w-full h-[80%] mb-4">
+              <Image
+                src={member.image}
+                alt={member.name}
+                className="rounded-lg object-cover"
+                fill
+              />
+            </div>
             <h2 className="font-semibold">{member.name}</h2>
-            <p className="text-sm">{member.position}</p>
+            <p className="text-m font-bold">{member.position}</p>
           </Card>
         ))}
       </div>
