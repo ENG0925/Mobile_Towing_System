@@ -4,7 +4,7 @@ import mysql from 'mysql2/promise';
 import { NextResponse, NextRequest } from "next/server";
 
 
-interface User {
+interface Driver {
   id: number;
   password: string;
 }
@@ -15,25 +15,27 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
     const connection = await mysql.createConnection(DBConfig);
 
-    const [queryUser] = await connection.execute('SELECT id, password FROM user WHERE name = ? OR email = ?',[username, username]);
-    const user = queryUser as User[];
+    const [queryDriverAdmin] = await connection.execute('SELECT id, password FROM driver WHERE name = ? OR email = ?',[username, username]);
+    const driver = queryDriverAdmin as Driver[];
     
     connection.end();
 
-    if (user.length === 0) {
+    if (driver.length === 0) {
       return NextResponse.json({ 
         success: false, 
-        message: 'User not found' 
+        message: 'Driver not found' 
       });
     }
 
-    if (user[0].password !== password) {
+    if (driver[0].password !== password) {
       return NextResponse.json({ 
         success: false, 
         message: 'Password not match' 
       });
     }
 
+    localStorage.setItem("driverID", driver[0].id.toString());
+    
     return NextResponse.json({ 
       success: true,
       message: 'Login success', 

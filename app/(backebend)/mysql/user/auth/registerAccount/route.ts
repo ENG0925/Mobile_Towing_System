@@ -59,6 +59,8 @@ export async function POST (req: NextRequest, res: NextResponse) {
         await connection.commit();
         connection.end();
 
+        localStorage.setItem("userID", userID.toString());
+
         return NextResponse.json({ 
             success: true, 
             message: 'Account created successfully' 
