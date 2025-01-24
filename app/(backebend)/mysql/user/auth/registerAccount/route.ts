@@ -27,7 +27,11 @@ interface Policy {
 interface Vehicle {
     color: string;
     plateNumber: string;
-    vehicleType: string;
+    model: string;
+}
+
+interface UserID {
+    id: number;
 }
 
 export async function POST (req: NextRequest, res: NextResponse) {
@@ -39,22 +43,26 @@ export async function POST (req: NextRequest, res: NextResponse) {
         await connection.beginTransaction();
 
         // insert user data
-        await connection.execute('INSERT INTO user (name, email, phoneNumber, password, accountStatus, loginStatus) VALUES (?, ?, ?, ?, ?, ?)', [data.account.username, data.account.email, data.account.contactNumber, data.account.password, true, true]);
+        const [resultUser] : any = await connection.execute('INSERT INTO user (name, email, phoneNumber, password, accountStatus, loginStatus) VALUES (?, ?, ?, ?, ?, ?)', [data.account.username, data.account.email, data.account.contactNumber, data.account.password, true, true]);
 
-        const [userID] = await connection.execute('SELECT id FROM user WHERE email = ?', [data.account.email]);
+        const userID = resultUser.insertId;
 
         // insert vehicle data
-        await connection.execute('INSERT INTO vehicle (userID, plateNumber, model, color) VALUES (?, ?, ?, ?)', [data.vehicle.plateNumber, data.vehicle.vehicleType, data.vehicle.color]);
+        const [resultVehicle] : any =  await connection.execute('INSERT INTO vehicle (userID, plateNumber, model, color) VALUES (?, ?, ?, ?)', [userID, data.vehicle.plateNumber, data.vehicle.model, data.vehicle.color]);
+        const vehicleID = resultVehicle.insertId;
 
         // insert policy data
         if (data.policy.hasPolicy) {
-            await connection.execute('INSERT INTO insurancepolicy (vehicleID, policyNo, policyholderName, icNumber, policyFile) VALUES (?, ?, ?, ?, ?)', [data.policy.icNumber, data.policy.policyHolderName, data.policy.uploadFile]);
+            await connection.execute('INSERT INTO insurancepolicy (vehicleID, policyNo, policyholderName, icNumber, policyFile) VALUES (?, ?, ?, ?, ?)', [vehicleID, data.policy.icNumber, data.policy.policyHolderName, data.policy.uploadFile]);
         }
-
-
 
         await connection.commit();
         connection.end();
+
+        return NextResponse.json({ 
+            success: true, 
+            message: 'Account created successfully' 
+        });
 
     } catch (error) {
         return NextResponse.json({ 

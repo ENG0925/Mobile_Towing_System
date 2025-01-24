@@ -42,7 +42,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
   } catch (err) {
     return NextResponse.json({ 
       success: false, 
-      message: 'Error to user login api' 
+      message: 'Something went wrong' 
     });
   }
 }

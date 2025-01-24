@@ -149,6 +149,11 @@ const SystemAdmin = () => {
           {
             name: "name",
             label: "Name",
+            type: "number",
+          },
+          {
+            name: "name",
+            label: "Name",
             type: "text",
           },
           {
