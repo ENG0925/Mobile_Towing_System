@@ -19,6 +19,7 @@ interface Account {
 
 interface Policy {
     hasPolicy: boolean;
+    policyNo: string;
     icNumber: string;
     policyHolderName: string;
     uploadFile: File;
@@ -53,7 +54,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
         // insert policy data
         if (data.policy.hasPolicy) {
-            await connection.execute('INSERT INTO insurancepolicy (vehicleID, policyNo, policyholderName, icNumber, policyFile) VALUES (?, ?, ?, ?, ?)', [vehicleID, data.policy.icNumber, data.policy.policyHolderName, data.policy.uploadFile]);
+            await connection.execute('INSERT INTO insurancepolicy (vehicleID, policyNo, policyholderName, icNumber, policyFile) VALUES (?, ?, ?, ?, ?)', [vehicleID, data.policy.policyNo, data.policy.policyHolderName, data.policy.icNumber, data.policy.uploadFile]);
         }
 
         await connection.commit();
