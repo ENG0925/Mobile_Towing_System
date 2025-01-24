@@ -26,7 +26,7 @@ const SystemAdminSidebar = () => {
     { id: "booking", icon: CalendarCheck, label: "Booking" },
     { id: "vehicle", icon: Car, label: "Vehicle" },
     { id: "driver", icon: UserCircle2, label: "Driver" },
-    { id: "rating", icon: Star, label: "Rating" },
+    { id: "feedback", icon: Star, label: "Feedback" },
   ];
 
   const handleMenuClick = (itemId: string) => {
