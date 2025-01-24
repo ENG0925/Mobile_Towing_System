@@ -376,24 +376,6 @@ const Feedback = () => {
               )}
             </Dialog>
           </div>
-
-          <div className="mt-12 about-next text-center">
-            <div className="min-h-[400px] absolute content-center">
-              <h2 className="text-white text-6xl px-40">
-                <b>
-                  Have any problem of question. Here will solve your problem
-                </b>
-              </h2>
-              <div className="mt-10 ">
-                <Button className="main-bg-color mr-10 w-[300px] rounded-lg h-[60px]">
-                  <NextLink href={"/faq"}>Explore More</NextLink>
-                </Button>
-                <Button className="main-bg-green mr-10 w-[300px] rounded-lg h-[60px]">
-                  <NextLink href={"/tour"}>Book Now</NextLink>
-                </Button>
-              </div>
-            </div>
-          </div>
         </>
       )}
     </>

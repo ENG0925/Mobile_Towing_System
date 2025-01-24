@@ -12,7 +12,7 @@ const Confirmation: React.FC = () => {
   const parsedData = decodedString ? JSON.parse(decodedString) : {};
 
   // Extract the values from the parsed data
-  const { vehicleId, vehicle, plateNumber, serviceLocation, towingLocation } =
+  const { vehicleID, vehicle, plateNumber, serviceLocation, towingLocation } =
     parsedData;
 
   // States for user data
@@ -88,12 +88,15 @@ const Confirmation: React.FC = () => {
   const handleConfirmOrder = () => {
     if (!agreeToTerms) return;
 
+    const bookingDate: string = new Date().toISOString().slice(0, 10);
+
     const orderData = {
-      ...userData,
+      vehicleID,
+      bookingDate,
       serviceLocation,
       towingLocation,
+      distance,
       estimateCost,
-      vehicleId,
     };
 
     console.log(orderData);
@@ -103,10 +106,69 @@ const Confirmation: React.FC = () => {
   const calculateDistance = (
     serviceLocation: string,
     towingLocation: string
-  ) => {
-    // Implement your logic to calculate distance based on locations
-    // For now, returning a mock value
-    return 7; // Replace with actual distance calculation
+  ): number => {
+    // If either location is invalid, return default distance
+    if (!serviceLocation || !towingLocation) {
+      return 7;
+    }
+
+    // Predefined coordinates (you can expand this list)
+    const locationCoordinates: { [key: string]: { lat: number; lon: number } } =
+      {
+        "Bukit Bintang (Monorail), Jalan Sultan Ismail, Bukit Bintang, 50200, Kuala Lumpur, Malaysia":
+          { lat: 3.1460769, lon: 101.7115145 },
+        "University of Malaya Medical Centre, Jalan Profesor Diraja Ungku Aziz, Section 11, 50603 Petaling Jaya, Kuala Lumpur, Malaysia":
+          { lat: 3.111719492887163, lon: 101.65439103578916 },
+        "Persiaran Subang Permai, UEP Subang Jaya, 47200 Subang Jaya City Council, Selangor, Malaysia":
+          { lat: 3.057960485298728, lon: 101.59811226786121 },
+        "Jalan USJ 2/1, UEP Subang Jaya, 47200 Subang Jaya City Council, Selangor, Malaysia":
+          { lat: 3.056919270350411, lon: 101.58955958104865 },
+        "Jalan Wawasan 4/5, Wawasan 4, 47160 Subang Jaya City Council, Selangor, Malaysia":
+          { lat: 3.0322595451129675, lon: 101.62662120242109 },
+      };
+
+    // Find coordinates for service and towing locations (case-insensitive)
+    const getCoordinates = (location: string) => {
+      // Try exact match first
+      if (locationCoordinates[location]) {
+        return locationCoordinates[location];
+      }
+
+      // Try partial match
+      const matchedKey = Object.keys(locationCoordinates).find((key) =>
+        key.toLowerCase().includes(location.toLowerCase())
+      );
+
+      return matchedKey ? locationCoordinates[matchedKey] : null;
+    };
+
+    // Get coordinates
+    const serviceCoords = getCoordinates(serviceLocation);
+    const towingCoords = getCoordinates(towingLocation);
+
+    // If no coordinates found, return default
+    if (!serviceCoords || !towingCoords) {
+      return 7;
+    }
+
+    // Haversine formula for distance calculation
+    const toRadians = (degrees: number) => degrees * (Math.PI / 180);
+
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = toRadians(towingCoords.lat - serviceCoords.lat);
+    const dLon = toRadians(towingCoords.lon - serviceCoords.lon);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(serviceCoords.lat)) *
+        Math.cos(toRadians(towingCoords.lat)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    // Calculate and round the distance
+    return Math.round(R * c * 10) / 10; // Round to 1 decimal place
   };
 
   return (
