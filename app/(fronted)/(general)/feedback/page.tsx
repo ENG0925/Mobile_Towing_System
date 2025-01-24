@@ -46,7 +46,7 @@ const FormSchema = z.object({
     .min(10, {
       message: "Comment must be at least 10 characters.",
     })
-    .max(160, {
+    .max(50, {
       message: "Comment must not be longer than 30 characters.",
     }),
 });
@@ -302,10 +302,10 @@ const Feedback = () => {
               </PaginationItem>
             </PaginationContent>
           </Pagination>
-          <div className="web-center">
+          <div className="web-center text-center">
             <Dialog>
               <DialogTrigger
-                className="m-8 main-bg-color text-white p-2 rounded-xl"
+                className="m-8 p-2 rounded-xl"
                 onClick={handleDialog}
               >
                 Leave Your Comment

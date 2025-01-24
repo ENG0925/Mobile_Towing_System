@@ -64,6 +64,7 @@ export const columns = ({
       <DataTableColumnHeader column={column} title="Login Status" />
     ),
   },
+
   {
     id: "actions",
     cell: ({ row }) => {
