@@ -1,6 +1,9 @@
 import React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import PropTypes from "prop-types";
+import { logout } from "@/lib/api/user";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface SidebarProps {
   userEmail: string;
@@ -14,6 +17,20 @@ const Sidebar: React.FC<SidebarProps> = ({ userEmail, userName }) => {
   const handleNavigation = (path: string) => {
     router.push(path);
   };
+
+  const handleLogout = async() => {
+    const response = await logout(Number(localStorage.getItem("userId")));
+    if (response?.success === true) {
+      localStorage.removeItem("userId");
+      router.push("/home");
+    }
+    toast(response?.message, {
+      position: "top-center",
+      autoClose: 5000,
+      theme: "light",
+      type: response?.success === true ? "success" : "error",
+    });
+  }
 
   return (
     <div className="w-64 bg-emerald-800 text-white flex flex-col min-h-screen">
@@ -60,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userEmail, userName }) => {
       <div className="mt-auto p-6">
         <button
           className="w-full p-3 text-emerald-800 bg-white rounded-lg hover:bg-emerald-50 transition-colors font-medium"
-          onClick={() => handleNavigation("/home")}
+          onClick={() => handleLogout()}
         >
           Log Out
         </button>

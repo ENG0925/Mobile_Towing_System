@@ -29,7 +29,7 @@ interface ReqData {
 export async function POST (req: NextRequest, res: NextResponse) {
     try {
         const response  = await req.json();
-        const data : ReqData= response.data;
+        const data : FormData= response.data;
 
         console.log("data: ", data);
 

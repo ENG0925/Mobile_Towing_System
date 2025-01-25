@@ -34,6 +34,15 @@ interface Vehicle {
     color: string;
 }
 
+interface Driver {
+    id: number;
+    name: string;
+    phoneNumber: string;
+    password: string;
+    accountStatus: boolean;
+    loginStatus: boolean;
+}
+
 export async function POST (req: NextRequest, res: NextResponse) {
     try {
         const { bookingNo } = await req.json();
@@ -48,6 +57,13 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
         const [queryVehicle] = await connection.execute('SELECT * FROM vehicle WHERE id = ?', [towbooking[0].vehicleID]);
         const vehicle = queryVehicle as Vehicle[];
+
+        const [queryInsurance] = await connection.execute('SELECT * FROM insurancepolicy WHERE vehicleID = ?', [towbooking[0].vehicleID]);
+        const insurance = queryInsurance as [];
+
+        const [queryDriver] = await connection.execute('SELECT * FROM driver WHERE id = ?', [towbooking[0].driverID]);
+        const driver = queryDriver as Driver[];
+        
 
         connection.end();
         
@@ -65,7 +81,9 @@ export async function POST (req: NextRequest, res: NextResponse) {
                 plateNumber: vehicle[0].plateNumber,
                 model: vehicle[0].model,
                 color: vehicle[0].color,
+                hasInsurance: insurance.length > 0 ? true : false,
             },
+            driver: driver[0]
         };
 
         return NextResponse.json({ 

@@ -40,8 +40,8 @@ INSERT INTO InsurancePolicy (vehicleID, policyNo, policyholderName, icNumber, po
 
 -- Seeding data for TowBooking table
 INSERT INTO TowBooking (userID, vehicleID, driverID, bookingDate, serviceLocation, towingLocation, distance, status, estimatedCost, isWaive) VALUES
-(1, 1, 1, '2025-01-15', '123 Main St', '456 Elm St', 15.5, 'Completed', 100.00, 0),
-(2, 2, 2, '2025-01-16', '789 Oak St', '321 Pine St', 10.0, 'Pending', 80.00, 1);
+(1, 1, 1, '2025-01-15', '123 Main St', '456 Elm St', 15.5, 'booking complete', 100.00, 0),
+(2, 2, 2, '2025-01-16', '789 Oak St', '321 Pine St', 10.0, 'in progress', 80.00, 1);
 
 -- Seeding data for Payment table
 INSERT INTO Payment (bookingNo, amount, date, method) VALUES

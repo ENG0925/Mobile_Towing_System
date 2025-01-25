@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Truck, Clock, Phone, Navigation } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { getBookingInfo } from "@/lib/api/user";
 
 // TypeScript interfaces
 interface OrderDetails {
@@ -38,6 +39,7 @@ interface OrderDetails {
   totalAmount: number;
   eta: string;
 }
+
 
 // Mock data
 const mockOrderData: OrderDetails = {
@@ -104,8 +106,8 @@ const BookingDetail = ({ params }: Props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const response = await getAllTourInfo(bookingId);
-        // setOrderDetails(response?.data.data);
+        const response = await getBookingInfo(Number(bookingId));
+        setOrderDetails(response?.data);
       } catch (error) {
         console.error("Error get ticket info : ", error);
       }

@@ -106,3 +106,40 @@ export const getAllTowBooking = async (userID: number) => {
         console.error("Error: ", error);
     }
 }
+
+export const getBookingInfo = async (bookingNo: number) => {
+    try {
+        const response = await axios.post('/mysql/user/towBooking/getBookingInfo', { bookingNo });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+// feedback
+export const getAllFeedback = async (userID: number) => {
+    try {
+        const response = await axios.post('/mysql/user/feedback/getAllFeedback', { userID });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+export const addFeedback = async (userID: number, comment: string, rating: number) => {
+    try {
+        const response = await axios.post('/mysql/user/feedback/addFeedback', { userID, comment, rating });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+export const likeFeedback = async (userID: number, feedbackID: number, isLike: boolean) => {
+    try {
+        const response = await axios.post('/mysql/user/feedback/likeFeedback', { userID, feedbackID, isLike });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}

@@ -134,19 +134,19 @@ const Registration = () => {
 
 
 
-    const checkUnit = await checkUsernameAndEmail(finalData.account.username, finalData.account.email);
+    // const checkUnit = await checkUsernameAndEmail(finalData.account.username, finalData.account.email);
 
-    if(checkUnit?.success === false) {
-      toast(checkUnit?.message, {
-        position: "top-center",
-        autoClose: 5000,
-        theme: "light",
-        type: checkUnit?.success === true ? "success" : "error",
-      });
-      return;
-    }
+    // if(checkUnit?.success === false) {
+    //   toast(checkUnit?.message, {
+    //     position: "top-center",
+    //     autoClose: 5000,
+    //     theme: "light",
+    //     type: checkUnit?.success === true ? "success" : "error",
+    //   });
+    //   return;
+    // }
 
-    console.log("finalData: ", finalData);
+    // console.log("finalData: ", finalData);
 
     await registerAccount(finalData);
 

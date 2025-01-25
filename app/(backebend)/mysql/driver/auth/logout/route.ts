@@ -24,7 +24,6 @@ export async function POST (req: NextRequest, res: NextResponse) {
       });
     }
     
-    localStorage.removeItem("driverID");
     await connection.execute('UPDATE driver SET loginStatus = ? WHERE id = ?', [false, driver[0].id]);
     
     connection.end();

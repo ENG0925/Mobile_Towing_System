@@ -24,7 +24,6 @@ export async function POST (req: NextRequest, res: NextResponse) {
       });
     }
     
-    localStorage.removeItem("managementAdminID");
     await connection.execute('UPDATE managementAdmin SET loginStatus = ? WHERE id = ?', [false, managementAdmin[0].id]);
     
     connection.end();

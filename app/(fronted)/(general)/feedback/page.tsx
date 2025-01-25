@@ -1,23 +1,4 @@
 "use client";
-<<<<<<< HEAD
-import React from "react";
-
-const Feedback = () => {
-const feedback = [
-  {
-    name: "John Doe",
-    email: "EMAIL",
-    message: "This is a test message.",
-  },
-  {
-    name: "Jane Smith",
-    email: "EMAIL",
-    message: "This is another test message.",
-  },
-]
-
-  return <div>Feedback</div>;
-=======
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 //import Profile from "@/image/icon/profile.png";
@@ -58,6 +39,7 @@ import {
 import { toast } from "react-toastify";
 //import { addReview, getAllReview, likeReview } from "@/lib/api/user/review";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { addFeedback, getAllFeedback, likeFeedback } from "@/lib/api/user";
 
 const FormSchema = z.object({
   comment: z
@@ -71,11 +53,11 @@ const FormSchema = z.object({
 });
 
 interface rating {
+  id: number;
   comment: string;
   isLike: number;
   rating: number;
-  reviewID: number;
-  userName: string;
+  name: string;
   numLike: number;
 }
 
@@ -97,29 +79,13 @@ const Feedback = () => {
     setLoding(true);
     const fetchData = async () => {
       try {
-        if (localStorage.getItem("userID")) {
-          // const response = await getAllReview(
-          //   Number(localStorage.getItem("userID"))
-          // );
-          // console.log(response?.data.data);
-          // setRatingItem(response?.data.data);
-        } else {
-          const sampleRatings: rating[] = Array.from(
-            { length: 15 },
-            (_, index) => ({
-              comment: `This is comment number ${index + 1}`,
-              isLike: Math.round(Math.random()), // Randomly 0 or 1
-              rating: Math.floor(Math.random() * 5) + 1, // Random number between 1 and 5
-              reviewID: index + 1,
-              userName: `User${index + 1}`,
-              numLike: Math.floor(Math.random() * 100), // Random number between 0 and 99
-            })
+        if (localStorage.getItem("userId")) {
+          const response = await getAllFeedback(
+            Number(localStorage.getItem("userId"))
           );
-
-          setRatingItem(sampleRatings);
-          // const response = await getAllReview(0);
-          // setRatingItem(response?.data.data);
-        }
+          setRatingItem(response?.data);
+        } 
+        
       } catch (error) {
         console.error("Error: ", error);
       } finally {
@@ -133,7 +99,7 @@ const Feedback = () => {
   const updateRatingItem = (id: number, isLike: boolean) => {
     setRatingItem((prevItems) =>
       prevItems.map((item) =>
-        item.reviewID === id
+        item.id === id
           ? {
               ...item,
               isLike: isLike ? 1 : item.isLike,
@@ -145,7 +111,7 @@ const Feedback = () => {
   };
 
   const like = async (id: number, isLike: number) => {
-    if (localStorage.getItem("userID")) {
+    if (localStorage.getItem("userId")) {
       if (likedItems.has(id) || isLike === 1) {
         toast("You can only like this item once.", {
           position: "top-center",
@@ -160,7 +126,7 @@ const Feedback = () => {
       setLikedItems(new Set(likedItems).add(id));
 
       try {
-        //await likeReview(Number(localStorage.getItem("userID")), id, true);
+        await likeFeedback(Number(localStorage.getItem("userId")), id, true);
         toast("Like successful", {
           position: "top-center",
           autoClose: 5000,
@@ -191,7 +157,7 @@ const Feedback = () => {
   });
 
   const handleDialog = () => {
-    if (localStorage.getItem("userID")) {
+    if (localStorage.getItem("userId")) {
       setDialogOpen(true);
     } else {
       toast("Please sign in first after leave comment", {
@@ -209,11 +175,11 @@ const Feedback = () => {
       return;
     }
 
-    // await addReview(
-    //   Number(localStorage.getItem("userID")),
-    //   String(data.comment),
-    //   ratingStar
-    // );
+    await addFeedback(
+      Number(localStorage.getItem("userId")),
+      String(data.comment),
+      ratingStar
+    );
     toast("Added comment to successfull", {
       position: "top-center",
       autoClose: 5000,
@@ -243,13 +209,13 @@ const Feedback = () => {
           <div className="flex flex-wrap mx-[50px] mt-12 place-content-center">
             {ratingItem.slice(startIndex, endIndex).map((item) => (
               <div
-                key={item.reviewID}
+                key={item.id}
                 className="min-h-[200px] md:w-1/3 flex md:max-w-md pt-4 pr-4"
               >
                 <div className="border-[1px] m-[6px] drop-shadow flex w-full">
                   <div className="w-full content-center my-[15px] ml-[3rem] mr-1">
                     <div>
-                      <b>{item.userName}</b>
+                      <b>{item.name}</b>
                     </div>
                     <div className="flex mt-2">
                       {Array.from({ length: item.rating }).map((_, index) => (
@@ -274,12 +240,12 @@ const Feedback = () => {
                       <div className="px-[10px] ">
                         <FaHeart
                           color={
-                            item.isLike || likedItems.has(item.reviewID)
+                            item.isLike || likedItems.has(item.id)
                               ? "red"
                               : "white"
                           }
                           className="cursor-pointer w-[25px] h-[25px]"
-                          onClick={() => like(item.reviewID, item.isLike)}
+                          onClick={() => like(item.id, item.isLike)}
                         />
                       </div>
                       <div className="mr-2">{item.numLike}</div>
@@ -399,7 +365,6 @@ const Feedback = () => {
       )}
     </>
   );
->>>>>>> 1bce6bbfdf001033671e0f194af0fa3a6224e9b6
 };
 
 export default Feedback;
