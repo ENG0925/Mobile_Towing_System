@@ -14,7 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-const AdminSidebar = () => {
+const SystemAdminSidebar = () => {
   const router = useRouter();
   const [activeItem, setActiveItem] = useState("dashboard");
 
@@ -26,12 +26,12 @@ const AdminSidebar = () => {
     { id: "booking", icon: CalendarCheck, label: "Booking" },
     { id: "vehicle", icon: Car, label: "Vehicle" },
     { id: "driver", icon: UserCircle2, label: "Driver" },
-    { id: "rating", icon: Star, label: "Rating" },
+    { id: "feedback", icon: Star, label: "Feedback" },
   ];
 
   const handleMenuClick = (itemId: string) => {
     setActiveItem(itemId);
-    router.push(`/admin/${itemId}`);
+    router.push(`/system-admin/${itemId}`);
   };
 
   return (
@@ -70,4 +70,4 @@ const AdminSidebar = () => {
   );
 };
 
-export default AdminSidebar;
+export default SystemAdminSidebar;

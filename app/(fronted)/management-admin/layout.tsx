@@ -1,6 +1,6 @@
 "use client";
 
-import AdminSidebar from "@/components/common/Admin-Sidebar";
+import ManagementAdminSidebar from "@/components/common/ManagementAdmin-Sidebar";
 
 export default function RootLayout({
   children,
@@ -10,7 +10,7 @@ export default function RootLayout({
   return (
     <div className="flex">
       <div>
-        <AdminSidebar />
+        <ManagementAdminSidebar />
       </div>
       <div className="mx-10 p-8 w-full">{children}</div>
     </div>

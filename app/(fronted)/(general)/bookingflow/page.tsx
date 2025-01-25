@@ -218,7 +218,7 @@ const BookingFlow = () => {
       }
 
       const queryParams = {
-        vehicleId: selectedVehicle?.id.toString(),
+        // vehicleId: selectedVehicle?.id.toString(),
         plateNumber: selectedVehicle?.plateNumber,
         serviceLocation: serviceLocation,
         towingLocation: towingLocation,

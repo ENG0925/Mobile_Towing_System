@@ -96,6 +96,7 @@ CREATE TABLE TowBooking (
     status VARCHAR(30) NOT NULL,
     estimatedCost FLOAT NOT NULL,
     isWaive BOOLEAN,
+    isCompleted BOOLEAN,
     FOREIGN KEY (userID) REFERENCES User(id),
     FOREIGN KEY (vehicleID) REFERENCES Vehicle(id),
     FOREIGN KEY (driverID) REFERENCES Driver(id)

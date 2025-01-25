@@ -65,7 +65,7 @@ const FormSchema = z.object({
     .min(10, {
       message: "Comment must be at least 10 characters.",
     })
-    .max(160, {
+    .max(50, {
       message: "Comment must not be longer than 30 characters.",
     }),
 });
@@ -321,10 +321,10 @@ const Feedback = () => {
               </PaginationItem>
             </PaginationContent>
           </Pagination>
-          <div className="web-center">
+          <div className="web-center text-center">
             <Dialog>
               <DialogTrigger
-                className="m-8 main-bg-color text-white p-2 rounded-xl"
+                className="m-8 p-2 rounded-xl"
                 onClick={handleDialog}
               >
                 Leave Your Comment
@@ -394,24 +394,6 @@ const Feedback = () => {
                 </DialogContent>
               )}
             </Dialog>
-          </div>
-
-          <div className="mt-12 about-next text-center">
-            <div className="min-h-[400px] absolute content-center">
-              <h2 className="text-white text-6xl px-40">
-                <b>
-                  Have any problem of question. Here will solve your problem
-                </b>
-              </h2>
-              <div className="mt-10 ">
-                <Button className="main-bg-color mr-10 w-[300px] rounded-lg h-[60px]">
-                  <NextLink href={"/faq"}>Explore More</NextLink>
-                </Button>
-                <Button className="main-bg-green mr-10 w-[300px] rounded-lg h-[60px]">
-                  <NextLink href={"/tour"}>Book Now</NextLink>
-                </Button>
-              </div>
-            </div>
           </div>
         </>
       )}

@@ -8,14 +8,14 @@ import { useRouter } from "next/navigation";
 export default function AdminLogin() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Add your login logic here
-    router.push("/admin/dashboard");
+    router.push("/management-admin/dashboard");
   };
 
   return (
@@ -29,12 +29,12 @@ export default function AdminLogin() {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Email</label>
+              <label className="text-sm font-medium">Username</label>
               <Input
-                type="email"
-                value={formData.email}
+                type="username"
+                value={formData.username}
                 onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
+                  setFormData({ ...formData, username: e.target.value })
                 }
                 required
               />

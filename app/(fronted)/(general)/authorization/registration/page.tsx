@@ -35,11 +35,11 @@ const Registration = () => {
 
   // Policy Upload Schema
   const policySchema = z.object({
-    hasPolicy: z.string(),
+    hasPolicy: z.string().min(1),
     policyHolderName: z.string().optional(),
     policyNumber: z.string().optional(),
     icNumber: z.string().optional(),
-    uploadFile: z.instanceof(File).nullable(),
+    uploadFile: z.instanceof(File).nullable().optional(),
   });
 
   // Account Registration Schema
