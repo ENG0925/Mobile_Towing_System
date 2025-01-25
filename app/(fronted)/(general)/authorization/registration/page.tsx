@@ -22,6 +22,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { checkUsernameAndEmail, registerAccount } from "@/lib/api/user";
+
 const Registration = () => {
   const router = useRouter();
   const [step, setStep] = useState(1); // Track current step
@@ -97,16 +101,55 @@ const Registration = () => {
   };
 
   const handleAccountSubmit = async (values: z.infer<typeof accountSchema>) => {
-    const finalData = {
-      vehicle: vehicleForm.getValues(),
-      policy: policyForm.getValues(),
-      account: values,
-    };
-    console.log(finalData);
-    //const response = await checkUsernameAndEmail(finalData.account.username, finalData.account.email);
-    // if(response){
+    // const finalData = {
+    //   vehicle: vehicleForm.getValues(),
+    //   policy: {
+    //     hasPolicy: policyForm.getValues().hasPolicy === "yes" ? true : false,
+    //     policyHolderName: policyForm.getValues().policyHolderName || "",
+    //     policyNumber: policyForm.getValues().policyNumber || "",
+    //     icNumber: policyForm.getValues().icNumber || "",
+    //   },
+    //   account: values,
+    //   uploadFile: policyForm.getValues().uploadFile || null,
+    // };
 
-    // }
+    const vehicle = vehicleForm.getValues();
+    const policy = {
+      hasPolicy: policyForm.getValues().hasPolicy === "yes" ? true : false,
+      policyHolderName: policyForm.getValues().policyHolderName || "",
+      policyNumber: policyForm.getValues().policyNumber || "",
+      icNumber: policyForm.getValues().icNumber || "",
+    };
+
+    const account = values;
+    const uploadFile = policyForm.getValues().uploadFile || null;
+
+    const formData = new FormData();
+    formData.append("vehicle", JSON.stringify(vehicle));
+    formData.append("policy", JSON.stringify(policy));
+    formData.append("account", JSON.stringify(account));
+    formData.append("uploadFile", uploadFile);
+
+    
+
+
+
+    const checkUnit = await checkUsernameAndEmail(finalData.account.username, finalData.account.email);
+
+    if(checkUnit?.success === false) {
+      toast(checkUnit?.message, {
+        position: "top-center",
+        autoClose: 5000,
+        theme: "light",
+        type: checkUnit?.success === true ? "success" : "error",
+      });
+      return;
+    }
+
+    console.log("finalData: ", finalData);
+
+    await registerAccount(finalData);
+
     //router.push("/home"); // Redirect to sign in after successful registration
   };
 
@@ -237,7 +280,17 @@ const Registration = () => {
                     <FormItem className="mt-6">
                       <FormLabel className="text-lg">IC Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="IC Number" {...field} />
+                        <Input
+                          placeholder="IC Number"
+                          {...field}
+                          type="text"
+                          pattern="[0-9]*"
+                          inputMode="numeric"
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, "");
+                            field.onChange(value);
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -341,7 +394,17 @@ const Registration = () => {
                 <FormItem className="mt-6">
                   <FormLabel className="text-lg">Contact Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="Contact Number" {...field} />
+                    <Input
+                      placeholder="Contact Number"
+                      {...field}
+                      type="text"
+                      pattern="[0-9]*"
+                      inputMode="numeric"
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, "");
+                        field.onChange(value);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

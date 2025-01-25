@@ -4,35 +4,26 @@ import mysql from 'mysql2/promise';
 import { NextResponse, NextRequest } from "next/server";
 
 interface ReqData {
-    account: Account;
-    policy: Policy;
-    vehicle: Vehicle;
-}
-
-interface Account {
-    confirmPassword: string;
-    contactNumber: string;
-    email: string;
-    password: string;
-    username: string;
-}
-
-interface Policy {
-    hasPolicy: boolean;
-    policyNo: string;
-    icNumber: string;
-    policyHolderName: string;
-    uploadFile: File;
-}
-
-interface Vehicle {
-    color: string;
-    plateNumber: string;
-    model: string;
-}
-
-interface UserID {
-    id: number;
+    account: {
+        confirmPassword: string;
+        contactNumber: string;
+        email: string;
+        password: string;
+        username: string;
+    };
+    policy: {
+        hasPolicy: boolean;
+        policyNumber: string;
+        icNumber: string;
+        policyHolderName: string;
+        
+    };
+    vehicle: {
+        color: string;
+        plateNumber: string;
+        vehicleType: string;
+    };
+    uploadFile: File | null;
 }
 
 export async function POST (req: NextRequest, res: NextResponse) {
@@ -40,27 +31,34 @@ export async function POST (req: NextRequest, res: NextResponse) {
         const response  = await req.json();
         const data : ReqData= response.data;
 
-        const connection = await mysql.createConnection(DBConfig);
-        await connection.beginTransaction();
+        console.log("data: ", data);
 
-        // insert user data
-        const [resultUser] : any = await connection.execute('INSERT INTO user (name, email, phoneNumber, password, accountStatus, loginStatus) VALUES (?, ?, ?, ?, ?, ?)', [data.account.username, data.account.email, data.account.contactNumber, data.account.password, true, true]);
+        // const buffer = Buffer.from(data.account.password);
+        // const hashedPassword = buffer.toString("base64");
 
-        const userID = resultUser.insertId;
+        // const connection = await mysql.createConnection(DBConfig);
+        // await connection.beginTransaction();
 
-        // insert vehicle data
-        const [resultVehicle] : any =  await connection.execute('INSERT INTO vehicle (userID, plateNumber, model, color) VALUES (?, ?, ?, ?)', [userID, data.vehicle.plateNumber, data.vehicle.model, data.vehicle.color]);
-        const vehicleID = resultVehicle.insertId;
+        // // insert user data
+        // const [resultUser] : any = await connection.execute('INSERT INTO user (name, email, phoneNumber, password, accountStatus, loginStatus) VALUES (?, ?, ?, ?, ?, ?)', [data.account.username, data.account.email, data.account.contactNumber, hashedPassword, true, true]);
 
-        // insert policy data
-        if (data.policy.hasPolicy) {
-            await connection.execute('INSERT INTO insurancepolicy (vehicleID, policyNo, policyholderName, icNumber, policyFile) VALUES (?, ?, ?, ?, ?)', [vehicleID, data.policy.policyNo, data.policy.policyHolderName, data.policy.icNumber, data.policy.uploadFile]);
-        }
+        // const userID = resultUser.insertId;
 
-        await connection.commit();
-        connection.end();
+        // // insert vehicle data
+        // const [resultVehicle] : any =  await connection.execute('INSERT INTO vehicle (userID, plateNumber, model, color) VALUES (?, ?, ?, ?)', [userID, data.vehicle.plateNumber, data.vehicle.vehicleType, data.vehicle.color]);
+        // const vehicleID = resultVehicle.insertId;
 
-        localStorage.setItem("userID", userID.toString());
+        // // insert policy data
+        // if (data.policy.hasPolicy) {
+        //     await connection.execute('INSERT INTO insurancepolicy (vehicleID, policyNo, policyholderName, icNumber, policyFile) VALUES (?, ?, ?, ?, ?)', [vehicleID, data.policy.policyNumber, data.policy.policyHolderName, data.policy.icNumber, data.policy.uploadFile]);
+        // }
+
+        // await connection.execute('UPDATE user SET loginStatus = ? WHERE id = ?', [true, userID]);
+
+        // await connection.commit();
+        // connection.end();
+
+        // localStorage.setItem("userID", userID.toString());
 
         return NextResponse.json({ 
             success: true, 

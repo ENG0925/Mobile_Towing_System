@@ -1,62 +1,112 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit2, Mail, Phone, Lock, User } from "lucide-react";
+import { getAccountDetail, updatePassword, updateProfile } from "@/lib/api/user";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+interface UserData {
+  id: number;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  accountStatus: boolean;
+  loginStatus: boolean;
+}
 
 const AccountSetting = () => {
-  // Updated initial user data structure
-  const [userData, setUserData] = useState({
-    username: "Lim Jie Qing",
-    email: "limjieqing.123456@gmail.com",
-    contact: "+60 12-345 6789",
-    password: "123456", // This would come from your backend
-  });
-
-  // Updated form states
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [formData, setFormData] = useState({
-    username: userData.username,
-    email: userData.email,
-    contact: userData.contact,
+    username: userData?.name || "",
+    email: userData?.email || "",
+    contact: userData?.phoneNumber || "",
     currentPassword: "",
     newPassword: "",
   });
+  
 
-  // Edit states
   const [isEditingPersonal, setIsEditingPersonal] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
 
-  // Update personal info function
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const id = localStorage.getItem("userId");
+        const response = await getAccountDetail(Number(id));
+        setUserData(response.data);
+
+        // Initialize form data with fetched user data
+        setFormData((prev) => ({
+          ...prev,
+          username: response.data.name,
+          email: response.data.email,
+          contact: response.data.phoneNumber,
+        }));
+      } catch (error) {
+        console.error("Error fetching account details:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const handleUpdatePersonal = async () => {
     try {
-      // Password validation
+      // Check if password change is valid
+      const userID = localStorage.getItem("userId");
       if (formData.newPassword) {
-        if (formData.currentPassword !== userData.password) {
-          alert("Current password is incorrect");
+        console.log("formData.currentPassword", formData.currentPassword);
+        console.log("userData?.password", userData?.password);
+        if (formData.currentPassword != userData?.password) {
+          toast("Current password wong", {
+            position: "top-center",
+            autoClose: 5000,
+            theme: "light",
+            type: "error",
+          });
           return;
         }
+        const responsePassword = await updatePassword(formData.newPassword, Number(userID));
+        toast(responsePassword?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: responsePassword?.success === true ? "success" : "error",
+        });
       }
 
-      // Here you would make an API call to update the database
-      // await updatePersonalInfo(formData);
+      // API call for updating user data (e.g., name, email, contact)
+      const responseProfile = await updateProfile(formData.username, formData.email, Number(formData.contact), Number(userID));
+      toast(responseProfile?.message, {
+        position: "top-center",
+        autoClose: 5000,
+        theme: "light",
+        type: responseProfile?.success === true ? "success" : "error",
+      });
+  
+      if(responseProfile?.success === false) {
+        return;
+      }
 
       setUserData((prev) => ({
-        ...prev,
-        username: formData.username,
+        ...prev!,
+        name: formData.username,
         email: formData.email,
-        contact: formData.contact,
-        password: formData.newPassword || prev.password,
+        phoneNumber: formData.contact,
+        password: formData.newPassword || prev?.password || "", // Ensures valid type
       }));
-      setIsEditingPersonal(false);
 
-      // Reset password fields
-      setFormData((prev) => ({
-        ...prev,
-        currentPassword: "",
-        newPassword: "",
-      }));
+      setIsEditingPersonal(false);
+      setFormData((prev) => ({ ...prev, currentPassword: "", newPassword: "" }));
     } catch (error) {
-      console.error("Failed to update personal info:", error);
+      console.error("Failed to update personal information:", error);
     }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -66,7 +116,7 @@ const AccountSetting = () => {
 
         {/* Personal Information Card */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex items-center justify-between">
             <CardTitle>Personal Information</CardTitle>
             <button
               onClick={() => setIsEditingPersonal(!isEditingPersonal)}
@@ -84,10 +134,7 @@ const AccountSetting = () => {
                     type="text"
                     value={formData.username}
                     onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        username: e.target.value,
-                      }))
+                      handleInputChange("username", e.target.value)
                     }
                     className="w-full p-2 border rounded-lg mt-1"
                   />
@@ -98,26 +145,18 @@ const AccountSetting = () => {
                     type="email"
                     value={formData.email}
                     onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        email: e.target.value,
-                      }))
+                      handleInputChange("email", e.target.value)
                     }
                     className="w-full p-2 border rounded-lg mt-1"
                   />
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">
-                    Contact Number
-                  </label>
+                  <label className="text-sm text-gray-500">Contact Number</label>
                   <input
                     type="tel"
                     value={formData.contact}
                     onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        contact: e.target.value,
-                      }))
+                      handleInputChange("contact", e.target.value)
                     }
                     className="w-full p-2 border rounded-lg mt-1"
                   />
@@ -125,6 +164,11 @@ const AccountSetting = () => {
                 <button
                   onClick={handleUpdatePersonal}
                   className="w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700"
+                  disabled={
+                    formData.username === userData?.name &&
+                    formData.email === userData?.email &&
+                    formData.contact === userData?.phoneNumber
+                  }
                 >
                   Save Changes
                 </button>
@@ -135,21 +179,21 @@ const AccountSetting = () => {
                   <User className="w-5 h-5 text-gray-400" />
                   <div>
                     <p className="text-sm text-gray-500">Name</p>
-                    <p className="font-medium">{userData.username}</p>
+                    <p className="font-medium">{userData?.name}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-gray-400" />
                   <div>
                     <p className="text-sm text-gray-500">Email Address</p>
-                    <p className="font-medium">{userData.email}</p>
+                    <p className="font-medium">{userData?.email}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-gray-400" />
                   <div>
                     <p className="text-sm text-gray-500">Contact Number</p>
-                    <p className="font-medium">{userData.contact}</p>
+                    <p className="font-medium">{userData?.phoneNumber}</p>
                   </div>
                 </div>
               </div>
@@ -159,7 +203,7 @@ const AccountSetting = () => {
 
         {/* Password Change Card */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex items-center justify-between">
             <CardTitle>Change Password</CardTitle>
             <button
               onClick={() => setIsEditingPassword(!isEditingPassword)}
@@ -179,10 +223,7 @@ const AccountSetting = () => {
                     type="password"
                     value={formData.currentPassword}
                     onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        currentPassword: e.target.value,
-                      }))
+                      handleInputChange("currentPassword", e.target.value)
                     }
                     className="w-full p-2 border rounded-lg mt-1"
                   />
@@ -193,10 +234,7 @@ const AccountSetting = () => {
                     type="password"
                     value={formData.newPassword}
                     onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        newPassword: e.target.value,
-                      }))
+                      handleInputChange("newPassword", e.target.value)
                     }
                     className="w-full p-2 border rounded-lg mt-1"
                   />
@@ -204,6 +242,7 @@ const AccountSetting = () => {
                 <button
                   onClick={handleUpdatePersonal}
                   className="w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700"
+                  disabled={!formData.newPassword || !formData.currentPassword}
                 >
                   Update Password
                 </button>

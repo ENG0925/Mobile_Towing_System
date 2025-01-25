@@ -24,18 +24,24 @@ export async function POST(req: NextRequest, res: NextResponse) {
         const [queryVehicle] = await connection.execute('SELECT * FROM vehicle WHERE userID = ?', [userID]);
         const vehicle = queryVehicle as Vehicle[];
 
-        const [queryInsurancePolicy] = await connection.execute('SELECT id FROM insurancepolicy WHERE vehicleID = ?', [vehicle[0].id]);
-        const insurancePolicy = queryInsurancePolicy as InsurancePolicy[];
-
-        const hasInsurance = insurancePolicy.length > 0 ? true : false;
-
-        const data = {
-            id: vehicle[0].id,
-            color: vehicle[0].color,
-            plateNumber: vehicle[0].plateNumber,
-            model: vehicle[0].model,
-            hasInsurancePolicy: hasInsurance
-        }
+        const [query] = await connection.execute(`
+            SELECT 
+              v.*, 
+              CASE 
+                WHEN ip.id IS NOT NULL THEN TRUE 
+                ELSE FALSE 
+              END AS hasInsurancePolicy
+            FROM 
+              vehicle v
+            LEFT JOIN 
+              insurancepolicy ip 
+            ON 
+              v.id = ip.vehicleID
+            WHERE 
+              v.userID = ?
+            `, 
+            [userID]
+        );
 
         await connection.commit();
         connection.end();
@@ -43,7 +49,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         return NextResponse.json({ 
             success: true, 
             message: "Vehicle retrieved successfully",
-            data: data
+            data: query
         });
         
     } catch (err) {

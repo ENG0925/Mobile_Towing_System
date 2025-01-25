@@ -12,7 +12,10 @@ const Navbar = () => {
   useEffect(() => {
     // Check if user is logged in by looking for user ID in localStorage
     const userId = localStorage.getItem("userId");
-    setIsAuthenticated(!!userId);
+    if (userId) {
+      setIsAuthenticated(true);
+    }
+    
   }, []); // Empty dependency array means this runs once on component mount
 
   const handleUserIconClick = () => {

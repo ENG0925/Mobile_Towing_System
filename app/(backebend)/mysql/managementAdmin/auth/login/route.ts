@@ -18,7 +18,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
     const [queryManagementmAdmin] = await connection.execute('SELECT id, password FROM managementadmin WHERE name = ? OR email = ?',[username, username]);
     const managementAdmin = queryManagementmAdmin as ManagementAdmin[];
     
-    connection.end();
+    
 
     if (managementAdmin.length === 0) {
       return NextResponse.json({ 
@@ -27,7 +27,11 @@ export async function POST (req: NextRequest, res: NextResponse) {
       });
     }
 
-    if (managementAdmin[0].password !== password) {
+    const base64Encoded = managementAdmin[0].password; 
+    const buffer = Buffer.from(base64Encoded, 'base64');
+    const unhashedPassword = buffer.toString('utf-8');
+
+    if (unhashedPassword !== password) {
       return NextResponse.json({ 
         success: false, 
         message: 'Password not match' 
@@ -35,7 +39,11 @@ export async function POST (req: NextRequest, res: NextResponse) {
     }
 
     localStorage.setItem("managementAdminID", managementAdmin[0].id.toString());
-    
+
+    await connection.execute('UPDATE managementAdmin SET loginStatus = ? WHERE id = ?', [true, managementAdmin[0].id]);
+
+    connection.end();
+
     return NextResponse.json({ 
       success: true,
       message: 'Login success', 

@@ -13,6 +13,10 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { login } from "@/lib/api/user";
+
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignInPage = () => {
   const router = useRouter();
@@ -30,9 +34,19 @@ const SignInPage = () => {
   });
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    //const response = await userLogin(values.inputValue, values.password);
+    const response = await login(values.inputValue, values.password);
+    
+    toast(response?.message, {
+      position: "top-center",
+      autoClose: 5000,
+      theme: "light",
+      type: response?.success === true ? "success" : "error",
+    });
 
-    console.log(values);
+    if(response?.success === true) {
+      router.push("/home");
+      localStorage.setItem("userId", response?.id.toString());
+    }
   };
 
   return (

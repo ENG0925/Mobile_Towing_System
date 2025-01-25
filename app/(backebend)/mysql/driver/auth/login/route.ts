@@ -15,11 +15,9 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
     const connection = await mysql.createConnection(DBConfig);
 
-    const [queryDriverAdmin] = await connection.execute('SELECT id, password FROM driver WHERE name = ? OR email = ?',[username, username]);
-    const driver = queryDriverAdmin as Driver[];
+    const [queryDriver] = await connection.execute('SELECT id, password FROM driver WHERE name = ? OR email = ?',[username, username]);
+    const driver = queryDriver as Driver[];
     
-    connection.end();
-
     if (driver.length === 0) {
       return NextResponse.json({ 
         success: false, 
@@ -27,7 +25,11 @@ export async function POST (req: NextRequest, res: NextResponse) {
       });
     }
 
-    if (driver[0].password !== password) {
+    const base64Encoded = driver[0].password; 
+    const buffer = Buffer.from(base64Encoded, 'base64');
+    const unhashedPassword = buffer.toString('utf-8');
+
+    if (unhashedPassword !== password) {
       return NextResponse.json({ 
         success: false, 
         message: 'Password not match' 
@@ -35,7 +37,11 @@ export async function POST (req: NextRequest, res: NextResponse) {
     }
 
     localStorage.setItem("driverID", driver[0].id.toString());
+
+    await connection.execute('UPDATE driver SET loginStatus = ? WHERE id = ?', [true, driver[0].id]);
     
+    connection.end();
+
     return NextResponse.json({ 
       success: true,
       message: 'Login success', 

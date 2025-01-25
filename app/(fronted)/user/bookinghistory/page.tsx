@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   MoreVertical,
   Clock,
@@ -16,9 +16,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getAllTowBooking } from "@/lib/api/user";
+
+interface TowBooking {
+    bookingNo: string;
+    bookingDate: string;
+    status: string;
+    estimatedCost: string;
+    model: string;
+}
 
 const BookingHistory = () => {
   const router = useRouter();
+  const [bookings, setBookings] = useState<TowBooking[]>([]); 
+
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -46,40 +57,14 @@ const BookingHistory = () => {
     }
   };
 
-  const getBookings = () => [
-    {
-      id: 1,
-      bookingID: "250106001",
-      status: "In Progress",
-      bookingDate: "06-01-2025",
-      vehicle: "Proton Saga",
-      estimateCost: "RM 20.00",
-    },
-    {
-      id: 2,
-      bookingID: "250106002",
-      status: "Booking Complete",
-      bookingDate: "06-01-2025",
-      vehicle: "Toyota Camry",
-      estimateCost: "RM 50.00",
-    },
-    {
-      id: 3,
-      bookingID: "250106003",
-      status: "In Pending",
-      bookingDate: "06-01-2025",
-      vehicle: "Honda Civic",
-      estimateCost: "RM 30.00",
-    },
-    {
-      id: 4,
-      bookingID: "250106004",
-      status: "Cancel",
-      bookingDate: "06-01-2025",
-      vehicle: "Nissan Altima",
-      estimateCost: "RM 40.00",
-    },
-  ];
+  useEffect(() => {
+    const fecthData = async () => {
+      const userID = localStorage.getItem("userId");
+      const response = await getAllTowBooking(Number(userID));
+      setBookings(response?.data);
+    };
+    fecthData();
+  }, []);
 
   const handleBookingClick = (id: number) => {
     router.push(`/user/${id}`);
@@ -96,7 +81,8 @@ const BookingHistory = () => {
       <div className="flex-1 p-8">
         <div className="max-w-4xl mx-auto space-y-6">
           {/* Booking Cards */}
-          {getBookings().map((booking, index) => (
+          
+          {bookings.map((booking, index) => (
             <Card
               key={index}
               className="overflow-hidden hover:shadow-lg transition-shadow"
@@ -114,14 +100,14 @@ const BookingHistory = () => {
                         {booking.status}
                       </span>
                       <span className="text-sm text-gray-500">
-                        Booking ID: {booking.bookingID}
+                        Booking ID: {booking.bookingNo}
                       </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <p className="text-sm text-gray-500">Vehicle</p>
-                        <p className="font-medium">{booking.vehicle}</p>
+                        <p className="font-medium">{booking.model}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Date</p>
@@ -129,7 +115,7 @@ const BookingHistory = () => {
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Price</p>
-                        <p className="font-medium">{booking.estimateCost}</p>
+                        <p className="font-medium">{booking.estimatedCost}</p>
                       </div>
                     </div>
                   </div>
@@ -142,13 +128,13 @@ const BookingHistory = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
-                        onClick={() => handleBookingClick(booking.id)}
+                        onClick={() => handleBookingClick(Number(booking.bookingNo))}
                       >
                         <FileText className="w-4 h-4 mr-2" />
                         View Details
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() => handlePayment(booking.id)}
+                        onClick={() => handlePayment(Number(booking.bookingNo))}
                       >
                         <CreditCard className="w-4 h-4 mr-2" />
                         Make Payment

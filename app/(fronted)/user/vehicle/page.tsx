@@ -1,11 +1,33 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MoreVertical, ShieldCheck, ShieldX } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import { getAllVehicle } from "@/lib/api/user";
+
+interface VehicleData {
+  id: number;
+  color: string;
+  plateNumber: string;
+  model: string;
+  hasInsurancePolicy: boolean;
+}
 
 const Vehicle = () => {
   const router = useRouter();
+  const [vehicles, setVehicles] = useState<VehicleData[]>([]);
+
+  useEffect(() => {
+
+    const fetchData = async () => {
+      const userID = localStorage.getItem("userId");
+
+      const response = await getAllVehicle(Number(userID));
+      setVehicles(response.data);
+    };
+    fetchData();
+    
+  }, []);
 
   const getInsuranceStatus = (hasInsurance: boolean) => {
     return {
@@ -63,52 +85,54 @@ const Vehicle = () => {
             </button>
           </div>
 
-          {/* Vehicle Cards */}
-          {getVehicles().map((vehicle, index) => (
-            <Card
-              key={index}
-              className="overflow-hidden hover:shadow-lg transition-shadow"
-            >
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start">
-                  <div className="space-y-4 flex-1">
-                    <div className="flex items-center space-x-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2 ${
-                          getInsuranceStatus(vehicle.hasInsurance).class
-                        }`}
-                      >
-                        {getInsuranceStatus(vehicle.hasInsurance).icon}
-                        {getInsuranceStatus(vehicle.hasInsurance).text}
-                      </span>
+          {vehicles?.length > 0 ? (
+            vehicles.map((vehicle, index) => (
+              <Card
+                key={index}
+                className="overflow-hidden hover:shadow-lg transition-shadow"
+              >
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-4 flex-1">
+                      <div className="flex items-center space-x-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2 ${
+                            getInsuranceStatus(vehicle.hasInsurancePolicy).class
+                          }`}
+                        >
+                          {getInsuranceStatus(vehicle.hasInsurancePolicy).icon}
+                          {getInsuranceStatus(vehicle.hasInsurancePolicy).text}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <p className="text-sm text-gray-500">Vehicle Model</p>
+                          <p className="font-medium">{vehicle.model}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Car Number</p>
+                          <p className="font-medium">{vehicle.plateNumber}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Color</p>
+                          <p className="font-medium">{vehicle.color}</p>
+                        </div>
+                      </div>
                     </div>
-
-                    <div className="grid grid-cols-3 gap-4">
-                      <div>
-                        <p className="text-sm text-gray-500">Vehicle Model</p>
-                        <p className="font-medium">{vehicle.vehicle}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Car Number</p>
-                        <p className="font-medium">{vehicle.plateNumber}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Color</p>
-                        <p className="font-medium">{vehicle.color}</p>
-                      </div>
-                    </div>
+                    <button
+                      className="p-2 hover:bg-gray-100 rounded-full"
+                      onClick={() => handleVehicleClick(vehicle.id)}
+                    >
+                      <MoreVertical className="w-5 h-5 text-gray-500" />
+                    </button>
                   </div>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No vehicles.</p>
+          )}
 
-                  <button
-                    className="p-2 hover:bg-gray-100 rounded-full"
-                    onClick={() => handleVehicleClick(vehicle.id)}
-                  >
-                    <MoreVertical className="w-5 h-5 text-gray-500" />
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
         </div>
       </div>
     </div>

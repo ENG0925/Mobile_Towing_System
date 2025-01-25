@@ -18,7 +18,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
     const [querySystemAdmin] = await connection.execute('SELECT id, password FROM systemadmin WHERE name = ? OR email = ?',[username, username]);
     const systemAdmin = querySystemAdmin as SystemAdmin[];
     
-    connection.end();
+    
 
     if (systemAdmin.length === 0) {
       return NextResponse.json({ 
@@ -27,7 +27,11 @@ export async function POST (req: NextRequest, res: NextResponse) {
       });
     }
 
-    if (systemAdmin[0].password !== password) {
+    const base64Encoded = systemAdmin[0].password; 
+    const buffer = Buffer.from(base64Encoded, 'base64');
+    const unhashedPassword = buffer.toString('utf-8');
+
+    if (unhashedPassword !== password) {
       return NextResponse.json({ 
         success: false, 
         message: 'Password not match' 
@@ -36,6 +40,9 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
     localStorage.setItem("systemAdminID", systemAdmin[0].id.toString());
     
+    await connection.execute('UPDATE systemAdmin SET loginStatus = ? WHERE id = ?', [true, systemAdmin[0].id]);
+    
+    connection.end();
     return NextResponse.json({ 
       success: true,
       message: 'Login success', 

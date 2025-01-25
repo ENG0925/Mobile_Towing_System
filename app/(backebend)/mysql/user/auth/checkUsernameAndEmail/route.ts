@@ -11,8 +11,8 @@ export async function POST (req: NextRequest, res: NextResponse) {
         
         const connection = await mysql.createConnection(DBConfig);
 
-        const [checkEmail] = await connection.execute('SELECT id FROM user WHERE name = ?', [username]);
-        const [checkUsername] = await connection.execute('SELECT id FROM user WHERE email = ?', [email]);
+        const [checkUsername] = await connection.execute('SELECT id FROM user WHERE name = ?', [username]);
+        const [checkEmail] = await connection.execute('SELECT id FROM user WHERE email = ?', [email]);
 
         connection.end();
         
@@ -39,6 +39,11 @@ export async function POST (req: NextRequest, res: NextResponse) {
                 message: 'Email already exists' 
             });
         }
+
+        return NextResponse.json({ 
+            success: true, 
+            message: 'Username and Email available'
+        });
 
     } catch (error) {
         return NextResponse.json({ 

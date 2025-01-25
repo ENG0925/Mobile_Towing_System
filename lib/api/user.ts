@@ -10,21 +10,23 @@ interface ReqRegisterData {
     };
     policy: {
         hasPolicy: boolean;
-        policyNo: string;
+        policyNumber: string;
         icNumber: string;
         policyHolderName: string;
-        uploadFile: File;
+        
     };
     vehicle: {
         color: string;
         plateNumber: string;
-        model: string;
+        vehicleType: string;
     };
+    uploadFile: File | null;
 }
 
 export const checkUsernameAndEmail = async (username: string, email: string) => {
     try {
-        await axios.post('/mysql/user/auth/checkUsernameAndEmail', { username, email });
+        const response = await axios.post('/mysql/user/auth/checkUsernameAndEmail', { username, email });
+        return response.data;
     } catch (error) {
         console.error("Error: ", error);
     }
@@ -32,7 +34,8 @@ export const checkUsernameAndEmail = async (username: string, email: string) => 
 
 export const getAccountDetail = async (id: number) => {
     try {
-        await axios.post('/mysql/user/auth/getAccountDetail', { id });
+        const response = await axios.post('/mysql/user/auth/getAccountDetail', { id });
+        return response.data;
     } catch (error) {
         console.error("Error: ", error);
     }
@@ -40,7 +43,17 @@ export const getAccountDetail = async (id: number) => {
 
 export const login = async (username: string, password: string) => {
     try {
-        await axios.post('/mysql/user/auth/login', { username, password });
+        const response = await axios.post('/mysql/user/auth/login', { username, password });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+export const logout = async (id: number) => {
+    try {
+        const response = await axios.post('/mysql/user/auth/logout', { id });
+        return response.data;
     } catch (error) {
         console.error("Error: ", error);
     }
@@ -48,23 +61,47 @@ export const login = async (username: string, password: string) => {
 
 export const registerAccount = async (data: ReqRegisterData) => {
     try {
-        await axios.post('/mysql/user/auth/registerAccount', { data });
+        const response = await axios.post('/mysql/user/auth/registerAccount', { data });
+        return response.data;
     } catch (error) {
         console.error("Error: ", error);
     }
 }
 
-export const updatePassword = async (newPassword: string) => {
+export const updatePassword = async (newPassword: string, id: number) => {
     try {
-        await axios.post('/mysql/user/auth/updatePassword', { newPassword });
+        const response = await axios.put('/mysql/user/auth/updatePassword', { newPassword, id });
+        return response.data;
     } catch (error) {
         console.error("Error: ", error);
     }
 }
 
-export const updateProfile = async (userName: string, email: string, contact: number) => {
+export const updateProfile = async (userName: string, email: string, contact: number, id: number) => {
     try {
-        await axios.post('/mysql/user/auth/updateProfile', { userName, email, contact });
+        const response = await axios.put('/mysql/user/auth/updateProfile', { userName, email, contact, id });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+
+// vehicle
+export const getAllVehicle = async (userID: number) => {
+    try {
+        const response = await axios.post('/mysql/user/vehicle/getAllVehicle', { userID });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+// tow booking
+export const getAllTowBooking = async (userID: number) => {
+    try {
+        const response = await axios.post('/mysql/user/towBooking/getAllTowBooking', { userID });
+        return response.data;
     } catch (error) {
         console.error("Error: ", error);
     }
