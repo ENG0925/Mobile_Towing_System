@@ -3,18 +3,25 @@ import mysql from 'mysql2/promise';
 import { DBConfig } from "@/config/db";
 import { NextResponse, NextRequest } from "next/server";
 
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    password: string;
+    accountStatus: boolean;
+    loginStatus: boolean;
+}
 export async function POST(req: NextRequest, res: NextResponse) {
     try {
         const { id } = await req.json();
 
         const connection = await mysql.createConnection(DBConfig);
 
-        const [query] = await connection.execute(
-            'SELECT * FROM user WHERE id = ?', 
-            [id]
-        );
+        const [queryUser] = await connection.execute('SELECT * FROM user WHERE id = ?', [id]);
 
-        const data = query;
+        const user = queryUser as User[];
+
+        const data: User = user[0];
 
         connection.end();
 
@@ -26,7 +33,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     } catch (err) {
         return NextResponse.json({ 
             success: false, 
-            message: "Error fetching data",
+            message: "Something went wrong",
         });
     }
 }

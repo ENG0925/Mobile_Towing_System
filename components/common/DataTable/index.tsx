@@ -8,7 +8,7 @@ import {
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu"
 
 import {
     ColumnDef,
@@ -38,13 +38,17 @@ import { DataTablePagination } from "./DataTablePagination";
 import { DataTableViewOptions } from "./DataTableViewOptionsProps";
 
 interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[]
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
+    filterData?: string;
+    filterName?: string;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
+    filterData,
+    filterName,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -73,14 +77,19 @@ export function DataTable<TData, TValue>({
   return (
     <div>
         <div className="flex items-center py-4">
-            <Input
-                placeholder="Filter emails..."
-                value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-                onChange={(event) =>
-                    table.getColumn("email")?.setFilterValue(event.target.value)
-                }
-                className="max-w-sm"
-            />
+            {filterData && filterName && <>
+                <Input
+                    placeholder={filterName}
+                    value={
+                        (table.getColumn(filterData)?.getFilterValue() as string) ?? ""
+                    }
+                    onChange={(event) =>
+                        table.getColumn(filterData)?.setFilterValue(event.target.value)
+                    }
+                    className="max-w-sm"
+                />
+            </>}
+            <DataTableViewOptions table={table} />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="ml-auto">
@@ -104,7 +113,7 @@ export function DataTable<TData, TValue>({
                     })}
                 </DropdownMenuContent>
             </DropdownMenu>
-            <DataTableViewOptions table={table} />
+            
         </div>
         <div className="rounded-md border">
             <Table>

@@ -9,7 +9,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ userEmail, userName }) => {
   const router = useRouter();
-  const currentPath = usePathname();
+  const currentPath: any = usePathname();
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -26,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userEmail, userName }) => {
         <nav className="space-y-3">
           <button
             className={`w-full p-3 rounded-lg flex items-center transition-colors ${
-              currentPath === "/user/bookinghistory"
+              currentPath.startsWith("/user/bookinghistory")
                 ? "bg-emerald-600 font-medium"
                 : "hover:bg-emerald-700"
             }`}
@@ -36,17 +36,17 @@ const Sidebar: React.FC<SidebarProps> = ({ userEmail, userName }) => {
           </button>
           <button
             className={`w-full p-3 rounded-lg flex items-center transition-colors ${
-              currentPath === "/user/addvehicle"
+              currentPath.startsWith("/user/vehicle")
                 ? "bg-emerald-600 font-medium"
                 : "hover:bg-emerald-700"
             }`}
-            onClick={() => handleNavigation("/user/addvehicle")}
+            onClick={() => handleNavigation("/user/vehicle")}
           >
             <span>Add Vehicle</span>
           </button>
           <button
             className={`w-full p-3 rounded-lg flex items-center transition-colors ${
-              currentPath === "/user/accountsetting"
+              currentPath.startsWith("/user/accountsetting")
                 ? "bg-emerald-600 font-medium"
                 : "hover:bg-emerald-700"
             }`}

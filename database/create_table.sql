@@ -79,7 +79,7 @@ CREATE TABLE InsurancePolicy (
     policyNo VARCHAR(255) NOT NULL,
     policyholderName VARCHAR(255) NOT NULL,
     icNumber BIGINT NOT NULL,
-    policyFile BLOB NOT NULL,
+    policyFile VARCHAR(255) NOT NULL,
     FOREIGN KEY (vehicleID) REFERENCES Vehicle(id)
 );
 
@@ -88,14 +88,14 @@ CREATE TABLE TowBooking (
     bookingNo INT AUTO_INCREMENT PRIMARY KEY,
     userID INT NOT NULL,
     vehicleID INT NOT NULL,
-    driverID INT NOT NULL,
+    driverID INT,
     bookingDate DATE NOT NULL,
     serviceLocation TEXT NOT NULL,
     towingLocation TEXT NOT NULL,
     distance FLOAT NOT NULL,
     status VARCHAR(30) NOT NULL,
     estimatedCost FLOAT NOT NULL,
-    isWaive BOOLEAN NOT NULL,
+    isWaive BOOLEAN,
     FOREIGN KEY (userID) REFERENCES User(id),
     FOREIGN KEY (vehicleID) REFERENCES Vehicle(id),
     FOREIGN KEY (driverID) REFERENCES Driver(id)

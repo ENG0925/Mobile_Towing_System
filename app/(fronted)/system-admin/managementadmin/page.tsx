@@ -1,0 +1,11 @@
+import React from "react";
+
+const ManagementAdmin = () => {
+  return (
+    <div>
+      <h1 className="text-2xl font-bold text-[#1b4b38]">Management Admin</h1>
+    </div>
+  );
+};
+
+export default ManagementAdmin;

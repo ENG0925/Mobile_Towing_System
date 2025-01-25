@@ -4,7 +4,7 @@ import { MoreVertical, ShieldCheck, ShieldX } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 
-const AddVehicle = () => {
+const Vehicle = () => {
   const router = useRouter();
 
   const getInsuranceStatus = (hasInsurance: boolean) => {
@@ -45,8 +45,8 @@ const AddVehicle = () => {
     },
   ];
 
-  const handleVehicleClick = (plateNumber: string) => {
-    router.push(`/user/vehicles/${plateNumber}`);
+  const handleVehicleClick = (id: number) => {
+    router.push(`/user/vehicle/${id}`);
   };
 
   return (
@@ -57,7 +57,7 @@ const AddVehicle = () => {
           <div className="flex justify-start">
             <button
               className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors"
-              onClick={() => router.push("/user/vehicles/add")}
+              onClick={() => router.push("/user/vehicle/add")}
             >
               Add New Vehicle
             </button>
@@ -101,7 +101,7 @@ const AddVehicle = () => {
 
                   <button
                     className="p-2 hover:bg-gray-100 rounded-full"
-                    onClick={() => handleVehicleClick(vehicle.plateNumber)}
+                    onClick={() => handleVehicleClick(vehicle.id)}
                   >
                     <MoreVertical className="w-5 h-5 text-gray-500" />
                   </button>
@@ -115,4 +115,4 @@ const AddVehicle = () => {
   );
 };
 
-export default AddVehicle;
+export default Vehicle;
