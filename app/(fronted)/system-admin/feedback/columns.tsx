@@ -12,19 +12,11 @@ import {
 import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableColumnHeader";
 import SheetButton from "@/components/common/SheetForm";
 
-export interface booking {
-  bookingNo: number;
-  userID: number;
-  vehicleID: string;
-  driverID: string;
-  bookingDate: number;
-  serviceLocation: string;
-  towingLocation: string;
-  distance: number;
-  status: string;
-  estimateCost: number;
-  isWaive: boolean;
-  isCompleted: boolean;
+export interface driver {
+  id: number;
+  userID: string;
+  comment: string;
+  rating: string;
 }
 
 interface Props {
@@ -35,7 +27,7 @@ interface Props {
 export const columns = ({
   handlePassEdit,
   handleDelete,
-}: Props): ColumnDef<booking>[] => [
+}: Props): ColumnDef<driver>[] => [
   {
     accessorKey: "id",
     header: "ID",
@@ -47,60 +39,18 @@ export const columns = ({
     ),
   },
   {
-    accessorKey: "vehicleID",
+    accessorKey: "comment",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Vehicle ID" />
+      <DataTableColumnHeader column={column} title="Comment" />
     ),
   },
   {
-    accessorKey: "bookingDate",
+    accessorKey: "rating",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Booking Date" />
+      <DataTableColumnHeader column={column} title="Rating" />
     ),
   },
-  {
-    accessorKey: "serviceLocation",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Service Location" />
-    ),
-  },
-  {
-    accessorKey: "towingLocation",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Towing Location" />
-    ),
-  },
-  {
-    accessorKey: "distance",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Distance" />
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
-  },
-  {
-    accessorKey: "estimateCost",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Estimate Cost" />
-    ),
-  },
-  {
-    accessorKey: "isWaive",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Waive" />
-    ),
-  },
-  {
-    accessorKey: "isCompleted",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Completed" />
-    ),
-  },
-  
+
   {
     id: "actions",
     cell: ({ row }) => {

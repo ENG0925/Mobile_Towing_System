@@ -12,19 +12,13 @@ import {
 import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableColumnHeader";
 import SheetButton from "@/components/common/SheetForm";
 
-export interface booking {
-  bookingNo: number;
-  userID: number;
-  vehicleID: string;
-  driverID: string;
-  bookingDate: number;
-  serviceLocation: string;
-  towingLocation: string;
-  distance: number;
-  status: string;
-  estimateCost: number;
-  isWaive: boolean;
-  isCompleted: boolean;
+export interface driver {
+  id: number;
+  name: string;
+  phoneNumber: string;
+  password: string;
+  accountStatus: boolean;
+  loginStatus: boolean;
 }
 
 interface Props {
@@ -35,72 +29,42 @@ interface Props {
 export const columns = ({
   handlePassEdit,
   handleDelete,
-}: Props): ColumnDef<booking>[] => [
+}: Props): ColumnDef<driver>[] => [
   {
     accessorKey: "id",
     header: "ID",
   },
   {
-    accessorKey: "userID",
+    accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="User ID" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
   },
   {
-    accessorKey: "vehicleID",
+    accessorKey: "phoneNumber",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Vehicle ID" />
+      <DataTableColumnHeader column={column} title="Phone Number" />
     ),
   },
   {
-    accessorKey: "bookingDate",
+    accessorKey: "password",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Booking Date" />
+      <DataTableColumnHeader column={column} title="Password" />
     ),
   },
   {
-    accessorKey: "serviceLocation",
+    accessorKey: "accountStatus",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Service Location" />
+      <DataTableColumnHeader column={column} title="Account Status" />
     ),
   },
   {
-    accessorKey: "towingLocation",
+    accessorKey: "loginStatus",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Towing Location" />
+      <DataTableColumnHeader column={column} title="Login Status" />
     ),
   },
-  {
-    accessorKey: "distance",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Distance" />
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
-  },
-  {
-    accessorKey: "estimateCost",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Estimate Cost" />
-    ),
-  },
-  {
-    accessorKey: "isWaive",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Waive" />
-    ),
-  },
-  {
-    accessorKey: "isCompleted",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Completed" />
-    ),
-  },
-  
+
   {
     id: "actions",
     cell: ({ row }) => {
