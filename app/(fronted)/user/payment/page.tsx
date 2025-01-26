@@ -2,15 +2,16 @@
 import React, { use, useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-interface Props {
-  searchParams: { [key: string]: string | string[] | undefined };
-}
+const Payment = () => {
+  const searchParams = useSearchParams();
+  const data = searchParams?.get("data");
+  const decodedString = data ? atob(data) : "";
+  const parsedData = decodedString ? JSON.parse(decodedString) : {};
 
-const Payment = ({ searchParams }: Props) => {
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [formValues, setFormValues] = useState({
     cardName: "",
@@ -30,8 +31,12 @@ const Payment = ({ searchParams }: Props) => {
     try {
       // Simulate payment processing with delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      const updatedData = {
+        ...parsedData,
+        paymentDate: new Date().toISOString(), // Current date
+        paymentMethod: selectedMethod, // Selected payment method
+      };
 
-      // Redirect after delay
       router.push("/user/bookinghistory");
     } catch (error) {
       console.error("Payment error:", error);

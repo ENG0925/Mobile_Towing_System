@@ -2,7 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit2, Mail, Phone, Lock, User } from "lucide-react";
-import { getAccountDetail, updatePassword, updateProfile } from "@/lib/api/user";
+import {
+  getAccountDetail,
+  updatePassword,
+  updateProfile,
+} from "@/lib/api/user";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -25,7 +29,6 @@ const AccountSetting = () => {
     currentPassword: "",
     newPassword: "",
   });
-  
 
   const [isEditingPersonal, setIsEditingPersonal] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
@@ -68,7 +71,10 @@ const AccountSetting = () => {
           });
           return;
         }
-        const responsePassword = await updatePassword(formData.newPassword, Number(userID));
+        const responsePassword = await updatePassword(
+          formData.newPassword,
+          Number(userID)
+        );
         toast(responsePassword?.message, {
           position: "top-center",
           autoClose: 5000,
@@ -78,15 +84,20 @@ const AccountSetting = () => {
       }
 
       // API call for updating user data (e.g., name, email, contact)
-      const responseProfile = await updateProfile(formData.username, formData.email, Number(formData.contact), Number(userID));
+      const responseProfile = await updateProfile(
+        formData.username,
+        formData.email,
+        Number(formData.contact),
+        Number(userID)
+      );
       toast(responseProfile?.message, {
         position: "top-center",
         autoClose: 5000,
         theme: "light",
         type: responseProfile?.success === true ? "success" : "error",
       });
-  
-      if(responseProfile?.success === false) {
+
+      if (responseProfile?.success === false) {
         return;
       }
 
@@ -99,7 +110,11 @@ const AccountSetting = () => {
       }));
 
       setIsEditingPersonal(false);
-      setFormData((prev) => ({ ...prev, currentPassword: "", newPassword: "" }));
+      setFormData((prev) => ({
+        ...prev,
+        currentPassword: "",
+        newPassword: "",
+      }));
     } catch (error) {
       console.error("Failed to update personal information:", error);
     }
@@ -116,7 +131,7 @@ const AccountSetting = () => {
 
         {/* Personal Information Card */}
         <Card>
-          <CardHeader className="flex items-center justify-between">
+          <CardHeader className="flex items-center justify-between flex-row">
             <CardTitle>Personal Information</CardTitle>
             <button
               onClick={() => setIsEditingPersonal(!isEditingPersonal)}
@@ -144,14 +159,14 @@ const AccountSetting = () => {
                   <input
                     type="email"
                     value={formData.email}
-                    onChange={(e) =>
-                      handleInputChange("email", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("email", e.target.value)}
                     className="w-full p-2 border rounded-lg mt-1"
                   />
                 </div>
                 <div>
-                  <label className="text-sm text-gray-500">Contact Number</label>
+                  <label className="text-sm text-gray-500">
+                    Contact Number
+                  </label>
                   <input
                     type="tel"
                     value={formData.contact}
@@ -203,7 +218,7 @@ const AccountSetting = () => {
 
         {/* Password Change Card */}
         <Card>
-          <CardHeader className="flex items-center justify-between">
+          <CardHeader className="flex items-center justify-between flex-row">
             <CardTitle>Change Password</CardTitle>
             <button
               onClick={() => setIsEditingPassword(!isEditingPassword)}

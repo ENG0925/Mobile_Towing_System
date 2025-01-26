@@ -19,17 +19,16 @@ import {
 import { getAllTowBooking } from "@/lib/api/user";
 
 interface TowBooking {
-    bookingNo: string;
-    bookingDate: string;
-    status: string;
-    estimatedCost: string;
-    model: string;
+  bookingNo: string;
+  bookingDate: string;
+  status: string;
+  estimatedCost: string;
+  model: string;
 }
 
 const BookingHistory = () => {
   const router = useRouter();
-  const [bookings, setBookings] = useState<TowBooking[]>([]); 
-
+  const [bookings, setBookings] = useState<TowBooking[]>([]);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -70,8 +69,9 @@ const BookingHistory = () => {
     router.push(`/user/${id}`);
   };
 
-  const handlePayment = (bookingID: number) => {
-    const encodedData = btoa(JSON.stringify(bookingID));
+  const handlePayment = (bookingNo: number, amount: number) => {
+    const object = { bookingNo, amount };
+    const encodedData = btoa(JSON.stringify(object));
     router.push(`/user/payment?data=${encodedData}`);
   };
 
@@ -81,7 +81,7 @@ const BookingHistory = () => {
       <div className="flex-1 p-8">
         <div className="max-w-4xl mx-auto space-y-6">
           {/* Booking Cards */}
-          
+
           {bookings.map((booking, index) => (
             <Card
               key={index}
@@ -128,13 +128,20 @@ const BookingHistory = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
-                        onClick={() => handleBookingClick(Number(booking.bookingNo))}
+                        onClick={() =>
+                          handleBookingClick(Number(booking.bookingNo))
+                        }
                       >
                         <FileText className="w-4 h-4 mr-2" />
                         View Details
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() => handlePayment(Number(booking.bookingNo))}
+                        onClick={() =>
+                          handlePayment(
+                            Number(booking.bookingNo),
+                            Number(booking.estimatedCost)
+                          )
+                        }
                       >
                         <CreditCard className="w-4 h-4 mr-2" />
                         Make Payment

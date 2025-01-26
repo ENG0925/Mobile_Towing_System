@@ -35,7 +35,6 @@ const SignInPage = () => {
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     const response = await login(values.inputValue, values.password);
-    
     toast(response?.message, {
       position: "top-center",
       autoClose: 5000,
@@ -43,7 +42,7 @@ const SignInPage = () => {
       type: response?.success === true ? "success" : "error",
     });
 
-    if(response?.success === true) {
+    if (response?.success === true) {
       router.push("/home");
       localStorage.setItem("userId", response?.id.toString());
     }

@@ -9,69 +9,45 @@ import { getBookingInfo } from "@/lib/api/user";
 
 // TypeScript interfaces
 interface OrderDetails {
-  orderId: string;
-  orderDate: string;
-  bookingNumber: string;
+  towBooking: {
+    bookingNo: number;
+    bookingDate: string;
+    serviceLocation: string;
+    towingLocation: string;
+    estimatedCost: number;
+    isWaive: number;
+  };
+
   vehicle: {
-    type: string;
+    model: string;
     plateNumber: string;
     color: string;
     hasInsurance: boolean;
   };
   driver: {
-    currentLocation: {
-      lat: number;
-      lng: number;
-    };
-    contactNumber: string;
+    phoneNumber: string;
   };
-  serviceLocation: {
-    lat: number;
-    lng: number;
-    address: string;
-  };
-  towingLocation: {
-    lat: number;
-    lng: number;
-    address: string;
-  };
-  isFullyWaived: boolean;
-  totalAmount: number;
-  eta: string;
 }
-
 
 // Mock data
 const mockOrderData: OrderDetails = {
-  orderId: "456789",
-  orderDate: "2025-01-07",
-  bookingNumber: "ABC123",
+  towBooking: {
+    bookingNo: 1,
+    bookingDate: "2025-01-14T16:00:00.000Z",
+    serviceLocation: "123 Main St",
+    towingLocation: "456 Elm St",
+    estimatedCost: 100,
+    isWaive: 1,
+  },
   vehicle: {
-    type: "Proton Saga",
+    model: "Proton Saga",
     plateNumber: "ABC1234",
     color: "Red",
     hasInsurance: true,
   },
   driver: {
-    currentLocation: {
-      lat: 3.139,
-      lng: 101.6869,
-    },
-    contactNumber: "+60123456789",
+    phoneNumber: "+60123456789",
   },
-  serviceLocation: {
-    lat: 3.139,
-    lng: 101.6869,
-    address: "MITM, Cyberjaya",
-  },
-  towingLocation: {
-    lat: 3.0319,
-    lng: 101.6841,
-    address: "KFC, Puchong",
-  },
-  isFullyWaived: true,
-  totalAmount: 150.0,
-  eta: "13:00",
 };
 
 const Map = () => {
@@ -127,10 +103,15 @@ const BookingDetail = ({ params }: Props) => {
                 variant="outline"
                 className="bg-emerald-50 text-emerald-700 mb-2"
               >
-                Booking ID: {orderDetails.orderId}
+                Booking ID: {orderDetails.towBooking.bookingNo}
               </Badge>
               <CardTitle className="text-lg">
-                Booking Date: {orderDetails.orderDate}
+                Booking Date:{" "}
+                {
+                  new Date(orderDetails.towBooking.bookingDate)
+                    .toISOString()
+                    .split("T")[0]
+                }
               </CardTitle>
             </div>
             <div className="text-sm text-emerald-700 font-medium"></div>
@@ -158,7 +139,7 @@ const BookingDetail = ({ params }: Props) => {
               </div>
               <div className="flex items-center gap-2 text-orange-700 justify-center">
                 <Phone className="h-4 w-4" />
-                {orderDetails.driver.contactNumber}
+                {orderDetails.driver.phoneNumber}
               </div>
             </div>
           </div>
@@ -168,8 +149,8 @@ const BookingDetail = ({ params }: Props) => {
             <h3 className="font-semibold text-emerald-800">Vehicle Details</h3>
             <div className="grid grid-cols-2 gap-3 bg-white p-4 rounded-lg border border-emerald-100">
               <div className="space-y-1">
-                <div className="text-sm text-emerald-600">Type</div>
-                <div className="font-medium">{orderDetails.vehicle.type}</div>
+                <div className="text-sm text-emerald-600">Model</div>
+                <div className="font-medium">{orderDetails.vehicle.model}</div>
               </div>
               <div className="space-y-1">
                 <div className="text-sm text-emerald-600">Plate Number</div>
@@ -208,7 +189,7 @@ const BookingDetail = ({ params }: Props) => {
                     Service Location
                   </div>
                   <div className="font-medium">
-                    {orderDetails.serviceLocation.address}
+                    {orderDetails.towBooking.serviceLocation}
                   </div>
                 </div>
               </div>
@@ -219,7 +200,7 @@ const BookingDetail = ({ params }: Props) => {
                     Towing Location
                   </div>
                   <div className="font-medium">
-                    {orderDetails.towingLocation.address}
+                    {orderDetails.towBooking.towingLocation}
                   </div>
                 </div>
               </div>
@@ -228,18 +209,29 @@ const BookingDetail = ({ params }: Props) => {
 
           {/* Payment Details */}
           <div className="border-t border-emerald-100 pt-4">
-            <div className="flex justify-between items-center mb-3">
+            <div className="flex justify-between items-center text-emerald-800">
+              <div>Estimate Cost</div>
+              <div>RM {orderDetails.towBooking.estimatedCost.toFixed(2)}</div>
+            </div>
+            <div className="flex justify-between items-center mb-3 mt-2">
               <div className="text-emerald-600">Payment Status</div>
               <Badge
                 variant="outline"
                 className="bg-emerald-50 text-emerald-700"
               >
-                {orderDetails.isFullyWaived ? "Fully Waived" : "Not Waived"}
+                {orderDetails.towBooking.isWaive
+                  ? "Fully Waived"
+                  : "Not Waived"}
               </Badge>
             </div>
             <div className="flex justify-between items-center font-semibold text-emerald-800">
               <div>Total Amount</div>
-              <div>RM {orderDetails.totalAmount.toFixed(2)}</div>
+              <div>
+                RM{" "}
+                {orderDetails.towBooking.isWaive
+                  ? "0.00"
+                  : orderDetails.towBooking.estimatedCost.toFixed(2)}
+              </div>
             </div>
           </div>
         </CardContent>

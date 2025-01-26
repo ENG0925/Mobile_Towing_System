@@ -18,7 +18,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userEmail, userName }) => {
     router.push(path);
   };
 
-  const handleLogout = async() => {
+  const handleLogout = async () => {
     const response = await logout(Number(localStorage.getItem("userId")));
     if (response?.success === true) {
       localStorage.removeItem("userId");
@@ -30,14 +30,14 @@ const Sidebar: React.FC<SidebarProps> = ({ userEmail, userName }) => {
       theme: "light",
       type: response?.success === true ? "success" : "error",
     });
-  }
+  };
 
   return (
     <div className="w-64 bg-emerald-800 text-white flex flex-col min-h-screen">
       <div className="p-6 space-y-8">
         <div className="border-b border-emerald-700 pb-4">
           <h2 className="text-lg font-semibold mb-1 text-center">{userName}</h2>
-          <p className="text-sm text-emerald-200">{userEmail}</p>
+          <p className="text-sm text-emerald-200 text-center">{userEmail}</p>
         </div>
 
         <nav className="space-y-3">

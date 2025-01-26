@@ -15,7 +15,6 @@ const Navbar = () => {
     if (userId) {
       setIsAuthenticated(true);
     }
-    
   }, []); // Empty dependency array means this runs once on component mount
 
   const handleUserIconClick = () => {
