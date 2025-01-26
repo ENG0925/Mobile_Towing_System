@@ -54,10 +54,10 @@ const Navbar = () => {
 
         {/* Right menu items */}
         <Link
-          href="/helpandsupport"
+          href="/bookingflow"
           className="text-gray-600 hover:text-green-800"
         >
-          Help & Support
+          Service
         </Link>
 
         {/* Conditional rendering based on localStorage authentication */}
