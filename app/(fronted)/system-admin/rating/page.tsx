@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { DataTable } from "@/components/common/DataTable";
-import { booking, columns } from "./columns";
+import { rating, columns } from "./columns";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import SheetForm from "@/components/common/SheetForm";
 
-const Booking = () => {
-  const [data, setData] = useState<booking[]>([]);
+const Rating = () => {
+  const [data, setData] = useState<rating[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -204,4 +204,4 @@ const Booking = () => {
   );
 };
 
-export default Booking;
+export default Rating;

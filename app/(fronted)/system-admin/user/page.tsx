@@ -16,12 +16,31 @@ import { Switch } from "@/components/ui/switch";
 const initialUsers = [
   {
     id: 1,
-    name: "John Doe",
-    email: "john@example.com",
+    name: "Jayden Lai",
+    email: "jayden@gmail.com",
     status: "active",
-    joinDate: "2024-01-15",
+    joinDate: "2024-02-6",
   },
-  // Add more sample users
+  {
+    id: 2,
+    name: "Jason Tan",
+    email: "john@gmail.com",
+    status: "active",
+    joinDate: "2024-04-11",
+  },
+  {
+    id: 3,
+    name: "William Eng",
+    email: "Eng@gmail.com",
+    status: "active",
+    joinDate: "2024-09-25",
+  },{
+    id: 4,
+    name: "Soukmead Ong",
+    email: "Song@gmail.com",
+    status: "active",
+    joinDate: "2024-08-17",
+  },
 ];
 
 export default function User() {
