@@ -1,7 +1,14 @@
 
-import { DBConfig } from '@/config/db';
-import mysql from 'mysql2/promise';
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import formidable from 'formidable';
+import { promises as fs } from 'fs';
+
+// Disable default body parsing by Next.js
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 interface ReqData {
     account: {
@@ -29,7 +36,7 @@ interface ReqData {
 export async function POST (req: NextRequest, res: NextResponse) {
     try {
         const response  = await req.json();
-        const data : FormData= response.data;
+        const data : File = response;
 
         console.log("data: ", data);
 

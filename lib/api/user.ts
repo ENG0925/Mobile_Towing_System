@@ -59,9 +59,12 @@ export const logout = async (id: number) => {
     }
 }
 
-export const registerAccount = async (data: ReqRegisterData) => {
+export const registerAccount = async (data: File) => {
     try {
-        const response = await axios.post('/mysql/user/auth/registerAccount', { data });
+        const formData = new FormData();
+        formData.append("file", data);
+        console.log("formData: ", data);
+        const response = await axios.post('/mysql/user/auth/registerAccount', { formData });
         return response.data;
     } catch (error) {
         console.error("Error: ", error);

@@ -25,6 +25,7 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { checkUsernameAndEmail, registerAccount } from "@/lib/api/user";
+import { promises as fs } from "fs";
 
 const Registration = () => {
   const router = useRouter();
@@ -101,39 +102,19 @@ const Registration = () => {
   };
 
   const handleAccountSubmit = async (values: z.infer<typeof accountSchema>) => {
-    // const finalData = {
-    //   vehicle: vehicleForm.getValues(),
-    //   policy: {
-    //     hasPolicy: policyForm.getValues().hasPolicy === "yes" ? true : false,
-    //     policyHolderName: policyForm.getValues().policyHolderName || "",
-    //     policyNumber: policyForm.getValues().policyNumber || "",
-    //     icNumber: policyForm.getValues().icNumber || "",
-    //   },
-    //   account: values,
-    //   uploadFile: policyForm.getValues().uploadFile || null,
-    // };
-
-    const vehicle = vehicleForm.getValues();
-    const policy = {
-      hasPolicy: policyForm.getValues().hasPolicy === "yes" ? true : false,
-      policyHolderName: policyForm.getValues().policyHolderName || "",
-      policyNumber: policyForm.getValues().policyNumber || "",
-      icNumber: policyForm.getValues().icNumber || "",
+    const finalData = {
+      vehicle: vehicleForm.getValues(),
+      policy: {
+        hasPolicy: policyForm.getValues().hasPolicy === "yes" ? true : false,
+        policyHolderName: policyForm.getValues().policyHolderName || "",
+        policyNumber: policyForm.getValues().policyNumber || "",
+        icNumber: policyForm.getValues().icNumber || "",
+      },
+      account: values,
     };
 
-    const account = values;
-    const uploadFile = policyForm.getValues().uploadFile || null;
-
-    const formData = new FormData();
-    formData.append("vehicle", JSON.stringify(vehicle));
-    formData.append("policy", JSON.stringify(policy));
-    formData.append("account", JSON.stringify(account));
-    formData.append("uploadFile", uploadFile);
 
     
-
-
-
     // const checkUnit = await checkUsernameAndEmail(finalData.account.username, finalData.account.email);
 
     // if(checkUnit?.success === false) {
@@ -148,7 +129,11 @@ const Registration = () => {
 
     // console.log("finalData: ", finalData);
 
-    await registerAccount(finalData);
+    const uploadFile = policyForm.getValues().uploadFile;
+    if (uploadFile) {
+      await registerAccount(uploadFile);
+    }
+      
 
     //router.push("/home"); // Redirect to sign in after successful registration
   };
