@@ -13,7 +13,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
     const connection = await mysql.createConnection(DBConfig);
     await connection.beginTransaction();
   
-    const [queryUser] = await connection.execute('SELECT id FROM user WHERE id = ?', [id]);
+    const [queryUser] = await connection.execute('SELECT id FROM user WHERE id = ? AND accountStatus = true', [id]);
         
     const user = queryUser as User[];
 
@@ -26,7 +26,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
     }
 
     const [queryUserNameEmailExists] = await connection.execute(
-      'SELECT * FROM user WHERE name = ? AND email = ? AND id != ?', 
+      'SELECT * FROM user WHERE name = ? AND email = ? AND id != ? AND accountStatus = true', 
       [userName, email, id]
     );
 
@@ -42,7 +42,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
 
 
     const [queryUserNameExists] = await connection.execute(
-        'SELECT * FROM user WHERE name = ? AND id != ?', 
+        'SELECT * FROM user WHERE name = ? AND id != ? AND accountStatus = true', 
         [userName, id]
     );
     const userNameExists = queryUserNameExists as [];
@@ -55,7 +55,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
       });
     }
 
-    const [queryUserEmailExists] = await connection.execute('SELECT * FROM user WHERE email = ? AND id != ?', [email, id]);
+    const [queryUserEmailExists] = await connection.execute('SELECT * FROM user WHERE email = ? AND id != ? AND accountStatus = true', [email, id]);
     const userEmailExists = queryUserEmailExists as [];
 
     if (userEmailExists.length > 0) {

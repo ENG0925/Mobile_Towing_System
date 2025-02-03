@@ -1,71 +1,72 @@
-import { User } from '@/app/(backend)/property ';
-import { DBConfig } from '../../../../../../../config/db';
+import { DBConfig } from '@/config/db';
 import mysql from 'mysql2/promise';
 import { NextResponse, NextRequest } from "next/server";
 
-interface SafetyQuestionID {
-    safetyQuestionID: number;
-}
-
 export async function PUT(req: NextRequest, res: NextResponse) {
     try {
-        const { data }: {data: User} = await req.json();
+        const { 
+            name, 
+            email, 
+            phomeNumber, 
+            password,
+            id
+        } = await req.json();
 
-        const buffer = Buffer.from(data.userPassword);
+        const buffer = Buffer.from(password);
         const hashedPassword = buffer.toString("base64");
 
         const connection = await mysql.createConnection(DBConfig);
         await connection.beginTransaction();
 
-        const [queryUserName] = await connection.execute(
-            'SELECT userID FROM user WHERE userName = ? AND userID != ?', 
-            [data.userName, data.userID]
+        const [queryName] = await connection.execute(
+            'SELECT id FROM user WHERE id = ? AND accountStatus = true', 
+            [name]
         );
-        const userNameExists = queryUserName as [];
+        const nameExists = queryName as [];
 
-        if (userNameExists.length > 0) {
+        const [queryEmail] = await connection.execute(
+            'SELECT id FROM user WHERE email = ? AND accountStatus = true', 
+            [email]
+        );
+        const emailExists = queryEmail as [];
+
+        if (nameExists.length > 0 && emailExists.length > 0) {
             await connection.rollback();
             connection.end();
 
             return NextResponse.json({ 
                 success: false, 
-                message: 'Username already exists. Please choose another one.' 
+                message: 'Username and Email already in use. Please choose another one.' 
             });
         }
 
-        const [queryUserEmail] = await connection.execute(
-            'SELECT userID FROM user WHERE userEmail = ? AND userID != ?', 
-            [data.userEmail, data.userID]
-        );
-        const userEmailExists = queryUserEmail as [];
-
-        if (userEmailExists.length > 0) {
+        if (nameExists.length > 0) {
             await connection.rollback();
             connection.end();
 
             return NextResponse.json({ 
                 success: false, 
-                message: 'Email already exists. Please choose another one.' 
+                message: 'Username already in use. Please choose another one.' 
+            });
+        }
+
+        
+
+        if (emailExists.length > 0) {
+            await connection.rollback();
+            connection.end();
+
+            return NextResponse.json({ 
+                success: false, 
+                message: 'Email already in use. Please use a different one.' 
             });
         }
 
         await connection.execute(
-            'UPDATE user SET userName = ?, userPassword = ?, userEmail = ? WHERE userID = ?', 
-            [data.userName, hashedPassword, data.userEmail, data.userID]
+            'UPDATE user SET name = ?, email = ?, phoneNumber = ?, password = ? WHERE userID = ?', 
+            [name, email, phomeNumber, hashedPassword, id]
         );
         
-        const [querySafetyQuestion] = await connection.execute(
-            'SELECT safetyQuestionID FROM safetyquestion WHERE description = ?', 
-            [data.safetyQuestion]
-        );
-
-        const safetyQuestion = querySafetyQuestion as SafetyQuestionID[];
-
-        await connection.execute(
-            'UPDATE safetyquestionans SET safetyQuestionID = ?, ans = ? WHERE userID = ?', 
-            [safetyQuestion[0].safetyQuestionID, data.ans, data.userID]
-        );
-
         await connection.commit();
         connection.end();
 
@@ -76,7 +77,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
     } catch (err) {
         return NextResponse.json({ 
             success: false, 
-            message: 'Error updating user. Please try again later.' 
+            message: 'Something went wrong' 
         });
     }
 }

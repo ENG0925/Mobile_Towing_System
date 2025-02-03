@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Car, MapPin, Clock, DollarSign } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getAccountDetail } from "@/lib/api/user";
 
 const Confirmation: React.FC = () => {
   const searchParams = useSearchParams();
@@ -34,12 +35,20 @@ const Confirmation: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        const userID = localStorage.getItem("userId");
+        const response = await getAccountDetail(Number(userID));
+        const { name } = response.data;
+        const { email } = response.data;
+
+
+
         // Mock data fetching
+        
         const mockData = {
-          username: "Lim Jie Qing",
+          username: name,
           vehicle: vehicle,
           plateNumber: plateNumber,
-          email: "limjieqing.123456@gmail.com",
+          email: email,
           insurance: true,
         };
         setUserData(mockData);

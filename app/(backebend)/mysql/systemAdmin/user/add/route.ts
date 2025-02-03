@@ -7,24 +7,41 @@ import { NextResponse, NextRequest } from "next/server";
 export async function POST(req: NextRequest, res: NextResponse) {
     try {
         const { 
-            adminName, 
-            adminEmail, 
-            adminPassword 
+            name, 
+            email, 
+            phomeNumber, 
+            password
         } = await req.json();
 
-        const buffer = Buffer.from(adminPassword);
+        const buffer = Buffer.from(password);
         const hashedPassword = buffer.toString("base64");
 
         const connection = await mysql.createConnection(DBConfig);
         await connection.beginTransaction();
 
-        const [queryAdminName] = await connection.execute(
-            'SELECT adminID FROM admin WHERE adminName = ?', 
-            [adminName]
+        const [queryName] = await connection.execute(
+            'SELECT id FROM user WHERE id = ? AND accountStatus = true', 
+            [name]
         );
-        const adminNameExists = queryAdminName as [];
+        const nameExists = queryName as [];
 
-        if (adminNameExists.length > 0) {
+        const [queryEmail] = await connection.execute(
+            'SELECT id FROM user WHERE email = ? AND accountStatus = true', 
+            [email]
+        );
+        const emailExists = queryEmail as [];
+
+        if (nameExists.length > 0 && emailExists.length > 0) {
+            await connection.rollback();
+            connection.end();
+
+            return NextResponse.json({ 
+                success: false, 
+                message: 'Username and Email already in use. Please choose another one.' 
+            });
+        }
+
+        if (nameExists.length > 0) {
             await connection.rollback();
             connection.end();
 
@@ -34,13 +51,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
             });
         }
 
-        const [queryAdminEmail] = await connection.execute(
-            'SELECT adminID FROM admin WHERE adminEmail = ?', 
-            [adminEmail]
-        );
-        const adminEmailExists = queryAdminEmail as [];
+        
 
-        if (adminEmailExists.length > 0) {
+        if (emailExists.length > 0) {
             await connection.rollback();
             connection.end();
 
@@ -51,8 +64,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
         }
 
         await connection.execute(
-            'INSERT INTO admin (adminName, adminEmail, adminPassword) VALUES (?, ?, ?)', 
-            [adminName, adminEmail, hashedPassword]
+            'INSERT INTO user (name, email, phoneNumber, password, accountStatus, loginStatus) VALUES (?, ?, ?)', 
+            [name, email, phomeNumber, hashedPassword, true, false]
         );
 
         await connection.commit();
@@ -60,12 +73,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         return NextResponse.json({ 
             success: true, 
-            message: 'Admin successfully added.' 
+            message: 'User successfully added.' 
         });
     } catch (err) {
         return NextResponse.json({ 
             success: false, 
-            message: 'Error encountered while adding admin. Please try again later.' 
+            message: 'Something went wrong' 
         });
     }
 }

@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MapPin, ArrowLeft, ArrowRight } from "lucide-react";
+import { getAllVehicle } from "@/lib/api/user";
 
 interface Vehicle {
   id: number;
@@ -44,12 +45,9 @@ const SelectVehicle: React.FC<SelectVehicleProps> = ({
   useEffect(() => {
     // Replace with your actual API call
     const fetchVehicles = async () => {
-      const mockVehicles = [
-        { id: 1, vehicle: "Proton Saga", plateNumber: "JBC 1234" },
-        { id: 2, vehicle: "Proton Wira", plateNumber: "WRT 5678" },
-        { id: 3, vehicle: "Honda Civic", plateNumber: "ABC 9012" },
-      ];
-      setVehicles(mockVehicles);
+      const userID = localStorage.getItem("userId");
+      const response = await getAllVehicle(Number(userID));
+      setVehicles(response.data);
     };
     fetchVehicles();
   }, []);
@@ -66,7 +64,13 @@ const SelectVehicle: React.FC<SelectVehicleProps> = ({
               setSelectedVehicle(vehicle || null);
             }}
             className="space-y-4"
-          >
+          ><></>
+            {vehicles.length === 0 && (
+              <div className="text-gray-500 text-center">
+                No vehicles found. Please add a vehicle first.
+              </div>
+            )}
+
             {vehicles.map((vehicle) => (
               <div
                 key={vehicle.id}

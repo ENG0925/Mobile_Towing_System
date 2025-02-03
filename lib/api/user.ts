@@ -91,9 +91,9 @@ export const updateProfile = async (userName: string, email: string, contact: nu
 
 
 // vehicle
-export const getAllVehicle = async (userID: number) => {
+export const getAllVehicle = async (id: number) => {
     try {
-        const response = await axios.post('/mysql/user/vehicle/getAllVehicle', { userID });
+        const response = await axios.post('/mysql/user/vehicle/getAllVehicle', { id });
         return response.data;
     } catch (error) {
         console.error("Error: ", error);
