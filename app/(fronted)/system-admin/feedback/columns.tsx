@@ -12,7 +12,7 @@ import {
 import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableColumnHeader";
 import SheetButton from "@/components/common/SheetForm";
 
-export interface driver {
+export interface feedback {
   id: number;
   userID: string;
   comment: string;
@@ -27,7 +27,7 @@ interface Props {
 export const columns = ({
   handlePassEdit,
   handleDelete,
-}: Props): ColumnDef<driver>[] => [
+}: Props): ColumnDef<feedback>[] => [
   {
     accessorKey: "id",
     header: "ID",

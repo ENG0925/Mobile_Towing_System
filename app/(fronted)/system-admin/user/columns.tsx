@@ -12,7 +12,7 @@ import {
 import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableColumnHeader";
 import SheetButton from "@/components/common/SheetForm";
 
-export interface rating {
+export interface user {
   id: number;
   name: string;
   email: string;
@@ -30,7 +30,7 @@ interface Props {
 export const columns = ({
   handlePassEdit,
   handleDelete,
-}: Props): ColumnDef<rating>[] => [
+}: Props): ColumnDef<user>[] => [
   {
     accessorKey: "id",
     header: "ID",
