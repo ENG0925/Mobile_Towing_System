@@ -23,6 +23,17 @@ interface ReqRegisterData {
     uploadFile: File | null;
 }
 
+
+interface ReqInsertTowBookingData {
+    userID: number;
+    vehicleID: number;
+    bookingDate: string;
+    towingLocation: string;
+    serviceLocation: string;
+    distance: number;
+    estimateCost: number;
+}
+
 export const checkUsernameAndEmail = async (username: string, email: string) => {
     try {
         const response = await axios.post('/mysql/user/auth/checkUsernameAndEmail', { username, email });
@@ -113,6 +124,15 @@ export const getAllTowBooking = async (userID: number) => {
 export const getBookingInfo = async (bookingNo: number) => {
     try {
         const response = await axios.post('/mysql/user/towBooking/getBookingInfo', { bookingNo });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
+export const insertBooking = async (data: ReqInsertTowBookingData) => {
+    try {
+        const response = await axios.post('/mysql/user/towBooking/insertBooking', { data });
         return response.data;
     } catch (error) {
         console.error("Error: ", error);

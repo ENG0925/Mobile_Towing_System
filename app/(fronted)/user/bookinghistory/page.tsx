@@ -137,15 +137,15 @@ const BookingHistory = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() =>
-                          handlePayment(
-                            Number(booking.bookingNo),
-                            Number(booking.estimatedCost)
-                          )
+                          handlePayment(Number(booking.bookingNo), Number(booking.estimatedCost))
                         }
+                        disabled={booking.status !== "booking complete"} // Disable when status is not "booking complete"
+                        className={booking.status !== "booking complete" ? "opacity-50 cursor-not-allowed" : ""}
                       >
                         <CreditCard className="w-4 h-4 mr-2" />
                         Make Payment
                       </DropdownMenuItem>
+
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

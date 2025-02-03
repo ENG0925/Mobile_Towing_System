@@ -4,16 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Car, MapPin, Clock, DollarSign } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getAccountDetail } from "@/lib/api/user";
+import { getAccountDetail, insertBooking } from "@/lib/api/user";
+
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Confirmation: React.FC = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const data = searchParams?.get("data");
   const decodedString = data ? atob(data) : "";
   const parsedData = decodedString ? JSON.parse(decodedString) : {};
 
   // Extract the values from the parsed data
-  const { vehicleID, vehicle, plateNumber, serviceLocation, towingLocation } =
+  const { vehicleID, vehicle, plateNumber, serviceLocation, towingLocation, hasInsurancePolicy } =
     parsedData;
 
   // States for user data
@@ -49,7 +53,7 @@ const Confirmation: React.FC = () => {
           vehicle: vehicle,
           plateNumber: plateNumber,
           email: email,
-          insurance: true,
+          insurance: hasInsurancePolicy,
         };
         setUserData(mockData);
       } catch (error) {
@@ -94,12 +98,18 @@ const Confirmation: React.FC = () => {
     calculateETA();
   }, [serviceLocation]);
 
-  const handleConfirmOrder = () => {
+  const handleConfirmOrder = async() => {
     if (!agreeToTerms) return;
 
-    const bookingDate: string = new Date().toISOString().slice(0, 10);
+    const today = new Date();
+    const bookingDate = `${today.getFullYear()}-${(today.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`;
+
+    const userID = Number(localStorage.getItem("userId"));
 
     const orderData = {
+      userID,
       vehicleID,
       bookingDate,
       serviceLocation,
@@ -109,7 +119,18 @@ const Confirmation: React.FC = () => {
     };
 
     console.log(orderData);
-    // Here you would submit the order to your backend
+
+    const response = await insertBooking(orderData);
+    toast(response?.message, {
+      position: "top-center",
+      autoClose: 5000,
+      theme: "light",
+      type: response?.success === true ? "success" : "error",
+    });
+
+    if (response?.success === true) {
+      router.push("/home");
+    }
   };
 
   const calculateDistance = (

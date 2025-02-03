@@ -12,6 +12,7 @@ interface Vehicle {
   id: number;
   vehicle: string;
   plateNumber: string;
+  hasInsurancePolicy: boolean;
 }
 
 interface SelectVehicleProps {
@@ -228,6 +229,7 @@ const BookingFlow = () => {
         towingLocation: towingLocation,
         vehicle: selectedVehicle?.vehicle,
         vehicleID: selectedVehicle?.id,
+        hasInsurancePolicy: selectedVehicle?.hasInsurancePolicy,
       };
 
       const encodedParams = btoa(JSON.stringify(queryParams));

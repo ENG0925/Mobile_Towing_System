@@ -31,13 +31,20 @@ const Payment = () => {
     try {
       // Simulate payment processing with delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const today = new Date();
+      const bookingDate = `${today.getFullYear()}-${(today.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`;
+        
       const updatedData = {
         ...parsedData,
-        paymentDate: new Date().toISOString(), // Current date
+        paymentDate: bookingDate, // Payment date
         paymentMethod: selectedMethod, // Selected payment method
       };
 
-      router.push("/user/bookinghistory");
+      console.log("Payment success! Updated data:", updatedData);
+      // router.push("/user/bookinghistory");
     } catch (error) {
       console.error("Payment error:", error);
     } finally {

@@ -92,6 +92,7 @@ export default function Home() {
             <Button
               className="main-bg-yellow text-black text-lg px-8"
               onClick={() => router.push("/bookingflow")}
+              disabled = {localStorage.getItem("userId") ? false : true}
             >
               Book Now
             </Button>

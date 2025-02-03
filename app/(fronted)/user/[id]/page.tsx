@@ -107,12 +107,9 @@ const BookingDetail = ({ params }: Props) => {
               </Badge>
               <CardTitle className="text-lg">
                 Booking Date:{" "}
-                {
-                  new Date(orderDetails.towBooking.bookingDate)
-                    .toISOString()
-                    .split("T")[0]
-                }
+                {new Date(orderDetails.towBooking.bookingDate).toLocaleDateString("en-GB")}
               </CardTitle>
+
             </div>
             <div className="text-sm text-emerald-700 font-medium"></div>
           </div>
@@ -120,6 +117,7 @@ const BookingDetail = ({ params }: Props) => {
 
         <CardContent className="space-y-6 pt-6">
           {/* Real-time Tracking Section */}
+          {orderDetails.driver?.phoneNumber && <>
           <div className="space-y-4">
             <h3 className="font-semibold flex items-center gap-2 text-emerald-800">
               <Truck className="h-5 w-5 text-emerald-600" />
@@ -143,7 +141,7 @@ const BookingDetail = ({ params }: Props) => {
               </div>
             </div>
           </div>
-
+          </>}
           {/* Vehicle Details */}
           <div className="space-y-3">
             <h3 className="font-semibold text-emerald-800">Vehicle Details</h3>
@@ -213,6 +211,7 @@ const BookingDetail = ({ params }: Props) => {
               <div>Estimate Cost</div>
               <div>RM {orderDetails.towBooking.estimatedCost.toFixed(2)}</div>
             </div>
+            {orderDetails.towBooking.isWaive && (<>
             <div className="flex justify-between items-center mb-3 mt-2">
               <div className="text-emerald-600">Payment Status</div>
               <Badge
@@ -233,6 +232,7 @@ const BookingDetail = ({ params }: Props) => {
                   : orderDetails.towBooking.estimatedCost.toFixed(2)}
               </div>
             </div>
+            </>)}
           </div>
         </CardContent>
       </Card>
