@@ -9,6 +9,19 @@ import {
 } from "@/lib/api/user";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface UserData {
   id: number;
@@ -20,18 +33,46 @@ interface UserData {
   loginStatus: boolean;
 }
 
+// Form schemas
+const personalFormSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  email: z.string().email("Invalid email address"),
+  contact: z.string().min(8, "Contact number must be at least 8 digits"),
+});
+
+const passwordFormSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z
+    .string()
+    .regex(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must be at least 8 characters long and include at least one letter, one number, and one special character (@, $, !, %, *, ?, &)."
+    ),
+});
+
 const AccountSetting = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [formData, setFormData] = useState({
-    username: userData?.name || "",
-    email: userData?.email || "",
-    contact: userData?.phoneNumber || "",
-    currentPassword: "",
-    newPassword: "",
-  });
-
   const [isEditingPersonal, setIsEditingPersonal] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
+
+  // Personal information form
+  const personalForm = useForm<z.infer<typeof personalFormSchema>>({
+    resolver: zodResolver(personalFormSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      contact: "",
+    },
+  });
+
+  // Password form
+  const passwordForm = useForm<z.infer<typeof passwordFormSchema>>({
+    resolver: zodResolver(passwordFormSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+    },
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,13 +81,12 @@ const AccountSetting = () => {
         const response = await getAccountDetail(Number(id));
         setUserData(response.data);
 
-        // Initialize form data with fetched user data
-        setFormData((prev) => ({
-          ...prev,
+        // Set form default values
+        personalForm.reset({
           username: response.data.name,
           email: response.data.email,
           contact: response.data.phoneNumber,
-        }));
+        });
       } catch (error) {
         console.error("Error fetching account details:", error);
       }
@@ -55,41 +95,18 @@ const AccountSetting = () => {
     fetchData();
   }, []);
 
-  const handleUpdatePersonal = async () => {
+  const handleUpdatePersonal = async (
+    values: z.infer<typeof personalFormSchema>
+  ) => {
     try {
-      // Check if password change is valid
       const userID = localStorage.getItem("userId");
-      if (formData.newPassword) {
-        console.log("formData.currentPassword", formData.currentPassword);
-        console.log("userData?.password", userData?.password);
-        if (formData.currentPassword != userData?.password) {
-          toast("Current password wong", {
-            position: "top-center",
-            autoClose: 5000,
-            theme: "light",
-            type: "error",
-          });
-          return;
-        }
-        const responsePassword = await updatePassword(
-          formData.newPassword,
-          Number(userID)
-        );
-        toast(responsePassword?.message, {
-          position: "top-center",
-          autoClose: 5000,
-          theme: "light",
-          type: responsePassword?.success === true ? "success" : "error",
-        });
-      }
-
-      // API call for updating user data (e.g., name, email, contact)
       const responseProfile = await updateProfile(
-        formData.username,
-        formData.email,
-        Number(formData.contact),
+        values.username,
+        values.email,
+        Number(values.contact),
         Number(userID)
       );
+
       toast(responseProfile?.message, {
         position: "top-center",
         autoClose: 5000,
@@ -97,31 +114,59 @@ const AccountSetting = () => {
         type: responseProfile?.success === true ? "success" : "error",
       });
 
-      if (responseProfile?.success === false) {
-        return;
+      if (responseProfile?.success) {
+        setUserData((prev) => ({
+          ...prev!,
+          name: values.username,
+          email: values.email,
+          phoneNumber: values.contact,
+        }));
+        setIsEditingPersonal(false);
       }
-
-      setUserData((prev) => ({
-        ...prev!,
-        name: formData.username,
-        email: formData.email,
-        phoneNumber: formData.contact,
-        password: formData.newPassword || prev?.password || "", // Ensures valid type
-      }));
-
-      setIsEditingPersonal(false);
-      setFormData((prev) => ({
-        ...prev,
-        currentPassword: "",
-        newPassword: "",
-      }));
     } catch (error) {
       console.error("Failed to update personal information:", error);
     }
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleUpdatePassword = async (
+    values: z.infer<typeof passwordFormSchema>
+  ) => {
+    try {
+      const userID = localStorage.getItem("userId");
+
+      if (values.currentPassword !== userData?.password) {
+        toast("Current password wrong", {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: "error",
+        });
+        return;
+      }
+
+      const responsePassword = await updatePassword(
+        values.newPassword,
+        Number(userID)
+      );
+
+      toast(responsePassword?.message, {
+        position: "top-center",
+        autoClose: 5000,
+        theme: "light",
+        type: responsePassword?.success === true ? "success" : "error",
+      });
+
+      if (responsePassword?.success) {
+        setUserData((prev) => ({
+          ...prev!,
+          password: values.newPassword,
+        }));
+        setIsEditingPassword(false);
+        passwordForm.reset();
+      }
+    } catch (error) {
+      console.error("Failed to update password:", error);
+    }
   };
 
   return (
@@ -142,52 +187,59 @@ const AccountSetting = () => {
           </CardHeader>
           <CardContent>
             {isEditingPersonal ? (
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm text-gray-500">Name</label>
-                  <input
-                    type="text"
-                    value={formData.username}
-                    onChange={(e) =>
-                      handleInputChange("username", e.target.value)
-                    }
-                    className="w-full p-2 border rounded-lg mt-1"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-500">Email</label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    className="w-full p-2 border rounded-lg mt-1"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-500">
-                    Contact Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.contact}
-                    onChange={(e) =>
-                      handleInputChange("contact", e.target.value)
-                    }
-                    className="w-full p-2 border rounded-lg mt-1"
-                  />
-                </div>
-                <button
-                  onClick={handleUpdatePersonal}
-                  className="w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700"
-                  disabled={
-                    formData.username === userData?.name &&
-                    formData.email === userData?.email &&
-                    formData.contact === userData?.phoneNumber
-                  }
+              <Form {...personalForm}>
+                <form
+                  onSubmit={personalForm.handleSubmit(handleUpdatePersonal)}
+                  className="space-y-4"
                 >
-                  Save Changes
-                </button>
-              </div>
+                  <FormField
+                    control={personalForm.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={personalForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={personalForm.control}
+                    name="contact"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contact Number</FormLabel>
+                        <FormControl>
+                          <Input type="tel" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={!personalForm.formState.isDirty}
+                  >
+                    Save Changes
+                  </Button>
+                </form>
+              </Form>
             ) : (
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
@@ -229,39 +281,46 @@ const AccountSetting = () => {
           </CardHeader>
           <CardContent>
             {isEditingPassword ? (
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm text-gray-500">
-                    Current Password
-                  </label>
-                  <input
-                    type="password"
-                    value={formData.currentPassword}
-                    onChange={(e) =>
-                      handleInputChange("currentPassword", e.target.value)
-                    }
-                    className="w-full p-2 border rounded-lg mt-1"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm text-gray-500">New Password</label>
-                  <input
-                    type="password"
-                    value={formData.newPassword}
-                    onChange={(e) =>
-                      handleInputChange("newPassword", e.target.value)
-                    }
-                    className="w-full p-2 border rounded-lg mt-1"
-                  />
-                </div>
-                <button
-                  onClick={handleUpdatePersonal}
-                  className="w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700"
-                  disabled={!formData.newPassword || !formData.currentPassword}
+              <Form {...passwordForm}>
+                <form
+                  onSubmit={passwordForm.handleSubmit(handleUpdatePassword)}
+                  className="space-y-4"
                 >
-                  Update Password
-                </button>
-              </div>
+                  <FormField
+                    control={passwordForm.control}
+                    name="currentPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Current Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={passwordForm.control}
+                    name="newPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>New Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={!passwordForm.formState.isDirty}
+                  >
+                    Update Password
+                  </Button>
+                </form>
+              </Form>
             ) : (
               <div className="flex items-center gap-3">
                 <Lock className="w-5 h-5 text-gray-400" />

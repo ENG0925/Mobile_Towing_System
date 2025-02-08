@@ -39,19 +39,74 @@ const Registration = () => {
   });
 
   // Policy Upload Schema
-  const policySchema = z.object({
-    hasPolicy: z.string().min(1),
-    policyHolderName: z.string().optional(),
-    policyNumber: z.string().optional(),
-    icNumber: z.string().optional(),
-    uploadFile: z.instanceof(File).nullable().optional(),
-  });
+  const policySchema = z
+    .object({
+      hasPolicy: z.string().min(1),
+      policyHolderName: z.string().optional(),
+      policyNumber: z.string().optional(),
+      icNumber: z.string().optional(),
+      uploadFile: z
+        .instanceof(File)
+        .nullable()
+        .optional()
+        .refine(
+          (file) => {
+            if (!file) return true;
+            return file.type === "application/pdf";
+          },
+          {
+            message: "Only PDF files are allowed",
+          }
+        ),
+    })
+    .superRefine((data, ctx) => {
+      if (data.hasPolicy === "yes") {
+        if (!data.policyHolderName || data.policyHolderName.length < 1) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Policy holder name is required when you have a policy",
+            path: ["policyHolderName"],
+          });
+        }
+
+        if (!data.policyNumber || data.policyNumber.length < 11) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message:
+              "Policy number is required at least 11 character word or number",
+            path: ["policyNumber"],
+          });
+        }
+
+        if (!data.icNumber || data.icNumber.length < 12) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "IC number is required at least 12 number",
+            path: ["icNumber"],
+          });
+        }
+
+        if (!data.uploadFile) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "File upload is required when you have a policy",
+            path: ["uploadFile"],
+          });
+        }
+      }
+    });
 
   // Account Registration Schema
   const accountSchema = z
     .object({
       username: z.string().min(3),
-      password: z.string().min(6),
+      password: z
+        .string()
+        .min(6)
+        .regex(
+          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+          "Password must be at least 8 characters long and include at least one letter, one number, and one special character (@, $, !, %, *, ?, &)."
+        ),
       confirmPassword: z.string().min(6),
       contactNumber: z.string().min(8),
       email: z.string().email(),
@@ -113,8 +168,7 @@ const Registration = () => {
       account: values,
     };
 
-
-    
+    console.log(finalData);
     // const checkUnit = await checkUsernameAndEmail(finalData.account.username, finalData.account.email);
 
     // if(checkUnit?.success === false) {
@@ -133,7 +187,6 @@ const Registration = () => {
     if (uploadFile) {
       await registerAccount(uploadFile);
     }
-      
 
     //router.push("/home"); // Redirect to sign in after successful registration
   };
@@ -292,6 +345,7 @@ const Registration = () => {
                         <Input
                           // {...field}
                           type="file"
+                          accept=".pdf"
                           onChange={(e) =>
                             field.onChange(e.target.files?.[0] || null)
                           } // Handle File or null
