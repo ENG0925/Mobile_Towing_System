@@ -115,11 +115,11 @@ const Rating = () => {
       if (isEditing) {
         // Handle edit
         // const response = await updateAdmin(selectedId, formData);
-        console.log("Editing admin:", selectedId, formData);
+        console.log("Editing rating:", selectedId, formData);
       } else {
         // Handle add
         // const response = await createAdmin(formData);
-        console.log("Adding new admin:", formData);
+        console.log("Adding new rating:", formData);
       }
       
       // Refresh the table data
@@ -148,8 +148,8 @@ const Rating = () => {
         key={key} // Add key prop here
         open={open}
         setOpen={setOpen}
-        title={isEditing ? "Edit Admin" : "Add Admin"}
-        description={isEditing ? "Edit admin information" : "Add new admin"}
+        title={isEditing ? "Edit Rating" : "Add Rating"}
+        description={isEditing ? "Edit rating information" : "Add new rating"}
         fields={[
           {
             name: "name",

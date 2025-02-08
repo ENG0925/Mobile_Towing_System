@@ -151,8 +151,8 @@ const ManagementAdmin = () => {
         key={key} // Add key prop here
         open={open}
         setOpen={setOpen}
-        title={isEditing ? "Edit Admin" : "Add Admin"}
-        description={isEditing ? "Edit admin information" : "Add new admin"}
+        title={isEditing ? "Edit Management Admin" : "Add Management Admin"}
+        description={isEditing ? "Edit management admin information" : "Add new Management admin"}
         fields={[
           {
             name: "name",

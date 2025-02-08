@@ -110,11 +110,11 @@ const SystemAdmin = () => {
       if (isEditing) {
         // Handle edit
         // const response = await updateAdmin(selectedId, formData);
-        console.log("Editing admin:", selectedId, formData);
+        console.log("Editing system admin:", selectedId, formData);
       } else {
         // Handle add
         // const response = await createAdmin(formData);
-        console.log("Adding new admin:", formData);
+        console.log("Adding new system admin:", formData);
       }
       
       // Refresh the table data
@@ -143,8 +143,8 @@ const SystemAdmin = () => {
         key={key} // Add key prop here
         open={open}
         setOpen={setOpen}
-        title={isEditing ? "Edit Admin" : "Add Admin"}
-        description={isEditing ? "Edit admin information" : "Add new admin"}
+        title={isEditing ? "Edit System Admin" : "Add System Admin"}
+        description={isEditing ? "Edit admin information" : "Add new system admin"}
         fields={[
           {
             name: "name",
