@@ -34,6 +34,8 @@ const BookingHistory = () => {
     switch (status.toLowerCase()) {
       case "booking complete":
         return "bg-emerald-100 text-emerald-700";
+      case "payment":
+        return "bg-emerald-100 text-emerald-700";
       case "in progress":
         return "bg-orange-100 text-orange-700";
       case "cancel":
@@ -46,6 +48,8 @@ const BookingHistory = () => {
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
       case "booking complete":
+        return <CheckCircle className="w-4 h-4" />;
+      case "payment":
         return <CheckCircle className="w-4 h-4" />;
       case "in progress":
         return <Clock className="w-4 h-4" />;
@@ -81,7 +85,11 @@ const BookingHistory = () => {
       <div className="flex-1 p-8">
         <div className="max-w-4xl mx-auto space-y-6">
           {/* Booking Cards */}
-
+          {bookings.length === 0 && (
+            <p className="text-center text-gray-500">
+              No booking history
+            </p>
+          )}
           {bookings.map((booking, index) => (
             <Card
               key={index}
@@ -136,15 +144,15 @@ const BookingHistory = () => {
                         View Details
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() =>
-                          handlePayment(Number(booking.bookingNo), Number(booking.estimatedCost))
-                        }
-                        disabled={booking.status !== "booking complete"} // Disable when status is not "booking complete"
-                        className={booking.status !== "booking complete" ? "opacity-50 cursor-not-allowed" : ""}
+                        onClick={() => handlePayment(Number(booking.bookingNo), Number(booking.estimatedCost))}
+                        disabled={booking.status === "booking complete" || booking.status === "payment"}
+                        className={booking.status === "booking complete" || booking.status === "payment" ? "opacity-50 cursor-not-allowed" : ""}
                       >
                         <CreditCard className="w-4 h-4 mr-2" />
                         Make Payment
                       </DropdownMenuItem>
+
+
 
                     </DropdownMenuContent>
                   </DropdownMenu>

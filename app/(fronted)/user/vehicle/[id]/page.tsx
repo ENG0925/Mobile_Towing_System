@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -21,13 +21,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { getVehicleInfo } from "@/lib/api/user";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const formSchema = z.object({
   vehicleType: z.string().min(1, "Vehicle type is required"),
   plateNumber: z.string().min(1, "Plate number is required"),
   color: z.string().min(1, "Color is required"),
-  hasInsurance: z.string().min(1),
+  hasInsurance: z.boolean(),
   policyHolderName: z.string().optional(),
   policyNumber: z.string().optional(),
   icNumber: z.string().optional(),
@@ -35,6 +38,8 @@ const formSchema = z.object({
 });
 
 const EditVehicle = () => {
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const pathname: any = usePathname();
   const parts = pathname.split("/");
   const id = parts[parts.length - 1];
@@ -45,29 +50,80 @@ const EditVehicle = () => {
       vehicleType: "",
       plateNumber: "",
       color: "",
-      hasInsurance: "",
+      hasInsurance: false,
       policyHolderName: "",
       policyNumber: "",
       icNumber: "",
-      uploadFile: null,
     },
   });
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await getVehicleInfo(Number(id));
+        const data = response.data;
+
+        // Reset form values after fetching data
+        form.reset({
+          vehicleType: data.vehicleType || "",
+          plateNumber: data.plateNumber || "",
+          color: data.color || "",
+          hasInsurance: data.hasInsurance ?? false,
+          policyHolderName: data.policyHolderName || "",
+          policyNumber: data.policyNumber || "",
+          icNumber: data.icNumber || "",
+        });
+      } catch (error) {
+        console.error("Error fetching vehicle data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id, form]); // Depend on `form` so it has access to reset()
+
+  const handleSubmit = async(data: z.infer<typeof formSchema>) => {
+    const forData = {
+      id: Number(id),
+      color: data.color,
+      hasInsurance: data.hasInsurance,
+      icNumber: data.icNumber,
+      plateNumber: data.plateNumber,
+      policyHolderName: data.policyHolderName,
+      policyNumber: data.policyNumber,
+      vehicleType: data.vehicleType,
+    }
+
+    // const response = await editVehicle(forData);
+    // toast(response?.message, {
+    //   position: "top-center",
+    //   autoClose: 5000,
+    //   theme: "light",
+    //   type: response?.success === true ? "success" : "error",
+    // });
+    
+    // if (response?.success === false) return; 
+    // router.push("/user/vehicle");
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-lg font-semibold">Loading vehicle data...</p>
+      </div>
+    );
+  }
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Add New Vehicle</CardTitle>
+        <CardTitle>Edit Vehicle</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-6"
-          >
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="vehicleType"
@@ -117,8 +173,8 @@ const EditVehicle = () => {
                 <FormItem>
                   <FormLabel className="text-lg">Have Insurance?</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    onValueChange={(value) => field.onChange(value === "yes")}
+                    value={field.value ? "yes" : "no"}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -135,21 +191,16 @@ const EditVehicle = () => {
               )}
             />
 
-            {form.watch("hasInsurance") === "yes" && (
+            {form.watch("hasInsurance") && (
               <>
                 <FormField
                   control={form.control}
                   name="policyHolderName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg">
-                        Policy Holder Name
-                      </FormLabel>
+                      <FormLabel className="text-lg">Policy Holder Name</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter policy holder name"
-                          {...field}
-                        />
+                        <Input placeholder="Enter policy holder name" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -183,31 +234,11 @@ const EditVehicle = () => {
                     </FormItem>
                   )}
                 />
-
-                <FormField
-                  control={form.control}
-                  name="uploadFile"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-lg">Upload File</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          onChange={(e) =>
-                            field.onChange(e.target.files?.[0] || null)
-                          }
-                          name={field.name}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </>
             )}
 
             <Button type="submit" className="w-full">
-              Add Vehicle
+              Save Changes
             </Button>
           </form>
         </Form>

@@ -2,13 +2,8 @@
 import { NextResponse } from 'next/server';
 import { writeFile } from 'fs/promises';
 import path from 'path';
-
-// Disable default body parsing by Next.js
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+import { DBConfig } from '@/config/db';
+import mysql from 'mysql2/promise';
 
 interface ReqData {
     account: {
@@ -35,58 +30,62 @@ interface ReqData {
 
 export async function POST (request: Request) {
     try {
-        // const response  = await req.json();
-        // const data : File = response;
         const formData = await request.formData();
         const file = formData.get('pdf') as File;
-        const vehicle = JSON.parse(formData.get('vehicle') as string || '{}');
-        const policy = JSON.parse(formData.get('policy') as string || '{}');
-        const account = JSON.parse(formData.get('account') as string || '{}');
+        const vehicle = formData.get('vehicle') as any;
+        const policy = formData.get('policy') as any;
+        const account = formData.get('account') as any;
 
-        if (!file) {
-            console.log("No file provided");
-            return NextResponse.json(
-              { error: 'No file provided' },
-              { status: 400 }
-            );
-        }
-        console.log("file: ", file);
-        console.log("vehicle: ", vehicle);
-        console.log("policy: ", policy);
-        console.log("account: ", account);
-
+        const data: ReqData = {
+            account: JSON.parse(account),
+            policy: JSON.parse(policy),
+            vehicle: JSON.parse(vehicle),
+            uploadFile: file
+        };
         
             
-        // const buffer = Buffer.from(data.account.password);
-        // const hashedPassword = buffer.toString("base64");
+        const buffer = Buffer.from(data.account.password);
+        const hashedPassword = buffer.toString("base64");
 
-        // const connection = await mysql.createConnection(DBConfig);
-        // await connection.beginTransaction();
+        const connection = await mysql.createConnection(DBConfig);
+        await connection.beginTransaction();
 
-        // // insert user data
-        // const [resultUser] : any = await connection.execute('INSERT INTO user (name, email, phoneNumber, password, accountStatus, loginStatus) VALUES (?, ?, ?, ?, ?, ?)', [data.account.username, data.account.email, data.account.contactNumber, hashedPassword, true, true]);
+        // insert user data
+        const [resultUser] : any = await connection.execute('INSERT INTO user (name, email, phoneNumber, password, accountStatus, loginStatus) VALUES (?, ?, ?, ?, ?, ?)', [data.account.username, data.account.email, data.account.contactNumber, hashedPassword, true, true]);
 
-        // const userID = resultUser.insertId;
+        const userID = resultUser.insertId;
 
-        // // insert vehicle data
-        // const [resultVehicle] : any =  await connection.execute('INSERT INTO vehicle (userID, plateNumber, model, color) VALUES (?, ?, ?, ?)', [userID, data.vehicle.plateNumber, data.vehicle.vehicleType, data.vehicle.color]);
-        // const vehicleID = resultVehicle.insertId;
+        // insert vehicle data
+        const [resultVehicle] : any =  await connection.execute('INSERT INTO vehicle (userID, plateNumber, model, color, isDeleted) VALUES (?, ?, ?, ?, FALSE)', [userID, data.vehicle.plateNumber, data.vehicle.vehicleType, data.vehicle.color]);
+        const vehicleID = resultVehicle.insertId;
 
-        // // insert policy data
-        // if (data.policy.hasPolicy) {
-        //     await connection.execute('INSERT INTO insurancepolicy (vehicleID, policyNo, policyholderName, icNumber, policyFile) VALUES (?, ?, ?, ?, ?)', [vehicleID, data.policy.policyNumber, data.policy.policyHolderName, data.policy.icNumber, data.policy.uploadFile]);
-        // }
+        // insert policy data
+        if (data.policy.hasPolicy) {
+            const [resultInsurance] : any =  await connection.execute('INSERT INTO insurancepolicy (vehicleID, policyNo, policyholderName, icNumber) VALUES (?, ?, ?, ?)', [vehicleID, data.policy.policyNumber, data.policy.policyHolderName, data.policy.icNumber]);
+            const insuranceID = resultInsurance.insertId; 
+            const policyFileName = insuranceID.toString() + '.pdf';
 
-        // await connection.execute('UPDATE user SET loginStatus = ? WHERE id = ?', [true, userID]);
+            // upload file to public directory
+            const bytes = await file.arrayBuffer();
+            const buffer = Buffer.from(bytes); 
+            
+            const publicDir = path.join(process.cwd(), 'public', 'policyFile');
+            const filePath = path.join(publicDir, policyFileName);
+        
+            await writeFile(filePath, buffer);
 
-        // await connection.commit();
-        // connection.end();
+            await connection.execute('UPDATE insurancepolicy SET policyFile = ? WHERE id = ?', [policyFileName, insuranceID]);
+        }
 
-        // localStorage.setItem("userID", userID.toString());
+        await connection.execute('UPDATE user SET loginStatus = ? WHERE id = ?', [true, userID]);
+
+        await connection.commit();
+        connection.end();
 
         return NextResponse.json({ 
             success: true, 
-            message: 'Account created successfully' 
+            message: 'Register successfully',
+            id: userID
         });
 
     } catch (error) {

@@ -13,30 +13,38 @@ interface Vehicle {
 
 interface InsurancePolicy {
     id: number;
+    vehicleID: number;
+    policyholderName: string;
+    policyNo: string;
+    icNumber: number;
+    policyFile: string;
 }
 
 export async function POST(req: NextRequest, res: NextResponse) {
     try {
-        const { userID } = await req.json();
+        const { id } = await req.json();
 
         const connection = await mysql.createConnection(DBConfig);
         
-        const [queryVehicle] = await connection.execute('SELECT * FROM vehicle WHERE userID = ?', [userID]);
+        const [queryVehicle] = await connection.execute('SELECT * FROM vehicle WHERE id = ?', [id]);
         const vehicle = queryVehicle as Vehicle[];
 
-        const [queryInsurancePolicy] = await connection.execute('SELECT id FROM insurancepolicy WHERE vehicleID = ?', [vehicle[0].id]);
+        const [queryInsurancePolicy] = await connection.execute('SELECT * FROM insurancepolicy WHERE vehicleID = ?', [vehicle[0].id]);
         const insurancePolicy = queryInsurancePolicy as InsurancePolicy[];
 
         const hasInsurance = insurancePolicy.length > 0 ? true : false;
 
         const data = {
-            id: vehicle[0].id,
-            color: vehicle[0].color,
+            vehicleType: vehicle[0].model,
             plateNumber: vehicle[0].plateNumber,
-            model: vehicle[0].model,
-            hasInsurancePolicy: hasInsurance
+            color: vehicle[0].color,
+            hasInsurance: hasInsurance,
+            policyHolderName: hasInsurance ? insurancePolicy[0].policyholderName : null,
+            policyNumber: hasInsurance ? insurancePolicy[0].policyNo : null,
+            icNumber: hasInsurance ? insurancePolicy[0].icNumber : null,
+            file: hasInsurance ? insurancePolicy[0].policyFile : null
         }
-
+        
         await connection.commit();
         connection.end();
 

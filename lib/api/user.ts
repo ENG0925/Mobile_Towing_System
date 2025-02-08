@@ -70,15 +70,13 @@ export const logout = async (id: number) => {
     }
 }
 
-export const registerAccount = async (data: any) => {
+export const registerAccount = async (formData: any) => {
     try {
         const response = await fetch('/mysql/user/auth/registerAccount', {
             method: 'POST',
-            body: data,
+            body: formData,
         });
         return response.json();
-        // const response = await axios.post('/mysql/user/auth/registerAccount', data);
-        // return response.data;
     } catch (error) {
         console.error("Error: ", error);
         throw error;
@@ -115,6 +113,28 @@ export const getAllVehicle = async (id: number) => {
     }
 }
 
+export const addVehicle = async (data: any) => {
+    try {
+        const response = await fetch('/mysql/user/vehicle/addVehicle', {
+            method: 'POST',
+            body: data,
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Error: ", error);
+        throw error;
+    }
+}
+
+export const getVehicleInfo = async (id: number) => {
+    try {
+        const response = await axios.post('/mysql/user/vehicle/getVehicleInfo', { id });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
 // tow booking
 export const getAllTowBooking = async (userID: number) => {
     try {
@@ -143,6 +163,14 @@ export const insertBooking = async (data: ReqInsertTowBookingData) => {
     }
 }
 
+export const payment = async (data: any) => {
+    try {
+        const response = await axios.post('/mysql/user/towBooking/payment', { data });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
 // feedback
 export const getAllFeedback = async (userID: number) => {
     try {

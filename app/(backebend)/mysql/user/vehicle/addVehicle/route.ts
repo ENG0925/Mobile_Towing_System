@@ -1,41 +1,54 @@
+import { NextResponse } from 'next/server';
+import { writeFile } from 'fs/promises';
+import path from 'path';
 import { DBConfig } from '@/config/db';
 import mysql from 'mysql2/promise';
-import { NextResponse, NextRequest } from "next/server";
 
-interface Vehicle {
-    color: string;
-    plateNumber: string;
-    model: string;
-}
-
-interface insurancePolicy {
-    policyNo: string;
-    policyholderNmae: string;
-    icNumber: number;
-    policyFile: File;
-}
-
-
-interface Request {
-    userID: number;
-    vehicle: Vehicle;
-    hasInsurancePolicy: boolean;
-    insurancePolicy: insurancePolicy;
-}
-
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(request: Request) {
     try {
-        const respond = await req.json();
-        const data: Request = respond.data;
+        const formData = await request.formData();
+        
+        console.log("FormData Entries:");
+        formData.forEach((value, key) => console.log(key, value));
+
+        const file = formData.get('pdf') as File;
+        const vehicle = JSON.parse(formData.get('vehicle') as string || '{}');
+        const policy = JSON.parse(formData.get('policy') as string || '{}');
+        const userID = formData.get('userID') as string || null;
+
+        if (!userID || !vehicle.plateNumber || !vehicle.vehicleType || !vehicle.color) {
+            throw new Error("Missing required fields");
+        }
 
         const connection = await mysql.createConnection(DBConfig);
         await connection.beginTransaction();
 
-        const [resultVehicle] : any =  await connection.execute('INSERT INTO vehicle (userID, plateNumber, model, color) VALUES (?, ?, ?, ?)', [data.userID, data.vehicle.plateNumber, data.vehicle.model, data.vehicle.color]);
+        // insert vehicle data
+        const [resultVehicle]: any = await connection.execute(
+            'INSERT INTO vehicle (userID, plateNumber, model, color, isDeleted) VALUES (?, ?, ?, ?, FALSE)', 
+            [userID, vehicle.plateNumber, vehicle.vehicleType, vehicle.color]
+        );
         const vehicleID = resultVehicle.insertId;
 
-        if (data.hasInsurancePolicy) {
-            await connection.execute('INSERT INTO insurancepolicy (vehicleID, policyNo, policyholderName, icNumber, policyFile) VALUES (?, ?, ?, ?, ?)', [vehicleID, data.insurancePolicy.policyNo, data.insurancePolicy.policyholderNmae, data.insurancePolicy.icNumber, data.insurancePolicy.policyFile]);
+        // insert policy data
+        if (policy.hasInsurancePolicy) {
+            const [resultInsurance]: any = await connection.execute(
+                'INSERT INTO insurancepolicy (vehicleID, policyNo, policyholderName, icNumber) VALUES (?, ?, ?, ?)', 
+                [vehicleID, policy.policyNumber, policy.policyHolderName, policy.icNumber]
+            );
+            const insuranceID = resultInsurance.insertId; 
+            const policyFileName = `${insuranceID}.pdf`;
+
+            if (file) {
+                const bytes = await file.arrayBuffer();
+                const buffer = Buffer.from(bytes);
+
+                const publicDir = path.join(process.cwd(), 'public', 'policyFile');
+                const filePath = path.join(publicDir, policyFileName);
+
+                await writeFile(filePath, buffer);
+                await connection.execute('UPDATE insurancepolicy SET policyFile = ? WHERE id = ?', [policyFileName, insuranceID]);
+            }
         }
 
         await connection.commit();
@@ -43,9 +56,10 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         return NextResponse.json({ 
             success: true, 
-            message: 'User added successfully' 
+            message: 'Add vehicle successfully', 
         });
     } catch (err) {
+        console.error("Error:", err);
         return NextResponse.json({ 
             success: false, 
             message: 'Something went wrong'

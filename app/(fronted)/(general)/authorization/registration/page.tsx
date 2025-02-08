@@ -169,45 +169,41 @@ const Registration = () => {
       uploadFile: policyForm.getValues().uploadFile || null
     };
 
+
+    const checkUnit = await checkUsernameAndEmail(finalData.account.username, finalData.account.email);
+
+    if(checkUnit?.success === false) {
+      toast(checkUnit?.message, {
+        position: "top-center",
+        autoClose: 5000,
+        theme: "light",
+        type: checkUnit?.success === true ? "success" : "error",
+      });
+      return;
+    }
+
+    
     const file = policyForm.getValues().uploadFile as any;
     const formData = new FormData();
-    formData.append("pdf", file);
-    formData.append("vehicle", JSON.stringify(finalData.vehicle));
-    formData.append("policy", JSON.stringify(finalData.policy));
-    formData.append("account", JSON.stringify(finalData.account));
-  
-    
 
-    await fetch('/mysql/user/auth/registerAccount', {
-      method: 'POST',
-      body: formData,
+    if (file) formData.append("pdf", file);
+    formData.append("vehicle", JSON.stringify(finalData.vehicle));
+    formData.append("account", JSON.stringify(finalData.account));
+    formData.append("policy", JSON.stringify(finalData.policy));
+      
+    const response = await registerAccount(formData);
+
+    toast(response?.message, {
+      position: "top-center",
+      autoClose: 5000,
+      theme: "light",
+      type: response?.success === true ? "success" : "error",
     });
 
-    // await registerAccount(finalData);
+    if (response?.success === false) return;  
 
-
-    
-    // const checkUnit = await checkUsernameAndEmail(finalData.account.username, finalData.account.email);
-
-    // if(checkUnit?.success === false) {
-    //   toast(checkUnit?.message, {
-    //     position: "top-center",
-    //     autoClose: 5000,
-    //     theme: "light",
-    //     type: checkUnit?.success === true ? "success" : "error",
-    //   });
-    //   return;
-    // }
-
-    // console.log("finalData: ", finalData);
-
-    // const uploadFile = policyForm.getValues().uploadFile;
-    // if (uploadFile) {
-    //   await registerAccount(uploadFile);
-    // }
-      
-
-    //router.push("/home"); // Redirect to sign in after successful registration
+    router.push("/"); 
+    localStorage.setItem("userId", response?.id.toString());
   };
 
   return (

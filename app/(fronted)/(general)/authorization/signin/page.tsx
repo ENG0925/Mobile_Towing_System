@@ -43,7 +43,7 @@ const SignInPage = () => {
     });
 
     if (response?.success === true) {
-      router.push("/home");
+      router.push("/");
       localStorage.setItem("userId", response?.id.toString());
     }
   };

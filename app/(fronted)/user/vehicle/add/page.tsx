@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -21,6 +22,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { addVehicle } from "@/lib/api/user";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const formSchema = z.object({
   vehicleType: z.string().min(1, "Vehicle type is required"),
@@ -34,6 +38,7 @@ const formSchema = z.object({
 });
 
 const AddVehicle = () => {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,8 +53,40 @@ const AddVehicle = () => {
     },
   });
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const handleSubmit = async(data: z.infer<typeof formSchema>) => {
+    const vehicleData = {
+      vehicleType: data.vehicleType,
+      plateNumber: data.plateNumber,
+      color: data.color,
+    }
+
+    const insuranceData = {
+      hasInsurancePolicy: data.hasInsurance === "yes",
+      policyHolderName: data.policyHolderName,
+      policyNumber: data.policyNumber,
+      icNumber: data.icNumber,
+    }
+
+    const file = data.uploadFile;
+    const formData = new FormData();
+    formData.append("vehicle", JSON.stringify(vehicleData));
+    formData.append("policy", JSON.stringify(insuranceData));
+    formData.append("userID", localStorage.getItem("userId") || "");
+    if (file) {
+      formData.append("pdf", file);
+    }
+
+    const response = await addVehicle(formData);
+    toast(response?.message, {
+      position: "top-center",
+      autoClose: 5000,
+      theme: "light",
+      type: response?.success === true ? "success" : "error",
+    });
+    
+    if (response?.success === false) return; 
+    router.push("/user/vehicle");
+
   };
 
   return (

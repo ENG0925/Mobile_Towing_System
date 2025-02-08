@@ -69,6 +69,7 @@ CREATE TABLE Vehicle (
     plateNumber VARCHAR(30) NOT NULL,
     model VARCHAR(30) NOT NULL,
     color VARCHAR(30) NOT NULL,
+    isDeleted BOOLEAN NOT NULL,
     FOREIGN KEY (userID) REFERENCES User(id)
 );
 
@@ -79,7 +80,7 @@ CREATE TABLE InsurancePolicy (
     policyNo VARCHAR(255) NOT NULL,
     policyholderName VARCHAR(255) NOT NULL,
     icNumber BIGINT NOT NULL,
-    policyFile VARCHAR(255) NOT NULL,
+    policyFile VARCHAR(255),
     FOREIGN KEY (vehicleID) REFERENCES Vehicle(id)
 );
 

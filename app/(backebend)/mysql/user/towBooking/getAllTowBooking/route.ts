@@ -14,15 +14,24 @@ export async function POST(req: NextRequest, res: NextResponse) {
             SELECT 
                 towbooking.bookingNo,
                 CAST(towbooking.bookingDate AS CHAR) AS bookingDate,
-                towbooking.status,
+                CASE 
+                    WHEN MAX(payment.bookingNo) IS NOT NULL THEN 'payment'  -- ✅ Prevents duplicate rows
+                    ELSE towbooking.status 
+                END AS status,
                 towbooking.estimatedCost,
                 vehicle.model
             FROM 
                 towbooking 
             LEFT JOIN
                 vehicle ON towbooking.vehicleID = vehicle.id
+            LEFT JOIN
+                payment ON towbooking.bookingNo = payment.bookingNo
             WHERE 
                 towbooking.userID = ?
+            GROUP BY 
+                towbooking.bookingNo, towbooking.bookingDate, towbooking.status, 
+                towbooking.estimatedCost, vehicle.model;
+
             `, 
             [userID]
         );
@@ -41,7 +50,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     } catch (err) {
         return NextResponse.json({ 
             success: false, 
-            message: "Something went wrong"
+            message: err
         });
     }
 }

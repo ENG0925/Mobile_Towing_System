@@ -25,6 +25,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
               v.id = ip.vehicleID
             WHERE 
               v.userID = ?
+              AND
+              v.isDeleted IS FALSE
             `, 
             [id]
         );

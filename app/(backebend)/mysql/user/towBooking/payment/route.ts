@@ -1,28 +1,38 @@
+
 import { DBConfig } from '@/config/db';
 import mysql from 'mysql2/promise';
 import { NextResponse, NextRequest } from "next/server";
 
-export async function PUT(req: NextRequest, res: NextResponse) {
+interface ReqData {
+    bookingNo: number;
+    amount: number;
+    paymentDate: string;
+    paymentMethod: string;
+}
+
+export async function POST (req: NextRequest, res: NextResponse) {
     try {
-        
-        const { id } = await req.json();
+        const response  = await req.json();
+        const data : ReqData= response.data;
 
         const connection = await mysql.createConnection(DBConfig);
         await connection.beginTransaction();
-        
+
+        // insert user data
         await connection.execute(
-            'DELETE FROM vehicle WHERE id = ?', 
-            [id]
+            'INSERT INTO payment (bookingNo, amount, date, method) VALUES (?, ?, ?, ?)', 
+            [data.bookingNo, data.amount, data.paymentDate, data.paymentMethod]
         );
-        await connection.execute('UPDATE vehicle SET isDeleted = ? WHERE id = ?', [true, id]);
+
         await connection.commit();
         connection.end();
 
         return NextResponse.json({ 
             success: true, 
-            message: 'Vehicle deleted' 
+            message: 'Payment successfully'
         });
-    } catch (err) {
+
+    } catch (error) {
         return NextResponse.json({ 
             success: false, 
             message: 'Something went wrong' 

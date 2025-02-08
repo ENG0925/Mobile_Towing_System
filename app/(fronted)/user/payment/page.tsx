@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { payment } from "@/lib/api/user";
 
 const Payment = () => {
   const searchParams = useSearchParams();
@@ -43,8 +44,16 @@ const Payment = () => {
         paymentMethod: selectedMethod, // Selected payment method
       };
 
-      console.log("Payment success! Updated data:", updatedData);
-      // router.push("/user/bookinghistory");
+      const response = await payment(updatedData);
+      toast(response?.message, {
+        position: "top-center",
+        autoClose: 5000,
+        theme: "light",
+        type: response?.success === true ? "success" : "error",
+      });
+      
+      if (response?.success === false) return;
+      router.push("/user/bookinghistory");
     } catch (error) {
       console.error("Payment error:", error);
     } finally {

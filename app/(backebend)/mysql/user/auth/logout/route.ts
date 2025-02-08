@@ -13,8 +13,9 @@ export async function POST (req: NextRequest, res: NextResponse) {
     const { id } = await req.json();
 
     const connection = await mysql.createConnection(DBConfig);
+    console.log('id', id);
 
-    const [queryUser] = await connection.execute('SELECT id FROM systemadmin WHERE id = ?',[id]);
+    const [queryUser] = await connection.execute('SELECT id FROM user WHERE id = ?',[id]);
     const user = queryUser as User[];
     
     if (user.length === 0) {

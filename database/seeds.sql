@@ -29,9 +29,9 @@ INSERT INTO LikeFeedback (userID, feedbackID, isLike) VALUES
 (2, 2, 0);
 
 -- Seeding data for Vehicle table
-INSERT INTO Vehicle (userID, plateNumber, model, color) VALUES
-(1, 'ABC1234', 'Toyota Corolla', 'Blue'),
-(2, 'XYZ5678', 'Honda Civic', 'Red');
+INSERT INTO Vehicle (userID, plateNumber, model, color, isDeleted) VALUES
+(1, 'ABC1234', 'Toyota Corolla', 'Blue', false),
+(2, 'XYZ5678', 'Honda Civic', 'Red', false);
 
 -- Seeding data for InsurancePolicy table
 INSERT INTO InsurancePolicy (vehicleID, policyNo, policyholderName, icNumber, policyFile) VALUES
