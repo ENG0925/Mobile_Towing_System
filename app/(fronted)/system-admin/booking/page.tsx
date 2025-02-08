@@ -152,24 +152,25 @@ const Booking = () => {
         description={isEditing ? "Edit admin information" : "Add new admin"}
         fields={[
           {
-            name: "name",
-            label: "Name",
-            type: "number",
+            id: 1,
+            name: "John Doe",
+            comment: "Good Service !",
+            rating: "5",
+            numlike: 10,
           },
           {
-            name: "name",
-            label: "Name",
-            type: "text",
+            id: 2,
+            name: "Jane Doe",
+            comment: "Normal Service",
+            rating: "3",
+            numlike: 5,
           },
           {
-            name: "adminLevel",
-            label: "Admin Level",
-            type: "text",
-          },
-          {
-            name: "password",
-            label: "Password",
-            type: "text",
+            id: 3,
+            name: "Jay Chou",
+            comment: "What a good service !!",
+            rating: "5",
+            numlike: 1000,
           },
         ]}
         onSubmit={handleSubmit}

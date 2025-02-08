@@ -152,24 +152,25 @@ const Rating = () => {
         description={isEditing ? "Edit rating information" : "Add new rating"}
         fields={[
           {
+            id: 1,
             name: "name",
-            label: "Name",
-            type: "number",
+            comment: "comment",
+            rating: "rating",
+            numlike: "numlike",
           },
           {
+            id: 2,
             name: "name",
-            label: "Name",
-            type: "text",
+            comment: "Normal Service",
+            rating: "3",
+            numlike: 5,
           },
           {
-            name: "adminLevel",
-            label: "Admin Level",
-            type: "text",
-          },
-          {
-            name: "password",
-            label: "Password",
-            type: "text",
+            id: 3,
+            name: "Jay Chou",
+            comment: "What a good service !!",
+            rating: "5",
+            numlike: 1000,
           },
         ]}
         onSubmit={handleSubmit}

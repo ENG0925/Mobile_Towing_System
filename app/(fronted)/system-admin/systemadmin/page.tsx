@@ -147,24 +147,20 @@ const SystemAdmin = () => {
         description={isEditing ? "Edit admin information" : "Add new system admin"}
         fields={[
           {
-            name: "name",
-            label: "Name",
-            type: "number",
+            id: 1,
+            name: "John Doe",
+            adminLevel: "Admin",
+            password: "123456",
+            accountStatus: true,
+            loginStatus: true,
           },
           {
-            name: "name",
-            label: "Name",
-            type: "text",
-          },
-          {
-            name: "adminLevel",
-            label: "Admin Level",
-            type: "text",
-          },
-          {
-            name: "password",
-            label: "Password",
-            type: "text",
+            id: 2,
+            name: "Jane Doe",
+            adminLevel: "Admin",
+            password: "123456",
+            accountStatus: true,
+            loginStatus: true,
           },
         ]}
         onSubmit={handleSubmit}

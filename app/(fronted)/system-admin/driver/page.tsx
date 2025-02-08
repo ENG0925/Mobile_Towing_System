@@ -26,7 +26,7 @@ const Driver = () => {
           {
             id: 1,
             name: "John Doe",
-            department: "IT",
+            department: "Driver",
             password: "123456",
             accountStatus: true,
             loginStatus: true,
@@ -34,7 +34,7 @@ const Driver = () => {
           {
             id: 2,
             name: "Jane Doe",
-            department: "engineering",
+            department: "Driver",
             password: "123456",
             accountStatus: true,
             loginStatus: true,
@@ -42,7 +42,7 @@ const Driver = () => {
           {
             id: 3,
             name: "Jay Chou",
-            department: "Marketing",
+            department: "Driver",
             password: "123456",
             accountStatus: true,
             loginStatus: true,
@@ -155,24 +155,28 @@ const Driver = () => {
         description={isEditing ? "Edit admin information" : "Add new admin"}
         fields={[
           {
-            name: "name",
-            label: "Name",
-            type: "number",
+            id: 1,
+            name: "John Doe",
+            department: "Driver",
+            password: "123456",
+            accountStatus: true,
+            loginStatus: true,
           },
           {
-            name: "name",
-            label: "Name",
-            type: "text",
+            id: 2,
+            name: "Jane Doe",
+            department: "Driver",
+            password: "123456",
+            accountStatus: true,
+            loginStatus: true,
           },
           {
-            name: "adminLevel",
-            label: "Admin Level",
-            type: "text",
-          },
-          {
-            name: "password",
-            label: "Password",
-            type: "text",
+            id: 3,
+            name: "Jay Chou",
+            department: "Driver",
+            password: "123456",
+            accountStatus: true,
+            loginStatus: true,
           },
         ]}
         onSubmit={handleSubmit}

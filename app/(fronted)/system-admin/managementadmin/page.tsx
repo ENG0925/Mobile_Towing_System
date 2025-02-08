@@ -155,24 +155,28 @@ const ManagementAdmin = () => {
         description={isEditing ? "Edit management admin information" : "Add new Management admin"}
         fields={[
           {
-            name: "name",
-            label: "Name",
-            type: "number",
+            id: 1,
+            name: "John Doe",
+            department: "IT",
+            password: "123456",
+            accountStatus: true,
+            loginStatus: true,
           },
           {
-            name: "name",
-            label: "Name",
-            type: "text",
+            id: 2,
+            name: "Jane Doe",
+            department: "engineering",
+            password: "123456",
+            accountStatus: true,
+            loginStatus: true,
           },
           {
-            name: "adminLevel",
-            label: "Admin Level",
-            type: "text",
-          },
-          {
-            name: "password",
-            label: "Password",
-            type: "text",
+            id: 3,
+            name: "Jay Chou",
+            department: "Marketing",
+            password: "123456",
+            accountStatus: true,
+            loginStatus: true,
           },
         ]}
         onSubmit={handleSubmit}
