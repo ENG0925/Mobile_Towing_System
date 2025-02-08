@@ -47,7 +47,7 @@ const FormSchema = z.object({
     .min(10, {
       message: "Comment must be at least 10 characters.",
     })
-    .max(50, {
+    .max(160, {
       message: "Comment must not be longer than 30 characters.",
     }),
 });
@@ -84,8 +84,7 @@ const Feedback = () => {
             Number(localStorage.getItem("userId"))
           );
           setRatingItem(response?.data);
-        } 
-        
+        }
       } catch (error) {
         console.error("Error: ", error);
       } finally {
