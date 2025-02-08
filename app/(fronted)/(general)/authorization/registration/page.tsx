@@ -160,15 +160,33 @@ const Registration = () => {
     const finalData = {
       vehicle: vehicleForm.getValues(),
       policy: {
-        hasPolicy: policyForm.getValues().hasPolicy === "yes" ? true : false,
-        policyHolderName: policyForm.getValues().policyHolderName || "",
-        policyNumber: policyForm.getValues().policyNumber || "",
-        icNumber: policyForm.getValues().icNumber || "",
+          hasPolicy: policyForm.getValues().hasPolicy === "yes",
+          policyHolderName: policyForm.getValues().policyHolderName || "",
+          policyNumber: policyForm.getValues().policyNumber || "",
+          icNumber: policyForm.getValues().icNumber || "",
       },
       account: values,
+      uploadFile: policyForm.getValues().uploadFile || null
     };
 
-    console.log(finalData);
+    const file = policyForm.getValues().uploadFile as any;
+    const formData = new FormData();
+    formData.append("pdf", file);
+    formData.append("vehicle", JSON.stringify(finalData.vehicle));
+    formData.append("policy", JSON.stringify(finalData.policy));
+    formData.append("account", JSON.stringify(finalData.account));
+  
+    
+
+    await fetch('/mysql/user/auth/registerAccount', {
+      method: 'POST',
+      body: formData,
+    });
+
+    // await registerAccount(finalData);
+
+
+    
     // const checkUnit = await checkUsernameAndEmail(finalData.account.username, finalData.account.email);
 
     // if(checkUnit?.success === false) {
@@ -183,10 +201,11 @@ const Registration = () => {
 
     // console.log("finalData: ", finalData);
 
-    const uploadFile = policyForm.getValues().uploadFile;
-    if (uploadFile) {
-      await registerAccount(uploadFile);
-    }
+    // const uploadFile = policyForm.getValues().uploadFile;
+    // if (uploadFile) {
+    //   await registerAccount(uploadFile);
+    // }
+      
 
     //router.push("/home"); // Redirect to sign in after successful registration
   };

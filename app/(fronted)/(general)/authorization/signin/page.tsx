@@ -96,6 +96,7 @@ const SignInPage = () => {
           </Button>
           <Button
             variant="outline"
+            type="button"
             className="w-full mt-6"
             onClick={() => router.push("/authorization/registration")}
           >

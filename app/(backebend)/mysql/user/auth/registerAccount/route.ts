@@ -1,7 +1,7 @@
 
-import { NextRequest, NextResponse } from 'next/server';
-import formidable from 'formidable';
-import { promises as fs } from 'fs';
+import { NextResponse } from 'next/server';
+import { writeFile } from 'fs/promises';
+import path from 'path';
 
 // Disable default body parsing by Next.js
 export const config = {
@@ -33,13 +33,30 @@ interface ReqData {
     uploadFile: File | null;
 }
 
-export async function POST (req: NextRequest, res: NextResponse) {
+export async function POST (request: Request) {
     try {
-        const response  = await req.json();
-        const data : File = response;
+        // const response  = await req.json();
+        // const data : File = response;
+        const formData = await request.formData();
+        const file = formData.get('pdf') as File;
+        const vehicle = JSON.parse(formData.get('vehicle') as string || '{}');
+        const policy = JSON.parse(formData.get('policy') as string || '{}');
+        const account = JSON.parse(formData.get('account') as string || '{}');
 
-        console.log("data: ", data);
+        if (!file) {
+            console.log("No file provided");
+            return NextResponse.json(
+              { error: 'No file provided' },
+              { status: 400 }
+            );
+        }
+        console.log("file: ", file);
+        console.log("vehicle: ", vehicle);
+        console.log("policy: ", policy);
+        console.log("account: ", account);
 
+        
+            
         // const buffer = Buffer.from(data.account.password);
         // const hashedPassword = buffer.toString("base64");
 

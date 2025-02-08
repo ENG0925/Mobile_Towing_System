@@ -70,17 +70,21 @@ export const logout = async (id: number) => {
     }
 }
 
-export const registerAccount = async (data: File) => {
+export const registerAccount = async (data: any) => {
     try {
-        const formData = new FormData();
-        formData.append("file", data);
-        console.log("formData: ", data);
-        const response = await axios.post('/mysql/user/auth/registerAccount', { formData });
-        return response.data;
+        const response = await fetch('/mysql/user/auth/registerAccount', {
+            method: 'POST',
+            body: data,
+        });
+        return response.json();
+        // const response = await axios.post('/mysql/user/auth/registerAccount', data);
+        // return response.data;
     } catch (error) {
         console.error("Error: ", error);
+        throw error;
     }
-}
+};
+
 
 export const updatePassword = async (newPassword: string, id: number) => {
     try {
