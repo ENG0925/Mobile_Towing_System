@@ -17,7 +17,7 @@ export interface booking {
   bookingNo: number;
   name: string;
   vehicle: string;
-  bookingDate: number;
+  bookingDate: string;
   serviceLocation: string;
   towingLocation: string;
   distance: number;
@@ -66,7 +66,7 @@ export const columns = ({
   {
     accessorKey: "estimateCost",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Estimate Cost" />
+      <DataTableColumnHeader column={column} title="Cost" />
     ),
   },
   {
@@ -74,14 +74,34 @@ export const columns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
+    cell: ({ row }) => {
+      const statusColorMap: Record<string, string> = {
+        "payment": "green",
+        "booking complete": "#adc2ec",
+        "in progress": "orange",
+        "cancel": "red",
+      };
+    
+      const color = statusColorMap[row.original.status] || "black"; // Default color if status is unknown
+    
+      return <span style={{ color }}>{row.original.status}</span>;
+    },
   },
+  
   {
     accessorKey: "isWaive",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Is Waive" />
     ),
+    cell: ({ row }) => {
+      const isGreen = row.original.isWaive === true;
+      return (
+        <span style={{ color: isGreen ? "green" : "red" }}>
+          {row.original.isWaive ? "Waive" : "No Waive"}
+        </span>
+      );
+    },
   },
-  
   {
     id: "actions",
     cell: ({ row }) => {
@@ -98,12 +118,12 @@ export const columns = ({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem
-                onClick={() => handlePassEdit(row.original.id)}
+                onClick={() => handlePassEdit(row.original.bookingNo)}
               >
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={async () => handleDelete(row.original.id)}
+                onClick={async () => handleDelete(row.original.bookingNo)}
               >
                 Delete
               </DropdownMenuItem>

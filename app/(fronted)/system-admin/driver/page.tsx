@@ -169,6 +169,24 @@ const Driver = () => {
             name: "password",
             label: "Password",
           },
+          { 
+            label: "Account Status", 
+            type: "select", 
+            name: "accountStatus",
+            options: [                        
+              { label: "Active", value: true },
+              { label: "No Active", value: false },
+            ] 
+          },
+          { 
+            label: "Login Status", 
+            type: "select", 
+            name: "loginStatus",
+            options: [                        
+              { label: "Login", value: true },
+              { label: "Logout", value: false },
+            ] 
+          },
         ]}
         onSubmit={handleSubmit}
         fetchData={isEditing ? fetchAdminData : undefined}

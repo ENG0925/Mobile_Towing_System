@@ -29,7 +29,7 @@ interface Field {
     label: string;
     type: Type;
     name: string;
-    options?: { label: string; value: string }[]; // Only for "select" type
+    options?: { label: string; value: string | boolean }[]; // Only for "select" type
 }
 
 interface SheetSheetFormProps {
@@ -126,71 +126,78 @@ const SheetForm: React.FC<SheetSheetFormProps> = ({
                     <SheetDescription>{description}</SheetDescription>
                     <SheetClose onClick={() => setOpen(false)} />
                 </SheetHeader>
-                
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 mt-4">
-                        {fields.map((field, index) => (
-                            <FormField
-                                key={index}
-                                control={form.control}
-                                name={field.name}
-                                render={({ field: formField }) => (
-                                    <FormItem>
-                                        <FormLabel>{field.label}</FormLabel>
-                                        <FormControl>
-                                            {field.type === "description" ? (
-                                                <Textarea
-                                                    {...formField}
-                                                    className="resize-none"
-                                                    disabled={isLoading}
-                                                />
-                                            ) : field.type === "select" && field.options ? (
-                                                <Select
-                                                    onValueChange={(value) => formField.onChange(value)}
-                                                    value={formField.value}
-                                                    disabled={isLoading}
-                                                >
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder={`Select ${field.label}`} />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        {field.options.map((option) => (
-                                                            <SelectItem key={option.value} value={option.value}>
-                                                                {option.label}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectContent>
-                                                </Select>
-                                            ) : (
-                                                <Input
-                                                    {...formField}
-                                                    type={field.type === "number" ? "text" : field.type}
-                                                    onChange={(e) => {
-                                                        const value = e.target.value;
-                                                        if (field.type === "number") {
-                                                            if (/^\d*$/.test(value)) {
-                                                                formField.onChange(value ? Number(value) : ""); 
+
+                {/* Scrollable form container */}
+                <div className="max-h-[85vh] overflow-y-auto p-2">
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 mt-4">
+                            {fields.map((field, index) => (
+                                <FormField
+                                    key={index}
+                                    control={form.control}
+                                    name={field.name}
+                                    render={({ field: formField }) => (
+                                        <FormItem>
+                                            <FormLabel>{field.label}</FormLabel>
+                                            <FormControl>
+                                                {field.type === "description" ? (
+                                                    <Textarea
+                                                        {...formField}
+                                                        className="resize-none"
+                                                        disabled={isLoading}
+                                                    />
+                                                ) : field.type === "select" && field.options ? (
+                                                    <Select
+                                                        onValueChange={(value) => formField.onChange(value)}
+                                                        value={formField.value}
+                                                        disabled={isLoading}
+                                                    >
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder={`Select ${field.label}`} />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {field.options.map((option) => (
+                                                                <SelectItem
+                                                                    key={option.value.toString()}
+                                                                    value={option.value.toString()}
+                                                                >
+                                                                    {option.label}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                ) : (
+                                                    <Input
+                                                        {...formField}
+                                                        type={field.type === "number" ? "text" : field.type}
+                                                        onChange={(e) => {
+                                                            const value = e.target.value;
+                                                            if (field.type === "number") {
+                                                                if (/^\d*$/.test(value)) {
+                                                                    formField.onChange(value ? Number(value) : ""); 
+                                                                }
+                                                            } else {
+                                                                formField.onChange(value);
                                                             }
-                                                        } else {
-                                                            formField.onChange(value);
-                                                        }
-                                                    }}
-                                                    value={formField.value}
-                                                    disabled={isLoading}
-                                                />
-                                            )}
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        ))}
-                        <Button type="submit" className="w-full" disabled={isLoading}>
-                            {isLoading ? "Loading..." : "Submit"}
-                        </Button>
-                    </form>
-                </Form>
+                                                        }}
+                                                        value={formField.value}
+                                                        disabled={isLoading}
+                                                    />
+                                                )}
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            ))}
+                            <Button type="submit" className="w-full" disabled={isLoading}>
+                                {isLoading ? "Loading..." : "Submit"}
+                            </Button>
+                        </form>
+                    </Form>
+                </div>
             </SheetContent>
+
         </Sheet>
     );
 };

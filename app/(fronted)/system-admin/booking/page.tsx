@@ -24,25 +24,64 @@ const Booking = () => {
         // setData(response?.data.data);
         const response = [
           {
-            id: 1,
+            bookingNo: 1,
             name: "John Doe",
-            comment: "Good Service !",
-            rating: "5",
-            numlike: 10,
+            vehicle: "Car",
+            bookingDate: "2022-01-01",
+            serviceLocation: "Location 1",
+            towingLocation: "Location 2",
+            distance: 100,
+            status: "payment",
+            estimateCost: 100,
+            isWaive: false
           },
           {
-            id: 2,
+            bookingNo: 2,
             name: "Jane Doe",
-            comment: "Normal Service",
-            rating: "3",
-            numlike: 5,
+            vehicle: "Car",
+            bookingDate: "2022-01-01",
+            serviceLocation: "Location 1",
+            towingLocation: "Location 2",
+            distance: 100,
+            status: "payment",
+            estimateCost: 100,
+            isWaive: false
           },
           {
-            id: 3,
+            bookingNo: 3,
             name: "Jay Chou",
-            comment: "What a good service !!",
-            rating: "5",
-            numlike: 1000,
+            vehicle: "Car",
+            bookingDate: "2022-01-01",
+            serviceLocation: "Location 1",
+            towingLocation: "Location 2",
+            distance: 100,
+            status: "booking complete",
+            estimateCost: 100,
+            isWaive: false
+          },
+          {
+            bookingNo: 4,
+            name: "Jackie Chan",
+            vehicle: "Car",
+            bookingDate: "2022-01-01",
+            serviceLocation: "Location 1",
+            towingLocation: "Location 2",
+            distance: 100,
+            status: "in progress",
+            estimateCost: 100,
+            isWaive: false
+          },
+          {
+            bookingNo: 5,
+            name: "Jet Li",
+            vehicle: "Car",
+            bookingDate: "2022-01-01",
+            serviceLocation: "Location 1",
+            towingLocation: "Location 2",
+            distance: 100,
+            status: "cancel",
+            estimateCost: 100,
+            isWaive: true
           },
         ];
         setData(response);
@@ -75,6 +114,7 @@ const Booking = () => {
   const handleDelete = async (id: number) => {
     try {
       console.log("Delete ID: ", id);
+      
       // const response = await deleteAdmin(id);
       // if (response?.data.success === true) {
       //   const responseData = await getAllAdmin();
@@ -154,21 +194,28 @@ const Booking = () => {
           { label: "Name", type: "text", name: "name" },
           { label: "Vehicle Model", type: "text", name: "vehicle" },
           { label: "Booking Date", type: "date", name: "bookingDate" },
-          { label: "Service Location", type: "text", name: "serviceLocation" },
-          { label: "Towing Location", type: "text", name: "towingLocation" },
+          { label: "Service Location", type: "description", name: "serviceLocation" },
+          { label: "Towing Location", type: "description", name: "towingLocation" },
           { label: "Distance", type: "number", name: "distance" },
           { label: "Estimate Cost", type: "number", name: "estimateCost" },
-          { label: "Status", type: "text", name: "status" },
-          { label: "Waive", type: "checkbox", name: "isWaive" },
-          { label: "Age", type: "number", name: "age" },
           { 
-            label: "Role", 
+            label: "Status", 
             type: "select", 
-            name: "role", 
-            options: [                                                                                                                                                                        
-              { label: "Admin", value: "admin" },
-              { label: "User", value: "user" },
-              { label: "Guest", value: "guest" }
+            name: "status",
+            options: [                        
+              { label: "Payment", value: "payment" },                                                                                                                                                
+              { label: "Complete", value: "booking complete" },
+              { label: "In Progress", value: "in progress" },
+              { label: "Cancel", value: "cancel" }
+            ] 
+          },
+          { 
+            label: "Waive", 
+            type: "select", 
+            name: "isWaive",
+            options: [                        
+              { label: "Waive", value: true },                                                                                                                                                
+              { label: "No Waive", value: false },
             ] 
           }
         ]}

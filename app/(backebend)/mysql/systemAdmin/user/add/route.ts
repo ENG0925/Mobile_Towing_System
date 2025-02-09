@@ -64,7 +64,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         }
 
         await connection.execute(
-            'INSERT INTO user (name, email, phoneNumber, password, accountStatus, loginStatus) VALUES (?, ?, ?)', 
+            'INSERT INTO user (name, email, phoneNumber, password, accountStatus, loginStatus) VALUES (?, ?, ?, ?, ?, ?)', 
             [name, email, phomeNumber, hashedPassword, true, false]
         );
 
