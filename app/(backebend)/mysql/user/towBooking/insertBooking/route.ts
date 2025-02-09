@@ -23,7 +23,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
         // insert user data
         await connection.execute(
-            'INSERT INTO towbooking (userID, vehicleID, bookingDate, serviceLocation, towingLocation, distance, status, estimatedCost) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+            'INSERT INTO towbooking (userID, vehicleID, bookingDate, serviceLocation, towingLocation, distance, status, estimatedCost, isCompleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, false)', 
             [data.userID, data.vehicleID, data.bookingDate, data.serviceLocation, data.towingLocation, data.distance, 'in progress', data.estimateCost]
         );
 

@@ -85,16 +85,9 @@ const EditVehicle = () => {
   }, [id, form]); // Depend on `form` so it has access to reset()
 
   const handleSubmit = async(data: z.infer<typeof formSchema>) => {
-    const forData = {
-      id: Number(id),
-      color: data.color,
-      hasInsurance: data.hasInsurance,
-      icNumber: data.icNumber,
-      plateNumber: data.plateNumber,
-      policyHolderName: data.policyHolderName,
-      policyNumber: data.policyNumber,
-      vehicleType: data.vehicleType,
-    }
+  
+
+    router.push("/policyFile/3.pdf");
 
     // const response = await editVehicle(forData);
     // toast(response?.message, {

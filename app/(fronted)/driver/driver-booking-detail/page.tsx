@@ -16,7 +16,7 @@ interface BookingDetail {
   towingLocation: string;
   status: "pending" | "in-progress" | "completed";
   bookingDate: string;
-  completionCheck: boolean;
+  isCompleted: boolean;
 }
 
 const DriverBookingDetail = () => {
@@ -40,7 +40,7 @@ const DriverBookingDetail = () => {
     towingLocation: "KFC, Puchong",
     status: "in-progress",
     bookingDate: "2025-01-08 10:30",
-    completionCheck: false,
+    isCompleted: false,
   };
 
   useEffect(() => {
@@ -180,11 +180,11 @@ const DriverBookingDetail = () => {
               <div className="flex items-start space-x-2">
                 <Checkbox
                   id="safeDelivery"
-                  checked={booking.completionCheck}
+                  checked={booking.isCompleted}
                   onCheckedChange={(checked) =>
                     setBooking(
                       (prev) =>
-                        prev && { ...prev, completionCheck: checked === true }
+                        prev && { ...prev, isCompleted: checked === true }
                     )
                   }
                   className="mt-1 border-emerald-500 text-emerald-600"

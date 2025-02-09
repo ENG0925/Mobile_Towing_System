@@ -10,11 +10,8 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         const connection = await mysql.createConnection(DBConfig);
         await connection.beginTransaction();
         
-        await connection.execute(
-            'DELETE FROM vehicle WHERE id = ?', 
-            [id]
-        );
         await connection.execute('UPDATE vehicle SET isDeleted = ? WHERE id = ?', [true, id]);
+        
         await connection.commit();
         connection.end();
 

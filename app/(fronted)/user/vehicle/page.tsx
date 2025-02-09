@@ -3,13 +3,15 @@ import React, { useEffect, useState } from "react";
 import { Eye, MoreVertical, ShieldCheck, ShieldX, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { getAllVehicle } from "@/lib/api/user";
+import { deleteVehicle, getAllVehicle } from "@/lib/api/user";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface VehicleData {
   id: number;
@@ -75,10 +77,21 @@ const Vehicle = () => {
     router.push(`/user/vehicle/${id}`);
   };
 
-  const handleDelete = (id: number) => {
-    // router.push(`/user/vehicle/${id}`);
+  const handleDelete = async(id: number) => {
+    const response = await deleteVehicle(id);
+    toast(response?.message, {
+      position: "top-center",
+      autoClose: 5000,
+      theme: "light",
+      type: response?.success === true ? "success" : "error",
+    });
+    
+    if (response?.success === false) return;
 
-    console.log(id);
+    const userID = localStorage.getItem("userId");
+
+    const responseVehicle = await getAllVehicle(Number(userID));
+    setVehicles(responseVehicle.data);
   };
 
   return (

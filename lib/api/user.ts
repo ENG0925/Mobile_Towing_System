@@ -135,6 +135,15 @@ export const getVehicleInfo = async (id: number) => {
     }
 }
 
+export const deleteVehicle = async (id: number) => {
+    try {
+        const response = await axios.put('/mysql/user/vehicle/deleteVehicle', { id });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}
+
 // tow booking
 export const getAllTowBooking = async (userID: number) => {
     try {
