@@ -39,6 +39,7 @@ const formSchema = z.object({
 
 const EditVehicle = () => {
   const [loading, setLoading] = useState(true);
+  const [file, setFile] = useState<String>("");
   const router = useRouter();
   const pathname: any = usePathname();
   const parts = pathname.split("/");
@@ -74,6 +75,7 @@ const EditVehicle = () => {
           policyNumber: data.policyNumber || "",
           icNumber: data.icNumber || "",
         });
+        setFile(data.file);
       } catch (error) {
         console.error("Error fetching vehicle data:", error);
       } finally {
@@ -84,20 +86,6 @@ const EditVehicle = () => {
     fetchData();
   }, [id, form]); // Depend on `form` so it has access to reset()
 
-  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    router.push("/policyFile/3.pdf");
-
-    // const response = await editVehicle(forData);
-    // toast(response?.message, {
-    //   position: "top-center",
-    //   autoClose: 5000,
-    //   theme: "light",
-    //   type: response?.success === true ? "success" : "error",
-    // });
-
-    // if (response?.success === false) return;
-    // router.push("/user/vehicle");
-  };
 
   if (loading) {
     return (
@@ -110,12 +98,11 @@ const EditVehicle = () => {
   return (
     <Card className="w-full max-w-2xl mx-auto my-8">
       <CardHeader>
-        <CardTitle>Edit Vehicle</CardTitle>
+        <CardTitle>Vehicle Detail</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-6"
           >
             <FormField
@@ -163,35 +150,6 @@ const EditVehicle = () => {
                   <FormControl>
                     <Input placeholder="Enter color" {...field} disabled />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="hasInsurance"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg">Have Insurance?</FormLabel>
-                  <Select
-                    onValueChange={(value) => field.onChange(value === "yes")}
-                    value={field.value ? "yes" : "no"}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select option" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="yes" disabled>
-                        Yes
-                      </SelectItem>
-                      <SelectItem value="no" disabled>
-                        No
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -254,6 +212,11 @@ const EditVehicle = () => {
                     </FormItem>
                   )}
                 />
+                <Button type="button">
+                  <a href={`/policyFile/${file}`} target="_blank" rel="noopener noreferrer">
+                    Open Policy File
+                  </a>
+                </Button>
               </>
             )}
           </form>
