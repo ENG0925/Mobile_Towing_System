@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import SheetForm from "@/components/common/SheetForm";
+import { addUser, deleteUser, getAllUser, getUserInfo, updateUser } from "@/lib/api/system_admin";
 
 const User = () => {
   const [data, setData] = useState<user[]>([]);
@@ -20,29 +21,8 @@ const User = () => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        // const response = await getAllAdmin();
-        // setData(response?.data.data);
-    const response = [
-      {
-        id: 1,
-        name: "John Doe",
-        email: "123@gmail.com",
-        phoneNumber: 312312,
-        password: "123456",
-        accountStatus: true,
-        loginStatus: true,
-      },
-      {
-        id: 2,
-        name: "Jane Doe",
-        email: "123@gmail.com",
-        phoneNumber: 312312,
-        password: "123456",
-        accountStatus: true,
-        loginStatus: true,
-      },
-    ];
-        setData(response);
+        const response = await getAllUser();
+        setData(response?.data);
       } catch (error) {
         console.error("Error: ", error);
       } finally {
@@ -55,14 +35,8 @@ const User = () => {
   const fetchAdminData = async () => {
     if (!selectedId) return null;
     try {
-      // const response = await getAdmin(selectedId);
-      // return response?.data.data;
-      return {
-        id: 1,
-        name: "John Doe",
-        phoneNumber: 312312,
-        password: "123456"
-      };
+      const response = await getUserInfo(selectedId);
+      return response?.data;
     } catch (error) {
       console.error("Error: ", error);
       return null;
@@ -71,18 +45,17 @@ const User = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      console.log("Delete ID: ", id);
-      // const response = await deleteAdmin(id);
-      // if (response?.data.success === true) {
-      //   const responseData = await getAllAdmin();
-      //   setData(responseData?.data.data);
-      // }
-      // toast(response?.data.message, {
-      //   position: "top-center",
-      //   autoClose: 5000,
-      //   theme: "light",
-      //   type: response?.data.success === true ? "success" : "error",
-      // });
+      const response = await deleteUser(id);
+      toast(response?.message, {
+        position: "top-center",
+        autoClose: 5000,
+        theme: "light",
+        type: response?.success === true ? "success" : "error",
+      });
+      
+
+      const responseData = await getAllUser();
+      setData(responseData?.data);
     } catch (error) {
       toast(`${error}`, {
         position: "top-center",
@@ -110,25 +83,25 @@ const User = () => {
   const handleSubmit = async (formData: any) => {
     try {
       if (isEditing) {
-        // Handle edit
-        // const response = await updateAdmin(selectedId, formData);
-        console.log("Editing admin:", selectedId, formData);
+        const response = await updateUser(selectedId, formData.name, formData.email, formData.phoneNumber, formData.password);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       } else {
-        // Handle add
-        // const response = await createAdmin(formData);
-        console.log("Adding new admin:", formData);
+        const response = await addUser(formData.name, formData.email, formData.phoneNumber, formData.password);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       }
       
-      // Refresh the table data
-      // const refreshedData = await getAllAdmin();
-      // setData(refreshedData?.data.data);
-      
-      toast("Operation successful!", {
-        position: "top-center",
-        autoClose: 5000,
-        theme: "light",
-        type: "success",
-      });
+      const response = await getAllUser();
+      setData(response?.data);
     } catch (error) {
       toast(`Error: ${error}`, {
         position: "top-center",
@@ -152,6 +125,11 @@ const User = () => {
             type: "text",
             name: "name",
             label: "Name",
+          },
+          {
+            type: "email",
+            name: "email",
+            label: "Email",
           },
           {
             type: "number",

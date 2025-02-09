@@ -16,7 +16,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const connection = await mysql.createConnection(DBConfig);
     
     const [queryRating] = await connection.execute(
-      'SELECT * FROM rating WHERE id = ?', 
+      'SELECT * FROM feedback WHERE id = ?', 
       [id]
     );
     
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Retrieved rating info successfully.',
+      message: 'Retrieved feedback info successfully.',
       data: rating[0] || null
     });
   } catch (err) {

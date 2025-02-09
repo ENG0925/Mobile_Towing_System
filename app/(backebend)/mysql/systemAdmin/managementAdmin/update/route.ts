@@ -29,7 +29,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
 
             return NextResponse.json({ 
                 success: false, 
-                message: 'Admin name already in use. Please choose another one.' 
+                message: 'Management admin name already in use. Please choose another one.' 
             });
         }
 

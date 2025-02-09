@@ -15,7 +15,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
                 towbooking.bookingNo,
                 CAST(towbooking.bookingDate AS CHAR) AS bookingDate,
                 CASE 
-                    WHEN MAX(payment.bookingNo) IS NOT NULL THEN 'payment'  -- ✅ Prevents duplicate rows
+                    WHEN MAX(payment.bookingNo) IS NOT NULL THEN 'payment' 
                     ELSE towbooking.status 
                 END AS status,
                 towbooking.estimatedCost,

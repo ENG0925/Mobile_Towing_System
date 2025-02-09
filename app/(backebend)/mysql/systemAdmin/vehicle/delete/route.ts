@@ -2,7 +2,7 @@ import { DBConfig } from '@/config/db';
 import mysql from 'mysql2/promise';
 import { NextResponse, NextRequest } from "next/server";
 
-export async function DELETE(req: NextRequest, res: NextResponse) {
+export async function PUT(req: NextRequest, res: NextResponse) {
     try {
         const { id } = await req.json(); 
 
@@ -10,8 +10,8 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
         await connection.beginTransaction();
 
         await connection.execute(
-            'DELETE FROM vehicle WHERE id = ?', 
-            [id]
+            'UPDATE vehicle SET isDeleted = ? WHERE id = ?', 
+            [true, id]
         );
 
         await connection.commit();

@@ -4,6 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { login } from "@/lib/api/management_admin";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -12,9 +15,18 @@ export default function AdminLogin() {
     password: "",
   });
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async(e: React.FormEvent) => {
     e.preventDefault();
-    // Add your login logic here
+    const response = await login(formData.username, formData.password);
+    toast(response?.message, {
+      position: "top-center",
+      autoClose: 5000,
+      theme: "light",
+      type: response?.success === true ? "success" : "error",
+    });
+
+    if (!response?.success) return;
+    localStorage.setItem("managementAdminID", response.id);
     router.push("/management-admin/dashboard");
   };
 
@@ -23,13 +35,13 @@ export default function AdminLogin() {
       <Card className="w-[400px]">
         <CardHeader>
           <CardTitle className="text-2xl text-center text-[#1b4b38]">
-            Admin Login
+            Management Admin Login
           </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Username</label>
+              <label className="text-sm font-medium">Usernam</label>
               <Input
                 type="username"
                 value={formData.username}

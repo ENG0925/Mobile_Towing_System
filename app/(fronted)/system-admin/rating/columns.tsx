@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableColumnHeader";
-import SheetButton from "@/components/common/SheetForm";
 
 export interface rating {
   id: number;
@@ -52,7 +51,7 @@ export const columns = ({
     ),
   },
   {
-    accessorKey: "numlike",
+    accessorKey: "numLike",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Number Like" />
     ),

@@ -22,6 +22,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
             message: 'Vehicle updated successfully.' 
         });
     } catch (err) {
+        console.error("Error: ", err);
         return NextResponse.json({ 
             success: false, 
             message: 'Something went wrong' 

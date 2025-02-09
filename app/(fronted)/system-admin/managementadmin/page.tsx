@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import SheetForm from "@/components/common/SheetForm";
+import { addManagementAdmin, deleteManagementAdmin, getAllManagementAdmin, getManagementAdminInfo, updateManagementAdmin } from "@/lib/api/system_admin";
 
 const ManagementAdmin = () => {
   const [data, setData] = useState<managementadmin[]>([]);
@@ -20,35 +21,8 @@ const ManagementAdmin = () => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        // const response = await getAllAdmin();
-        // setData(response?.data.data);
-        const response = [
-          {
-            id: 1,
-            name: "John Doe",
-            department: "IT",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
-          },
-          {
-            id: 2,
-            name: "Jane Doe",
-            department: "engineering",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
-          },
-          {
-            id: 3,
-            name: "Jay Chou",
-            department: "Marketing",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
-          },
-        ];
-        setData(response);
+        const response = await getAllManagementAdmin();
+        setData(response?.data);
       } catch (error) {
         console.error("Error: ", error);
       } finally {
@@ -61,16 +35,8 @@ const ManagementAdmin = () => {
   const fetchAdminData = async () => {
     if (!selectedId) return null;
     try {
-      // const response = await getAdmin(selectedId);
-      // return response?.data.data;
-      return {
-        id: 1,
-        name: "John Doe",
-        department: "IT",
-        password: "123456",
-        accountStatus: true,
-        loginStatus: true,
-      };
+      const response = await getManagementAdminInfo(selectedId);
+      return response?.data;
     } catch (error) {
       console.error("Error: ", error);
       return null;
@@ -79,18 +45,16 @@ const ManagementAdmin = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      console.log("Delete ID: ", id);
-      // const response = await deleteAdmin(id);
-      // if (response?.data.success === true) {
-      //   const responseData = await getAllAdmin();
-      //   setData(responseData?.data.data);
-      // }
-      // toast(response?.data.message, {
-      //   position: "top-center",
-      //   autoClose: 5000,
-      //   theme: "light",
-      //   type: response?.data.success === true ? "success" : "error",
-      // });
+      const response = await deleteManagementAdmin(id);
+      toast(response?.message, {
+        position: "top-center",
+        autoClose: 5000,
+        theme: "light",
+        type: response?.success === true ? "success" : "error",
+      });
+      
+      const responseData = await getAllManagementAdmin();
+      setData(responseData?.data);
     } catch (error) {
       toast(`${error}`, {
         position: "top-center",
@@ -118,25 +82,26 @@ const ManagementAdmin = () => {
   const handleSubmit = async (formData: any) => {
     try {
       if (isEditing) {
-        // Handle edit
-        // const response = await updateAdmin(selectedId, formData);
-        console.log("Editing admin:", selectedId, formData);
+        const response = await updateManagementAdmin(selectedId, formData.name, formData.department, formData.password);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       } else {
-        // Handle add
-        // const response = await createAdmin(formData);
-        console.log("Adding new admin:", formData);
+        const response = await addManagementAdmin(formData.name, formData.department, formData.password);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       }
       
-      // Refresh the table data
-      // const refreshedData = await getAllAdmin();
-      // setData(refreshedData?.data.data);
+      const responseData = await getAllManagementAdmin();
+      setData(responseData?.data);
       
-      toast("Operation successful!", {
-        position: "top-center",
-        autoClose: 5000,
-        theme: "light",
-        type: "success",
-      });
     } catch (error) {
       toast(`Error: ${error}`, {
         position: "top-center",
@@ -150,7 +115,7 @@ const ManagementAdmin = () => {
   return (
     <>
       <SheetForm
-        key={key} // Add key prop here
+        key={key} 
         open={open}
         setOpen={setOpen}
         title={isEditing ? "Edit Management Admin" : "Add Management Admin"}
@@ -170,24 +135,6 @@ const ManagementAdmin = () => {
             type: "text",
             name: "password",
             label: "Password",
-          },
-          { 
-            label: "Account Status", 
-            type: "select", 
-            name: "accountStatus",
-            options: [                        
-              { label: "Active", value: true },
-              { label: "No Active", value: false },
-            ] 
-          },
-          { 
-            label: "Login Status", 
-            type: "select", 
-            name: "loginStatus",
-            options: [                        
-              { label: "Login", value: true },
-              { label: "Logout", value: false },
-            ] 
           },
         ]}
         onSubmit={handleSubmit}

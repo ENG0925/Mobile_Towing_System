@@ -1,22 +1,22 @@
 -- Seeding data for User table
 INSERT INTO User (name, email, phoneNumber, password, accountStatus, loginStatus) VALUES
-('Alice Johnson', 'alice@example.com', 1234567890, 'password123', 1, 1),
-('Bob Smith', 'bob@example.com', 1234567891, 'password123', 1, 0);
+('Alice Johnson', 'alice@example.com', 1234567890, 'MTIzNDU2', 1, 1),
+('Bob Smith', 'bob@example.com', 1234567891, 'MTIzNDU2', 1, 0);
 
 -- Seeding data for Driver table
 INSERT INTO Driver (name, phoneNumber, password, accountStatus, loginStatus) VALUES
-('Charlie Davis', 1234567892, 'password123', 1, 1),
-('David Clark', 1234567893, 'password123', 'Inactive', 0);
+('Charlie Davis', 1234567892, 'MTIzNDU2', 1, 1),
+('David Clark', 1234567893, 'MTIzNDU2', 'Inactive', 0);
 
 -- Seeding data for SystemAdmin table
 INSERT INTO SystemAdmin (name, adminLevel, password, accountStatus, loginStatus) VALUES
-('Eve Adams', 'SuperAdmin', 'adminpass123', 1, 1),
-('Frank White', 'Admin', 'adminpass123', 1, 0);
+('Eve Adams', 'SuperAdmin', 'MTIzNDU2', 1, 1),
+('Frank White', 'Admin', 'MTIzNDU2', 1, 0);
 
 -- Seeding data for ManagementAdmin table
 INSERT INTO ManagementAdmin (name, department, password, accountStatus, loginStatus) VALUES
-('Grace Hall', 'Operations', 'manpass123', 1, 1),
-('Henry Lee', 'Finance', 'manpass123', 1, 0);
+('Grace Hall', 'Operations', 'MTIzNDU2', 1, 1),
+('Henry Lee', 'Finance', 'MTIzNDU2', 1, 0);
 
 -- Seeding data for Feedback table
 INSERT INTO Feedback (userID, comment, rating) VALUES

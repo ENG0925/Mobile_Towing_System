@@ -15,11 +15,9 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
     const connection = await mysql.createConnection(DBConfig);
 
-    const [querySystemAdmin] = await connection.execute('SELECT id, password FROM systemadmin WHERE name = ? OR email = ?',[username, username]);
+    const [querySystemAdmin] = await connection.execute('SELECT id, password FROM systemadmin WHERE name = ?',[username]);
     const systemAdmin = querySystemAdmin as SystemAdmin[];
     
-    
-
     if (systemAdmin.length === 0) {
       return NextResponse.json({ 
         success: false, 
@@ -38,7 +36,6 @@ export async function POST (req: NextRequest, res: NextResponse) {
       });
     }
 
-    localStorage.setItem("systemAdminID", systemAdmin[0].id.toString());
     
     await connection.execute('UPDATE systemAdmin SET loginStatus = ? WHERE id = ?', [true, systemAdmin[0].id]);
     
@@ -46,6 +43,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
     return NextResponse.json({ 
       success: true,
       message: 'Login success', 
+      id: systemAdmin[0].id
     });
     
   } catch (err) {

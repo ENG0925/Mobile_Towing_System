@@ -6,7 +6,26 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const connection = await mysql.createConnection(DBConfig);
     
-    const [user] = await connection.execute('SELECT * FROM user');
+    const [user] = await connection.execute(`
+      SELECT 
+        id,
+        name,
+        email,
+        phoneNumber,
+        password,
+        CASE 
+          WHEN accountStatus = 1 THEN TRUE 
+          ELSE FALSE 
+        END AS accountStatus,
+        CASE 
+          WHEN loginStatus = 1 THEN TRUE 
+          ELSE FALSE 
+        END AS loginStatus
+      FROM 
+        user
+      WHERE 
+        accountStatus = TRUE
+    `);
 
     connection.end();
 

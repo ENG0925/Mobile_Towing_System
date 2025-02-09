@@ -10,7 +10,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         await connection.beginTransaction();
 
         await connection.execute(
-            'INSERT INTO vehicle (userID, plateNumber, model, color) VALUES (?, ?, ?, ?)', 
+            'INSERT INTO vehicle (userID, plateNumber, model, color, isDeleted) VALUES (?, ?, ?, ?, false)', 
             [userID, plateNumber, model, color]
         );
 

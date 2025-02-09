@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import SheetForm from "@/components/common/SheetForm";
+import { addFeedback, deleteFeedback, getAllFeedback, getAllUserBooking, getFeedbackInfo, updateFeedback } from "@/lib/api/system_admin";
 
 const Rating = () => {
   const [data, setData] = useState<rating[]>([]);
@@ -15,37 +16,17 @@ const Rating = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [key, setKey] = useState(0); // Add this to force re-render of SheetController
+  const [userList, setUserList] = useState([]);
 
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        // const response = await getAllAdmin();
-        // setData(response?.data.data);
-        const response = [
-          {
-            id: 1,
-            name: "John Doe",
-            comment: "Good Service !",
-            rating: "5",
-            numlike: 10,
-          },
-          {
-            id: 2,
-            name: "Jane Doe",
-            comment: "Normal Service",
-            rating: "3",
-            numlike: 5,
-          },
-          {
-            id: 3,
-            name: "Jay Chou",
-            comment: "What a good service !!",
-            rating: "5",
-            numlike: 1000,
-          },
-        ];
-        setData(response);
+        const response = await getAllFeedback();
+        setData(response?.data);
+
+        const responseUser = await getAllUserBooking();
+        setUserList(responseUser?.data);
       } catch (error) {
         console.error("Error: ", error);
       } finally {
@@ -58,15 +39,8 @@ const Rating = () => {
   const fetchAdminData = async () => {
     if (!selectedId) return null;
     try {
-      // const response = await getAdmin(selectedId);
-      // return response?.data.data;
-      return {
-        id: 1,
-        name: "John Doe",
-        comment: "Good Service !",
-        rating: "5",
-        numlike: 10,
-      };
+      const response = await getFeedbackInfo(selectedId);
+      return response?.data;
     } catch (error) {
       console.error("Error: ", error);
       return null;
@@ -75,18 +49,16 @@ const Rating = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      console.log("Delete ID: ", id);
-      // const response = await deleteAdmin(id);
-      // if (response?.data.success === true) {
-      //   const responseData = await getAllAdmin();
-      //   setData(responseData?.data.data);
-      // }
-      // toast(response?.data.message, {
-      //   position: "top-center",
-      //   autoClose: 5000,
-      //   theme: "light",
-      //   type: response?.data.success === true ? "success" : "error",
-      // });
+      const response = await deleteFeedback(id);
+      toast(response?.message, {
+        position: "top-center",
+        autoClose: 5000,
+        theme: "light",
+        type: response?.success === true ? "success" : "error",
+      });
+
+      const response2 = await getAllFeedback();
+      setData(response2?.data);
     } catch (error) {
       toast(`${error}`, {
         position: "top-center",
@@ -114,25 +86,25 @@ const Rating = () => {
   const handleSubmit = async (formData: any) => {
     try {
       if (isEditing) {
-        // Handle edit
-        // const response = await updateAdmin(selectedId, formData);
-        console.log("Editing rating:", selectedId, formData);
+        const response = await updateFeedback(selectedId, formData.userID, formData.comment, formData.rating);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       } else {
-        // Handle add
-        // const response = await createAdmin(formData);
-        console.log("Adding new rating:", formData);
+        const response = await addFeedback(formData.userID, formData.comment, formData.rating);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       }
       
-      // Refresh the table data
-      // const refreshedData = await getAllAdmin();
-      // setData(refreshedData?.data.data);
-      
-      toast("Operation successful!", {
-        position: "top-center",
-        autoClose: 5000,
-        theme: "light",
-        type: "success",
-      });
+      const response2 = await getAllFeedback();
+      setData(response2?.data);
     } catch (error) {
       toast(`Error: ${error}`, {
         position: "top-center",
@@ -152,7 +124,15 @@ const Rating = () => {
         title={isEditing ? "Edit Rating" : "Add Rating"}
         description={isEditing ? "Edit rating information" : "Add new rating"}
         fields={[
-          { name: "name", label: "Name", type: "text" },
+          { 
+            label: "Name", 
+            type: "select", 
+            name: "userID",
+            options: userList.length === 0 ? [{ label: "No user found", value: 0 }] : userList.map((user: any) => ({
+              label: user.name,
+              value: user.id
+            }))
+          },
           { name: "comment", label: "Comment", type: "description" },
           { 
             name: "rating", 
@@ -166,7 +146,6 @@ const Rating = () => {
               { label: "5", value: 5 },
             ] 
           },
-          { name: "numlike", label: "Number Like", type: "number" },
         ]}
         onSubmit={handleSubmit}
         fetchData={isEditing ? fetchAdminData : undefined}

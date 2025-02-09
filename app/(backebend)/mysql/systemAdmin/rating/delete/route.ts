@@ -10,7 +10,12 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
         await connection.beginTransaction();
 
         await connection.execute(
-            'DELETE FROM rating WHERE id = ?', 
+            'DELETE FROM likefeedback WHERE feedbackID = ?', 
+            [id]
+        );
+
+        await connection.execute(
+            'DELETE FROM feedback WHERE id = ?', 
             [id]
         );
 

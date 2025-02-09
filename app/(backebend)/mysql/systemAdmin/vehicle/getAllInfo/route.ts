@@ -6,7 +6,16 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const connection = await mysql.createConnection(DBConfig);
     
-    const [vehicles] = await connection.execute('SELECT * FROM vehicle');
+    const [vehicles] = await connection.execute(`
+      SELECT 
+        vehicle.*,
+        user.name 
+      FROM 
+        vehicle 
+      LEFT JOIN
+        user ON vehicle.userID = user.id  
+      WHERE isDeleted = false
+    `);
 
     connection.end();
 

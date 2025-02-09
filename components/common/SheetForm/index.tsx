@@ -62,13 +62,6 @@ const SheetForm: React.FC<SheetSheetFormProps> = ({
     
             if (field.type === "email") {
                 validation = z.string().email("Invalid email address");
-            } else if (field.type === "number") {
-                validation = z
-                    .number({
-                        required_error: `${field.label} is required`,
-                        invalid_type_error: "Must be a number",
-                    })
-                    .refine((val) => !isNaN(val), "Must be a valid number");
             } else if (field.type === "select") {
                 validation = z.string().min(1, `${field.label} is required`);
             } else {
@@ -173,9 +166,16 @@ const SheetForm: React.FC<SheetSheetFormProps> = ({
                                                         onChange={(e) => {
                                                             const value = e.target.value;
                                                             if (field.type === "number") {
-                                                                if (/^\d*$/.test(value)) {
-                                                                    formField.onChange(value ? Number(value) : ""); 
+                                                                let inputValue = e.target.value;
+
+                                                                inputValue = inputValue.replace(/[^\d.]/g, "");
+                                        
+                                                                const parts = inputValue.split(".");
+                                                                if (parts.length > 1) {
+                                                                  inputValue = `${parts[0]}.${parts[1].slice(0, 2)}`;
                                                                 }
+                                        
+                                                                formField.onChange(inputValue);
                                                             } else {
                                                                 formField.onChange(value);
                                                             }

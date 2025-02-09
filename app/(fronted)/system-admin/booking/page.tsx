@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import SheetForm from "@/components/common/SheetForm";
+import { addBooking, getAllBooking, getAllDriverBooking, getAllUserBooking, getAllVehicleBooking, getBookingInfo, updateBooking } from "@/lib/api/system_admin";
 
 const Booking = () => {
   const [data, setData] = useState<booking[]>([]);
@@ -14,77 +15,27 @@ const Booking = () => {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [key, setKey] = useState(0); // Add this to force re-render of SheetController
+  const [key, setKey] = useState(0); 
+  const [userList, setUserList] = useState([]);
+  const [vehicleList, setVehicleList] = useState([]);
+  const [driverList, setDriverList] = useState([]);
 
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        // const response = await getAllAdmin();
-        // setData(response?.data.data);
-        const response = [
-          {
-            bookingNo: 1,
-            name: "John Doe",
-            vehicle: "Car",
-            bookingDate: "2022-01-01",
-            serviceLocation: "Location 1",
-            towingLocation: "Location 2",
-            distance: 100,
-            status: "payment",
-            estimateCost: 100,
-            isWaive: false
-          },
-          {
-            bookingNo: 2,
-            name: "Jane Doe",
-            vehicle: "Car",
-            bookingDate: "2022-01-01",
-            serviceLocation: "Location 1",
-            towingLocation: "Location 2",
-            distance: 100,
-            status: "payment",
-            estimateCost: 100,
-            isWaive: false
-          },
-          {
-            bookingNo: 3,
-            name: "Jay Chou",
-            vehicle: "Car",
-            bookingDate: "2022-01-01",
-            serviceLocation: "Location 1",
-            towingLocation: "Location 2",
-            distance: 100,
-            status: "booking complete",
-            estimateCost: 100,
-            isWaive: false
-          },
-          {
-            bookingNo: 4,
-            name: "Jackie Chan",
-            vehicle: "Car",
-            bookingDate: "2022-01-01",
-            serviceLocation: "Location 1",
-            towingLocation: "Location 2",
-            distance: 100,
-            status: "in progress",
-            estimateCost: 100,
-            isWaive: false
-          },
-          {
-            bookingNo: 5,
-            name: "Jet Li",
-            vehicle: "Car",
-            bookingDate: "2022-01-01",
-            serviceLocation: "Location 1",
-            towingLocation: "Location 2",
-            distance: 100,
-            status: "cancel",
-            estimateCost: 100,
-            isWaive: true
-          },
-        ];
-        setData(response);
+        const responseBooking = await getAllBooking();
+        setData(responseBooking?.data);
+
+        const responseUser = await getAllUserBooking();
+        setUserList(responseUser?.data);
+
+        const responseVehicle = await getAllVehicleBooking();
+        setVehicleList(responseVehicle?.data);
+
+        const responseDriver = await getAllDriverBooking();
+        setDriverList(responseDriver?.data);
+        
       } catch (error) {
         console.error("Error: ", error);
       } finally {
@@ -97,20 +48,8 @@ const Booking = () => {
   const fetchAdminData = async () => {
     if (!selectedId) return null;
     try {
-      // const response = await getAdmin(selectedId);
-      // return response?.data.data;
-      return {
-        bookingNo: 1,
-        name: "John Doe",
-        vehicle: "Car",
-        bookingDate: "2022-01-01",
-        serviceLocation: "Location 1",
-        towingLocation: "Location 2",
-        distance: 100,
-        status: "payment",
-        estimateCost: 100,
-        isWaive: false
-      };
+      const response = await getBookingInfo(selectedId);
+      return response?.data;
     } catch (error) {
       console.error("Error: ", error);
       return null;
@@ -159,25 +98,26 @@ const Booking = () => {
   const handleSubmit = async (formData: any) => {
     try {
       if (isEditing) {
-        // Handle edit
-        // const response = await updateAdmin(selectedId, formData);
-        console.log("Editing admin:", selectedId, formData);
+        const data = { ...formData, bookingNo: selectedId };
+        const response = await updateBooking(data);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       } else {
-        // Handle add
-        // const response = await createAdmin(formData);
-        console.log("Adding new admin:", formData);
+        const response = await addBooking(formData);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       }
-      
-      // Refresh the table data
-      // const refreshedData = await getAllAdmin();
-      // setData(refreshedData?.data.data);
-      
-      toast("Operation successful!", {
-        position: "top-center",
-        autoClose: 5000,
-        theme: "light",
-        type: "success",
-      });
+
+      const responseBooking = await getAllBooking();
+      setData(responseBooking?.data);
     } catch (error) {
       toast(`Error: ${error}`, {
         position: "top-center",
@@ -197,13 +137,38 @@ const Booking = () => {
         title={isEditing ? "Edit Booking Detail" : "Add Booking"}
         description={isEditing ? "Edit booking detail" : "Add new booking"}
         fields={[
-          { label: "Name", type: "text", name: "name" },
-          { label: "Vehicle Model", type: "text", name: "vehicle" },
+          { 
+            label: "Name", 
+            type: "select", 
+            name: "userID",
+            options: userList.length === 0 ? [{ label: "No user found", value: 0 }] : userList.map((user: any) => ({
+              label: user.name,
+              value: user.id
+            }))
+          },
+          { 
+            label: "Vehicle", 
+            type: "select", 
+            name: "vehicleID",
+            options: vehicleList.length === 0 ? [{ label: "No vehicle found", value: 0 }] : vehicleList.map((vehicle: any) => ({
+              label: `${vehicle.model}, ${vehicle.plateNumber}`,
+              value: vehicle.id
+            }))
+          },
+          { 
+            label: "Driver", 
+            type: "select", 
+            name: "driverID",
+            options: driverList.length === 0 ? [{ label: "No driver found", value: 0 }] : driverList.map((driver: any) => ({
+              label: driver.name,
+              value: driver.id
+            }))
+          },
           { label: "Booking Date", type: "date", name: "bookingDate" },
           { label: "Service Location", type: "description", name: "serviceLocation" },
           { label: "Towing Location", type: "description", name: "towingLocation" },
           { label: "Distance", type: "number", name: "distance" },
-          { label: "Estimate Cost", type: "number", name: "estimateCost" },
+          { label: "Estimate Cost", type: "number", name: "estimatedCost" },
           { 
             label: "Status", 
             type: "select", 

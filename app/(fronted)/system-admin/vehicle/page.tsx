@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import SheetForm from "@/components/common/SheetForm";
+import { addVehicle, deleteVehicle, getAllUserBooking, getAllVehicle, getVehicleInfo, updateVehicle } from "@/lib/api/system_admin";
 
 const Vehicle = () => {
   const [data, setData] = useState<vehicle[]>([]);
@@ -14,30 +15,17 @@ const Vehicle = () => {
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [key, setKey] = useState(0); // Add this to force re-render of SheetController
+  const [key, setKey] = useState(0);
+  const [userList, setUserList] = useState([]);
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        // const response = await getAllAdmin();
-        // setData(response?.data.data);
-    const response = [
-      {
-        id: 1,
-        name: "John Doe",
-        plateNumber: "WNA8822",
-        model:"Honda",
-        color:"White",
-      },
-      {
-        id: 2,
-        name: "John Doe",
-        plateNumber: "JHR8787",
-        model:"Proton",
-        color:"Black",
-      },
-    ];
-        setData(response);
+        const response = await getAllVehicle();
+        setData(response?.data);
+
+        const responseUser = await getAllUserBooking();
+        setUserList(responseUser?.data);
       } catch (error) {
         console.error("Error: ", error);
       } finally {
@@ -49,15 +37,8 @@ const Vehicle = () => {
   const fetchAdminData = async () => {
     if (!selectedId) return null;
     try {
-      // const response = await getAdmin(selectedId);
-      // return response?.data.data;
-      return {
-        id: 1,
-        name: "John Doe",
-        plateNumber: "WNA8822",
-        model:"Honda",
-        color:"White",
-      };
+      const response = await getVehicleInfo(selectedId);
+      return response?.data;
     } catch (error) {
       console.error("Error: ", error);
       return null;
@@ -65,18 +46,15 @@ const Vehicle = () => {
   };
   const handleDelete = async (id: number) => {
     try {
-      console.log("Delete ID: ", id);
-      // const response = await deleteAdmin(id);
-      // if (response?.data.success === true) {
-      //   const responseData = await getAllAdmin();
-      //   setData(responseData?.data.data);
-      // }
-      // toast(response?.data.message, {
-      //   position: "top-center",
-      //   autoClose: 5000,
-      //   theme: "light",
-      //   type: response?.data.success === true ? "success" : "error",
-      // });
+      const response = await deleteVehicle(id);
+      toast(response?.message, {
+        position: "top-center",
+        autoClose: 5000,
+        theme: "light",
+        type: response?.success === true ? "success" : "error",
+      });
+      const response2 = await getAllVehicle();
+      setData(response2?.data);
     } catch (error) {
       toast(`${error}`, {
         position: "top-center",
@@ -101,25 +79,26 @@ const Vehicle = () => {
   const handleSubmit = async (formData: any) => {
     try {
       if (isEditing) {
-        // Handle edit
-        // const response = await updateAdmin(selectedId, formData);
-        console.log("Editing admin:", selectedId, formData);
+        const response = await updateVehicle(selectedId, formData.userID, formData.plateNumber, formData.model, formData.color);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       } else {
-        // Handle add
-        // const response = await createAdmin(formData);
-        console.log("Adding new admin:", formData);
+        const response = await addVehicle(formData.userID, formData.plateNumber, formData.model, formData.color);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       }
       
-      // Refresh the table data
-      // const refreshedData = await getAllAdmin();
-      // setData(refreshedData?.data.data);
-      
-      toast("Operation successful!", {
-        position: "top-center",
-        autoClose: 5000,
-        theme: "light",
-        type: "success",
-      });
+      const response = await getAllVehicle();
+      setData(response?.data);
+
     } catch (error) {
       toast(`Error: ${error}`, {
         position: "top-center",
@@ -138,7 +117,15 @@ const Vehicle = () => {
         title={isEditing ? "Edit Vehicle" : "Add Vehicle"}
         description={isEditing ? "Edit vehicle information" : "Add new vehicle"}
         fields={[
-          { name: "name", type: "text", label: "Name" },
+          { 
+            label: "Name", 
+            type: "select", 
+            name: "userID",
+            options: userList.length === 0 ? [{ label: "No user found", value: 0 }] : userList.map((user: any) => ({
+              label: user.name,
+              value: user.id
+            }))
+          },
           { name: "plateNumber", type: "text", label: "Plate Number" },
           { name: "model", type: "text", label: "Model" },
           { name: "color", type: "text", label: "Color" },

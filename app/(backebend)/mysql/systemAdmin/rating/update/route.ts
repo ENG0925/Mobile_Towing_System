@@ -4,15 +4,15 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function PUT(req: NextRequest, res: NextResponse) {
     try {
-        const { id, comment, rating } = await req.json();
+        const { id, userID, comment, rating } = await req.json();
 
 
         const connection = await mysql.createConnection(DBConfig);
         await connection.beginTransaction();
 
         await connection.execute(
-            'UPDATE rating SET comment = ?, rating = ? WHERE id = ?', 
-            [comment, rating, id]
+            'UPDATE feedback SET comment = ?, rating = ?, userID = ? WHERE id = ?', 
+            [comment, rating, userID, id]
         );
 
         await connection.commit();
@@ -20,7 +20,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
 
         return NextResponse.json({ 
             success: true, 
-            message: 'Rating updated successfully.' 
+            message: 'Feedback updated successfully.' 
         });
     } catch (err) {
         return NextResponse.json({ 

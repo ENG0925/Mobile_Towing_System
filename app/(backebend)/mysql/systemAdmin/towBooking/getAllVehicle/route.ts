@@ -6,31 +6,23 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const connection = await mysql.createConnection(DBConfig);
     
-    const [admins] = await connection.execute(`
+    const [user] = await connection.execute(`
       SELECT 
         id,
-        name,
-        department,
-        password,
-        CASE 
-          WHEN accountStatus = 1 THEN TRUE 
-          ELSE FALSE 
-        END AS accountStatus,
-        CASE 
-          WHEN loginStatus = 1 THEN TRUE 
-          ELSE FALSE 
-        END AS loginStatus
+        plateNumber,
+        model
       FROM 
-        managementAdmin
+        vehicle
       WHERE 
-        accountStatus = TRUE
+        isDeleted = FALSE
     `);
+
     connection.end();
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Get all management admins info successfully.',
-      data: admins,
+      message: 'Get all vehicle info successfully',
+      data: user,
     });
   } catch (err) {
     return NextResponse.json({ 

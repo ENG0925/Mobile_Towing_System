@@ -16,10 +16,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
     
     const connection = await mysql.createConnection(DBConfig);
     
-    const [queryVehicle] = await connection.execute(
-      'SELECT * FROM vehicle WHERE id = ?', 
-      [id]
-    );
+    const [queryVehicle] = await connection.execute(`
+      SELECT 
+        vehicle.*,
+        user.name 
+      FROM 
+        vehicle 
+      LEFT JOIN
+        user ON vehicle.userID = user.id  
+      WHERE vehicle.id = ? 
+    `, [id]);
     
     const vehicle = queryVehicle as Vehicle[];
 

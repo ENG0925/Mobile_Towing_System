@@ -15,7 +15,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
     const connection = await mysql.createConnection(DBConfig);
 
-    const [queryManagementmAdmin] = await connection.execute('SELECT id, password FROM managementadmin WHERE name = ? OR email = ?',[username, username]);
+    const [queryManagementmAdmin] = await connection.execute('SELECT id, password FROM managementadmin WHERE name = ?',[username]);
     const managementAdmin = queryManagementmAdmin as ManagementAdmin[];
     
     
@@ -38,8 +38,6 @@ export async function POST (req: NextRequest, res: NextResponse) {
       });
     }
 
-    localStorage.setItem("managementAdminID", managementAdmin[0].id.toString());
-
     await connection.execute('UPDATE managementAdmin SET loginStatus = ? WHERE id = ?', [true, managementAdmin[0].id]);
 
     connection.end();
@@ -47,6 +45,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
     return NextResponse.json({ 
       success: true,
       message: 'Login success', 
+      id: managementAdmin[0].id
     });
     
   } catch (err) {

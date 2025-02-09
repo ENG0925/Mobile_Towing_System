@@ -22,7 +22,7 @@ export interface booking {
   towingLocation: string;
   distance: number;
   status: string;
-  estimateCost: number;
+  estimatedCost: number;
   isWaive: boolean;
 }
 
@@ -64,7 +64,7 @@ export const columns = ({
     ),
   },
   {
-    accessorKey: "estimateCost",
+    accessorKey: "estimatedCost",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Cost" />
     ),
@@ -94,10 +94,10 @@ export const columns = ({
       <DataTableColumnHeader column={column} title="Is Waive" />
     ),
     cell: ({ row }) => {
-      const isGreen = row.original.isWaive === true;
+      const isGreen = row.original.isWaive;
       return (
         <span style={{ color: isGreen ? "green" : "red" }}>
-          {row.original.isWaive ? "Waive" : "No Waive"}
+          {isGreen ? "Waive" : "No Waive"}
         </span>
       );
     },
@@ -121,11 +121,6 @@ export const columns = ({
                 onClick={() => handlePassEdit(row.original.bookingNo)}
               >
                 Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={async () => handleDelete(row.original.bookingNo)}
-              >
-                Delete
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

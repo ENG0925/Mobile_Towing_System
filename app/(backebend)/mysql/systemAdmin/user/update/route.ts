@@ -19,14 +19,14 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         await connection.beginTransaction();
 
         const [queryName] = await connection.execute(
-            'SELECT id FROM user WHERE id = ? AND accountStatus = true', 
-            [name]
+            'SELECT id FROM user WHERE name = ? AND accountStatus = true AND id != ?', 
+            [name, id]
         );
         const nameExists = queryName as [];
 
         const [queryEmail] = await connection.execute(
-            'SELECT id FROM user WHERE email = ? AND accountStatus = true', 
-            [email]
+            'SELECT id FROM user WHERE email = ? AND accountStatus = true AND id != ?', 
+            [email, id]
         );
         const emailExists = queryEmail as [];
 
@@ -63,7 +63,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         }
 
         await connection.execute(
-            'UPDATE user SET name = ?, email = ?, phoneNumber = ?, password = ? WHERE userID = ?', 
+            'UPDATE user SET name = ?, email = ?, phoneNumber = ?, password = ? WHERE id = ?', 
             [name, email, phoneNumber, hashedPassword, id]
         );
         
@@ -75,6 +75,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
             message: 'User updated successfully' 
         });
     } catch (err) {
+        console.log(err);
         return NextResponse.json({ 
             success: false, 
             message: 'Something went wrong' 

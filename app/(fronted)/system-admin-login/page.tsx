@@ -4,7 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { login } from "@/lib/api/system_admin";
 export default function AdminLogin() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -12,9 +14,18 @@ export default function AdminLogin() {
     password: "",
   });
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async(e: React.FormEvent) => {
     e.preventDefault();
-    // Add your login logic here
+    const response = await login(formData.username, formData.password);
+    toast(response?.message, {
+      position: "top-center",
+      autoClose: 5000,
+      theme: "light",
+      type: response?.success === true ? "success" : "error",
+    });
+
+    if (!response?.success) return;
+    localStorage.setItem("systemAdminID", response.id);
     router.push("/system-admin/dashboard");
   };
 
@@ -23,7 +34,7 @@ export default function AdminLogin() {
       <Card className="w-[400px]">
         <CardHeader>
           <CardTitle className="text-2xl text-center text-[#1b4b38]">
-            Admin Login
+            System Admin Login
           </CardTitle>
         </CardHeader>
         <CardContent>
