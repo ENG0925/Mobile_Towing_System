@@ -4,7 +4,7 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function POST(req: NextRequest, res: NextResponse) {
     try {
-        const { name, password, adminLevel } = await req.json();
+        const { name, password } = await req.json();
 
         const buffer = Buffer.from(password);
         const hashedPassword = buffer.toString("base64");
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
         await connection.execute(
             'INSERT INTO systemAdmin (name, password, adminLevel, accountStatus, loginStatus) VALUES (?, ?, ?, ?, ?)', 
-            [name, hashedPassword, adminLevel, true, false]
+            [name, hashedPassword, "Admin", true, false]
         );
 
         await connection.commit();
@@ -41,6 +41,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
             message: 'System admin successfully added.' 
         });
     } catch (err) {
+        console.log(err);
         return NextResponse.json({ 
             success: false, 
             message: 'Something went wrong' 
