@@ -15,7 +15,6 @@ export default function RootLayout({
           alt="Towing Service"
           layout="fill"
           objectFit="cover"
-          className="rounded-lg"
         />
       </div>
       <div className="basis-1/2">{children}</div>

@@ -26,16 +26,53 @@ import { addVehicle } from "@/lib/api/user";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const formSchema = z.object({
-  vehicleType: z.string().min(1, "Vehicle type is required"),
-  plateNumber: z.string().min(1, "Plate number is required"),
-  color: z.string().min(1, "Color is required"),
-  hasInsurance: z.string().min(1),
-  policyHolderName: z.string().optional(),
-  policyNumber: z.string().optional(),
-  icNumber: z.string().optional(),
-  uploadFile: z.any().optional(),
-});
+const formSchema = z
+  .object({
+    vehicleType: z.string().min(1, "Vehicle type is required"),
+    plateNumber: z.string().min(1, "Plate number is required"),
+    color: z.string().min(1, "Color is required"),
+    hasInsurance: z.string().min(1),
+    policyHolderName: z.string().optional(),
+    policyNumber: z.string().optional(),
+    icNumber: z.string().optional(),
+    uploadFile: z.any().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.hasInsurance === "yes") {
+      if (!data.policyHolderName || data.policyHolderName.length < 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Policy holder name is required when you have a policy",
+          path: ["policyHolderName"],
+        });
+      }
+
+      if (!data.policyNumber || data.policyNumber.length < 11) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "Policy number is required at least 11 character word or number",
+          path: ["policyNumber"],
+        });
+      }
+
+      if (!data.icNumber || data.icNumber.length < 12) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "IC number is required at least 12 number",
+          path: ["icNumber"],
+        });
+      }
+
+      if (!data.uploadFile) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "File upload is required when you have a policy",
+          path: ["uploadFile"],
+        });
+      }
+    }
+  });
 
 const AddVehicle = () => {
   const router = useRouter();
@@ -53,19 +90,19 @@ const AddVehicle = () => {
     },
   });
 
-  const handleSubmit = async(data: z.infer<typeof formSchema>) => {
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     const vehicleData = {
       vehicleType: data.vehicleType,
       plateNumber: data.plateNumber,
       color: data.color,
-    }
+    };
 
     const insuranceData = {
       hasInsurancePolicy: data.hasInsurance === "yes",
       policyHolderName: data.policyHolderName,
       policyNumber: data.policyNumber,
       icNumber: data.icNumber,
-    }
+    };
 
     const file = data.uploadFile;
     const formData = new FormData();
@@ -83,10 +120,9 @@ const AddVehicle = () => {
       theme: "light",
       type: response?.success === true ? "success" : "error",
     });
-    
-    if (response?.success === false) return; 
-    router.push("/user/vehicle");
 
+    if (response?.success === false) return;
+    router.push("/user/vehicle");
   };
 
   return (
@@ -209,7 +245,17 @@ const AddVehicle = () => {
                     <FormItem>
                       <FormLabel className="text-lg">IC Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter IC number" {...field} />
+                        <Input
+                          placeholder="IC Number"
+                          {...field}
+                          type="text"
+                          pattern="[0-9]*"
+                          inputMode="numeric"
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, "");
+                            field.onChange(value);
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -225,6 +271,7 @@ const AddVehicle = () => {
                       <FormControl>
                         <Input
                           type="file"
+                          accept=".pdf"
                           onChange={(e) =>
                             field.onChange(e.target.files?.[0] || null)
                           }

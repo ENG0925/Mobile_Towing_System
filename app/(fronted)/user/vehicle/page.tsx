@@ -1,9 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { MoreVertical, ShieldCheck, ShieldX } from "lucide-react";
+import { Eye, MoreVertical, ShieldCheck, ShieldX, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { getAllVehicle } from "@/lib/api/user";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface VehicleData {
   id: number;
@@ -18,7 +24,6 @@ const Vehicle = () => {
   const [vehicles, setVehicles] = useState<VehicleData[]>([]);
 
   useEffect(() => {
-
     const fetchData = async () => {
       const userID = localStorage.getItem("userId");
 
@@ -26,7 +31,6 @@ const Vehicle = () => {
       setVehicles(response.data);
     };
     fetchData();
-    
   }, []);
 
   const getInsuranceStatus = (hasInsurance: boolean) => {
@@ -69,6 +73,12 @@ const Vehicle = () => {
 
   const handleVehicleClick = (id: number) => {
     router.push(`/user/vehicle/${id}`);
+  };
+
+  const handleDelete = (id: number) => {
+    // router.push(`/user/vehicle/${id}`);
+
+    console.log(id);
   };
 
   return (
@@ -119,12 +129,27 @@ const Vehicle = () => {
                         </div>
                       </div>
                     </div>
-                    <button
-                      className="p-2 hover:bg-gray-100 rounded-full"
-                      onClick={() => handleVehicleClick(vehicle.id)}
-                    >
-                      <MoreVertical className="w-5 h-5 text-gray-500" />
-                    </button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="p-2 hover:bg-gray-100 rounded-full">
+                          <MoreVertical className="w-5 h-5 text-gray-500" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => handleVehicleClick(vehicle.id)}
+                        >
+                          <Eye className="w-5 h-5 text-gray-500" />
+                          View Details
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(vehicle.id)}
+                        >
+                          <Trash2 className="w-5 h-5 text-gray-500" />
+                          Delete Vehicle
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </CardContent>
               </Card>
@@ -132,7 +157,6 @@ const Vehicle = () => {
           ) : (
             <p className="text-center text-gray-500">No vehicles.</p>
           )}
-
         </div>
       </div>
     </div>
