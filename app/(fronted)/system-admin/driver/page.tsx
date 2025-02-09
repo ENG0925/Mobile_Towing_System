@@ -26,7 +26,7 @@ const Driver = () => {
           {
             id: 1,
             name: "John Doe",
-            department: "Driver",
+            phoneNumber: "Driver",
             password: "123456",
             accountStatus: true,
             loginStatus: true,
@@ -34,7 +34,7 @@ const Driver = () => {
           {
             id: 2,
             name: "Jane Doe",
-            department: "Driver",
+            phoneNumber: "Driver",
             password: "123456",
             accountStatus: true,
             loginStatus: true,
@@ -42,7 +42,7 @@ const Driver = () => {
           {
             id: 3,
             name: "Jay Chou",
-            department: "Driver",
+            phoneNumber: "Driver",
             password: "123456",
             accountStatus: true,
             loginStatus: true,
@@ -66,7 +66,7 @@ const Driver = () => {
       return {
         id: 1,
         name: "John Doe",
-        adminLevel: "Admin",
+        phoneNumber: 312312,
         password: "123456"
       };
     } catch (error) {
@@ -155,28 +155,19 @@ const Driver = () => {
         description={isEditing ? "Edit admin information" : "Add new admin"}
         fields={[
           {
-            id: 1,
-            name: "John Doe",
-            department: "Driver",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
+            type: "text",
+            name: "name",
+            label: "Name",
           },
           {
-            id: 2,
-            name: "Jane Doe",
-            department: "Driver",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
+            type: "number",
+            name: "phoneNumber",
+            label: "Phone Number",
           },
           {
-            id: 3,
-            name: "Jay Chou",
-            department: "Driver",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
+            type: "text",
+            name: "password",
+            label: "Password",
           },
         ]}
         onSubmit={handleSubmit}

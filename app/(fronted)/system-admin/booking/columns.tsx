@@ -14,9 +14,8 @@ import SheetButton from "@/components/common/SheetForm";
 
 export interface booking {
   bookingNo: number;
-  userID: number;
-  vehicleID: string;
-  driverID: string;
+  name: string;
+  vehicle: string;
   bookingDate: number;
   serviceLocation: string;
   towingLocation: string;
@@ -24,7 +23,6 @@ export interface booking {
   status: string;
   estimateCost: number;
   isWaive: boolean;
-  isCompleted: boolean;
 }
 
 interface Props {
@@ -41,15 +39,15 @@ export const columns = ({
     header: "ID",
   },
   {
-    accessorKey: "userID",
+    accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="User ID" />
+      <DataTableColumnHeader column={column} title="username" />
     ),
   },
   {
-    accessorKey: "vehicleID",
+    accessorKey: "vehicle",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Vehicle ID" />
+      <DataTableColumnHeader column={column} title="Vehicle" />
     ),
   },
   {
@@ -92,12 +90,6 @@ export const columns = ({
     accessorKey: "isWaive",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Is Waive" />
-    ),
-  },
-  {
-    accessorKey: "isCompleted",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Completed" />
     ),
   },
   
