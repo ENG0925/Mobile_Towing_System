@@ -143,7 +143,18 @@ const SheetForm: React.FC<SheetSheetFormProps> = ({
                                             ) : (
                                                 <Input
                                                     {...formField}
-                                                    type={field.type}
+                                                    type="text" 
+                                                    onChange={(e) => {
+                                                        const value = e.target.value;
+                                                        if (field.type === "number") {
+                                                            if (/^\d*$/.test(value)) {
+                                                                formField.onChange(value ? Number(value) : ""); 
+                                                            }
+                                                        } else {
+                                                            formField.onChange(value);
+                                                        }
+                                                    }}
+                                                    value={formField.value}
                                                     disabled={isLoading}
                                                 />
                                             )}

@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableColumnHeader";
@@ -57,33 +59,21 @@ export const columns = ({
     ),
   },
   {
-    accessorKey: "serviceLocation",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Service Location" />
-    ),
-  },
-  {
-    accessorKey: "towingLocation",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Towing Location" />
-    ),
-  },
-  {
     accessorKey: "distance",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Distance" />
     ),
   },
   {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
-  },
-  {
     accessorKey: "estimateCost",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Estimate Cost" />
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
     ),
   },
   {
@@ -106,16 +96,34 @@ export const columns = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => handlePassEdit(row.original.id)}
-            >
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={async () => handleDelete(row.original.id)}
-            >
-              Delete
-            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={() => handlePassEdit(row.original.id)}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={async () => handleDelete(row.original.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Status</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={async () => handleDelete(row.original.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={async () => handleDelete(row.original.id)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       );
