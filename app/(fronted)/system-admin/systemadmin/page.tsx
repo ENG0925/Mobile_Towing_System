@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import SheetForm from "@/components/common/SheetForm";
+import { addSystemAdmin, deleteSystemAdmin, getAllSystemAdmin, getSystemAdminInfo, updateSystemAdmin } from "@/lib/api/system_admin";
 
 const SystemAdmin = () => {
   const [data, setData] = useState<systemAdmin[]>([]);
@@ -20,27 +21,9 @@ const SystemAdmin = () => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        // const response = await getAllAdmin();
-        // setData(response?.data.data);
-        const response = [
-          {
-            id: 1,
-            name: "John Doe",
-            adminLevel: "SuperAdmin",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
-          },
-          {
-            id: 2,
-            name: "Jane Doe",
-            adminLevel: "Admin",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
-          },
-        ];
-        setData(response);
+        const response = await getAllSystemAdmin();
+        setData(response?.data);
+        
       } catch (error) {
         console.error("Error: ", error);
       } finally {
@@ -53,16 +36,9 @@ const SystemAdmin = () => {
   const fetchAdminData = async () => {
     if (!selectedId) return null;
     try {
-      // const response = await getAdmin(selectedId);
-      // return response?.data.data;
-      return {
-        id: 1,
-        name: "John Doe",
-        adminLevel: "Super Admin",
-        password: "123456",
-        accountStatus: true,
-        loginStatus: true,
-      };
+      const response = await getSystemAdminInfo(selectedId);
+      return response?.data;
+      
     } catch (error) {
       console.error("Error: ", error);
       return null;
@@ -71,18 +47,16 @@ const SystemAdmin = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      console.log("Delete ID: ", id);
-      // const response = await deleteAdmin(id);
-      // if (response?.data.success === true) {
-      //   const responseData = await getAllAdmin();
-      //   setData(responseData?.data.data);
-      // }
-      // toast(response?.data.message, {
-      //   position: "top-center",
-      //   autoClose: 5000,
-      //   theme: "light",
-      //   type: response?.data.success === true ? "success" : "error",
-      // });
+      const response = await deleteSystemAdmin(id);
+      toast(response?.message, {
+        position: "top-center",
+        autoClose: 5000,
+        theme: "light",
+        type: response?.success === true ? "success" : "error",
+      });
+      
+      const responseData = await getAllSystemAdmin();
+      setData(responseData?.data);
     } catch (error) {
       toast(`${error}`, {
         position: "top-center",
@@ -110,25 +84,26 @@ const SystemAdmin = () => {
   const handleSubmit = async (formData: any) => {
     try {
       if (isEditing) {
-        // Handle edit
-        // const response = await updateAdmin(selectedId, formData);
-        console.log("Editing system admin:", selectedId, formData);
+        const response = await updateSystemAdmin(selectedId, formData.name, formData.password);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       } else {
-        // Handle add
-        // const response = await createAdmin(formData);
-        console.log("Adding new system admin:", formData);
+        const response = await addSystemAdmin(formData.name, formData.password);
+        toast(response?.message, {
+          position: "top-center",
+          autoClose: 5000,
+          theme: "light",
+          type: response?.success === true ? "success" : "error",
+        });
       }
       
-      // Refresh the table data
-      // const refreshedData = await getAllAdmin();
-      // setData(refreshedData?.data.data);
+      const responseData = await getAllSystemAdmin();
+      setData(responseData?.data);
       
-      toast("Operation successful!", {
-        position: "top-center",
-        autoClose: 5000,
-        theme: "light",
-        type: "success",
-      });
     } catch (error) {
       toast(`Error: ${error}`, {
         position: "top-center",
@@ -149,34 +124,7 @@ const SystemAdmin = () => {
         description={isEditing ? "Edit system admin information" : "Add new system admin"}
         fields={[
           { label: "Name", name: "name", type: "text" },
-          { 
-            label: "Admin Level", 
-            name: "adminLevel", 
-            type: "select",
-            options: [                        
-              { label: "Super Admin", value: "SuperAdmin" },
-              { label: "Normal Admin", value: "Admin" },
-            ] 
-          },
           { label: "Password", name: "password", type: "text" },
-          { 
-            label: "Account Status", 
-            type: "select", 
-            name: "accountStatus",
-            options: [                        
-              { label: "Active", value: true },
-              { label: "No Active", value: false },
-            ] 
-          },
-          { 
-            label: "Login Status", 
-            type: "select", 
-            name: "loginStatus",
-            options: [                        
-              { label: "Login", value: true },
-              { label: "Logout", value: false },
-            ] 
-          },
         ]}
         onSubmit={handleSubmit}
         fetchData={isEditing ? fetchAdminData : undefined}

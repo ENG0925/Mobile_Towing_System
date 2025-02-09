@@ -6,7 +6,27 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const connection = await mysql.createConnection(DBConfig);
     
-    const [admins] = await connection.execute('SELECT * FROM systemAdmin');
+    const [admins] = await connection.execute(`
+      SELECT 
+        id,
+        name,
+        adminLevel,
+        password,
+        CASE 
+          WHEN accountStatus = 1 THEN TRUE 
+          ELSE FALSE 
+        END AS accountStatus,
+        CASE 
+          WHEN loginStatus = 1 THEN TRUE 
+          ELSE FALSE 
+        END AS loginStatus
+      FROM 
+        systemAdmin
+      WHERE 
+        accountStatus = TRUE
+    `);
+    
+    
 
     connection.end();
 

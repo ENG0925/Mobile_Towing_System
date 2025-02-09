@@ -4,7 +4,7 @@ import { NextResponse, NextRequest } from "next/server";
 
 export async function PUT(req: NextRequest, res: NextResponse) {
     try {
-        const { id, name, password, adminLevel } = await req.json();
+        const { id, name, password } = await req.json();
 
         const buffer = Buffer.from(password);
         const hashedPassword = buffer.toString("base64");
@@ -30,7 +30,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
 
         await connection.execute(
             'UPDATE systemAdmin SET name = ?, password = ?, adminLevel = ? WHERE id = ?', 
-            [name, hashedPassword, adminLevel, id]
+            [name, hashedPassword, "Admin", id]
         );
 
         await connection.commit();
