@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { DataTable } from "@/components/common/DataTable";
-import { user, columns } from "./columns";
+import { booking, columns } from "./columns";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import SheetForm from "@/components/common/SheetForm";
 
-const User = () => {
-  const [data, setData] = useState<user[]>([]);
+const Booking = () => {
+  const [data, setData] = useState<booking[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -22,35 +22,29 @@ const User = () => {
       try {
         // const response = await getAllAdmin();
         // setData(response?.data.data);
-    const response = [
-      {
-        id: 1,
-        name: "Jayden Lai",
-        email: "jayden@gmail.com",
-        status: "active",
-        joinDate: "2024-02-6",
-      },
-      {
-        id: 2,
-        name: "Jason Tan",
-        email: "john@gmail.com",
-        status: "active",
-        joinDate: "2024-04-11",
-      },
-      {
-        id: 3,
-        name: "William Eng",
-        email: "Eng@gmail.com",
-        status: "active",
-        joinDate: "2024-09-25",
-      },{
-        id: 4,
-        name: "Soukmead Ong",
-        email: "Song@gmail.com",
-        status: "active",
-        joinDate: "2024-08-17",
-      },
-    ];
+        const response = [
+          {
+            id: 1,
+            name: "John Doe",
+            comment: "Good Service !",
+            rating: "5",
+            numlike: 10,
+          },
+          {
+            id: 2,
+            name: "Jane Doe",
+            comment: "Normal Service",
+            rating: "3",
+            numlike: 5,
+          },
+          {
+            id: 3,
+            name: "Jay Chou",
+            comment: "What a good service !!",
+            rating: "5",
+            numlike: 1000,
+          },
+        ];
         setData(response);
       } catch (error) {
         console.error("Error: ", error);
@@ -69,7 +63,7 @@ const User = () => {
       return {
         id: 1,
         name: "John Doe",
-        phoneNumber: 312312,
+        adminLevel: "Admin",
         password: "123456"
       };
     } catch (error) {
@@ -151,27 +145,32 @@ const User = () => {
   return (
     <>
       <SheetForm
-        key={key} // Add key prop here
+        key={key} 
         open={open}
         setOpen={setOpen}
         title={isEditing ? "Edit Admin" : "Add Admin"}
         description={isEditing ? "Edit admin information" : "Add new admin"}
         fields={[
-          {
-            type: "text",
-            name: "name",
-            label: "Name",
-          },
-          {
-            type: "number",
-            name: "phoneNumber",
-            label: "Phone Number",
-          },
-          {
-            type: "text",
-            name: "password",
-            label: "Password",
-          },
+          { label: "Name", type: "text", name: "name" },
+          { label: "Vehicle Model", type: "text", name: "vehicle" },
+          { label: "Booking Date", type: "date", name: "bookingDate" },
+          { label: "Service Location", type: "text", name: "serviceLocation" },
+          { label: "Towing Location", type: "text", name: "towingLocation" },
+          { label: "Distance", type: "number", name: "distance" },
+          { label: "Estimate Cost", type: "number", name: "estimateCost" },
+          { label: "Status", type: "text", name: "status" },
+          { label: "Waive", type: "checkbox", name: "isWaive" },
+          { label: "Age", type: "number", name: "age" },
+          { 
+            label: "Role", 
+            type: "select", 
+            name: "role", 
+            options: [                                                                                                                                                                        
+              { label: "Admin", value: "admin" },
+              { label: "User", value: "user" },
+              { label: "Guest", value: "guest" }
+            ] 
+          }
         ]}
         onSubmit={handleSubmit}
         fetchData={isEditing ? fetchAdminData : undefined}
@@ -205,4 +204,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default Booking;

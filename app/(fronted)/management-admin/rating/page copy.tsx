@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { DataTable } from "@/components/common/DataTable";
-import { user, columns } from "./columns";
+import { rating, columns } from "./columns";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@/components/ui/button";
 import SheetForm from "@/components/common/SheetForm";
 
-const User = () => {
-  const [data, setData] = useState<user[]>([]);
+const Rating = () => {
+  const [data, setData] = useState<rating[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -22,35 +22,29 @@ const User = () => {
       try {
         // const response = await getAllAdmin();
         // setData(response?.data.data);
-    const response = [
-      {
-        id: 1,
-        name: "Jayden Lai",
-        email: "jayden@gmail.com",
-        status: "active",
-        joinDate: "2024-02-6",
-      },
-      {
-        id: 2,
-        name: "Jason Tan",
-        email: "john@gmail.com",
-        status: "active",
-        joinDate: "2024-04-11",
-      },
-      {
-        id: 3,
-        name: "William Eng",
-        email: "Eng@gmail.com",
-        status: "active",
-        joinDate: "2024-09-25",
-      },{
-        id: 4,
-        name: "Soukmead Ong",
-        email: "Song@gmail.com",
-        status: "active",
-        joinDate: "2024-08-17",
-      },
-    ];
+        const response = [
+          {
+            id: 1,
+            name: "John Doe",
+            comment: "Good Service !",
+            rating: "5",
+            numlike: 10,
+          },
+          {
+            id: 2,
+            name: "Jane Doe",
+            comment: "Normal Service",
+            rating: "3",
+            numlike: 5,
+          },
+          {
+            id: 3,
+            name: "Jay Chou",
+            comment: "What a good service !!",
+            rating: "5",
+            numlike: 1000,
+          },
+        ];
         setData(response);
       } catch (error) {
         console.error("Error: ", error);
@@ -69,7 +63,7 @@ const User = () => {
       return {
         id: 1,
         name: "John Doe",
-        phoneNumber: 312312,
+        adminLevel: "Admin",
         password: "123456"
       };
     } catch (error) {
@@ -121,11 +115,11 @@ const User = () => {
       if (isEditing) {
         // Handle edit
         // const response = await updateAdmin(selectedId, formData);
-        console.log("Editing admin:", selectedId, formData);
+        console.log("Editing rating:", selectedId, formData);
       } else {
         // Handle add
         // const response = await createAdmin(formData);
-        console.log("Adding new admin:", formData);
+        console.log("Adding new rating:", formData);
       }
       
       // Refresh the table data
@@ -154,23 +148,29 @@ const User = () => {
         key={key} // Add key prop here
         open={open}
         setOpen={setOpen}
-        title={isEditing ? "Edit Admin" : "Add Admin"}
-        description={isEditing ? "Edit admin information" : "Add new admin"}
+        title={isEditing ? "Edit Rating" : "Add Rating"}
+        description={isEditing ? "Edit rating information" : "Add new rating"}
         fields={[
           {
-            type: "text",
+            id: 1,
             name: "name",
-            label: "Name",
+            comment: "comment",
+            rating: "rating",
+            numlike: "numlike",
           },
           {
-            type: "number",
-            name: "phoneNumber",
-            label: "Phone Number",
+            id: 2,
+            name: "name",
+            comment: "Normal Service",
+            rating: "3",
+            numlike: 5,
           },
           {
-            type: "text",
-            name: "password",
-            label: "Password",
+            id: 3,
+            name: "Jay Chou",
+            comment: "What a good service !!",
+            rating: "5",
+            numlike: 1000,
           },
         ]}
         onSubmit={handleSubmit}
@@ -205,4 +205,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default Rating;
