@@ -7,7 +7,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         const { 
             name, 
             email, 
-            phomeNumber, 
+            phoneNumber, 
             password,
             id
         } = await req.json();
@@ -64,7 +64,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
 
         await connection.execute(
             'UPDATE user SET name = ?, email = ?, phoneNumber = ?, password = ? WHERE userID = ?', 
-            [name, email, phomeNumber, hashedPassword, id]
+            [name, email, phoneNumber, hashedPassword, id]
         );
         
         await connection.commit();

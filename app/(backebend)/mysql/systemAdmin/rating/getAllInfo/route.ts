@@ -6,14 +6,14 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const connection = await mysql.createConnection(DBConfig);
     
-    const [user] = await connection.execute('SELECT * FROM user');
+    const [ratings] = await connection.execute('SELECT * FROM rating');
 
     connection.end();
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Get all user info successfully',
-      data: user,
+      message: 'Retrieved all ratings successfully.',
+      data: ratings,
     });
   } catch (err) {
     return NextResponse.json({ 

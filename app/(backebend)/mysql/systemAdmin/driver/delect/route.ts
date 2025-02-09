@@ -10,7 +10,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         await connection.beginTransaction();
 
         await connection.execute(
-            'UPDATE user SET accountStatus = ? WHERE id = ?', 
+            'UPDATE driver SET accountStatus = ? WHERE id = ?', 
             [false, id]
         );
 
@@ -19,7 +19,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
 
         return NextResponse.json({ 
             success: true, 
-            message: 'Deleted successfully.' 
+            message: 'Driver deleted successfully.' 
         });
     } catch (err) {
         return NextResponse.json({ 
@@ -28,5 +28,3 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         });
     }
 }
-
-

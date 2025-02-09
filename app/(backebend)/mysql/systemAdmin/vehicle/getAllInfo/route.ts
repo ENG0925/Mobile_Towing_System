@@ -6,14 +6,14 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const connection = await mysql.createConnection(DBConfig);
     
-    const [user] = await connection.execute('SELECT * FROM user');
+    const [vehicles] = await connection.execute('SELECT * FROM vehicle');
 
     connection.end();
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Get all user info successfully',
-      data: user,
+      message: 'Retrieved all vehicles successfully.',
+      data: vehicles,
     });
   } catch (err) {
     return NextResponse.json({ 

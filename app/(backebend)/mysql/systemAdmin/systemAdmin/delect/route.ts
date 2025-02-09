@@ -10,7 +10,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         await connection.beginTransaction();
 
         await connection.execute(
-            'UPDATE user SET accountStatus = ? WHERE id = ?', 
+            'UPDATE systemAdmin SET accountStatus = ? WHERE id = ?', 
             [false, id]
         );
 
@@ -28,5 +28,3 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         });
     }
 }
-
-

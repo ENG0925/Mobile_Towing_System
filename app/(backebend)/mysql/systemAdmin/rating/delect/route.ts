@@ -2,7 +2,7 @@ import { DBConfig } from '@/config/db';
 import mysql from 'mysql2/promise';
 import { NextResponse, NextRequest } from "next/server";
 
-export async function PUT(req: NextRequest, res: NextResponse) {
+export async function DELETE(req: NextRequest, res: NextResponse) {
     try {
         const { id } = await req.json(); 
 
@@ -10,8 +10,8 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         await connection.beginTransaction();
 
         await connection.execute(
-            'UPDATE user SET accountStatus = ? WHERE id = ?', 
-            [false, id]
+            'DELETE FROM rating WHERE id = ?', 
+            [id]
         );
 
         await connection.commit();
@@ -19,7 +19,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
 
         return NextResponse.json({ 
             success: true, 
-            message: 'Deleted successfully.' 
+            message: 'Rating deleted successfully.' 
         });
     } catch (err) {
         return NextResponse.json({ 
@@ -28,5 +28,3 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         });
     }
 }
-
-

@@ -2,10 +2,9 @@ import { DBConfig } from '@/config/db';
 import mysql from 'mysql2/promise';
 import { NextResponse, NextRequest } from "next/server";
 
-interface User {
+interface Driver {
   id: number;
   name: string;
-  email: string;
   phoneNumber: number;
   password: string;
   accountStatus: boolean;
@@ -18,16 +17,19 @@ export async function POST(req: NextRequest, res: NextResponse) {
     
     const connection = await mysql.createConnection(DBConfig);
     
-    const [queryUser] = await connection.execute(`SELECT * FROM user WHERE userID = ? `, [id]);
+    const [queryDriver] = await connection.execute(
+      'SELECT * FROM driver WHERE id = ?', 
+      [id]
+    );
     
-    const user = queryUser as User[];
+    const driver = queryDriver as Driver[];
 
     connection.end();
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Get user info successfully',
-      data: user[0]
+      message: 'Retrieved driver info successfully.',
+      data: driver[0] || null
     });
   } catch (err) {
     return NextResponse.json({ 
