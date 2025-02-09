@@ -1,11 +1,10 @@
 import React from "react";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
   Shield,
   UserCog,
-  Car,
   Star,
   CalendarCheck,
   UserCircle2,
@@ -16,7 +15,7 @@ import { useRouter } from "next/navigation";
 
 const SystemAdminSidebar = () => {
   const router = useRouter();
-  const [activeItem, setActiveItem] = useState("dashboard");
+  const pathname = usePathname();
 
   const menuItems = [
     { id: "dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -24,14 +23,16 @@ const SystemAdminSidebar = () => {
     { id: "managementadmin", icon: UserCog, label: "Management Admin" },
     { id: "user", icon: Users, label: "User" },
     { id: "booking", icon: CalendarCheck, label: "Booking" },
-    { id: "vehicle", icon: Car, label: "Vehicle" },
     { id: "driver", icon: UserCircle2, label: "Driver" },
     { id: "feedback", icon: Star, label: "Feedback" },
   ];
 
   const handleMenuClick = (itemId: string) => {
-    setActiveItem(itemId);
     router.push(`/system-admin/${itemId}`);
+  };
+
+  const isActivePath = (itemId: string) => {
+    return pathname?.startsWith(`/system-admin/${itemId}`);
   };
 
   return (
@@ -49,7 +50,7 @@ const SystemAdminSidebar = () => {
                 className={cn(
                   "flex items-center w-full p-3 rounded-lg transition-colors",
                   "hover:bg-[#2C634F]",
-                  activeItem === item.id
+                  isActivePath(item.id)
                     ? "bg-[#C2F970] text-[#1B4D3E]"
                     : "text-white"
                 )}

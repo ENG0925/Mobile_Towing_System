@@ -84,9 +84,7 @@ const EditVehicle = () => {
     fetchData();
   }, [id, form]); // Depend on `form` so it has access to reset()
 
-  const handleSubmit = async(data: z.infer<typeof formSchema>) => {
-  
-
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     router.push("/policyFile/3.pdf");
 
     // const response = await editVehicle(forData);
@@ -96,8 +94,8 @@ const EditVehicle = () => {
     //   theme: "light",
     //   type: response?.success === true ? "success" : "error",
     // });
-    
-    // if (response?.success === false) return; 
+
+    // if (response?.success === false) return;
     // router.push("/user/vehicle");
   };
 
@@ -110,13 +108,16 @@ const EditVehicle = () => {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
+    <Card className="w-full max-w-2xl mx-auto my-8">
       <CardHeader>
         <CardTitle>Edit Vehicle</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6"
+          >
             <FormField
               control={form.control}
               name="vehicleType"
@@ -124,7 +125,11 @@ const EditVehicle = () => {
                 <FormItem>
                   <FormLabel className="text-lg">Vehicle Type</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter vehicle type" {...field} />
+                    <Input
+                      placeholder="Enter vehicle type"
+                      {...field}
+                      disabled
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -138,7 +143,11 @@ const EditVehicle = () => {
                 <FormItem>
                   <FormLabel className="text-lg">Plate Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter plate number" {...field} />
+                    <Input
+                      placeholder="Enter plate number"
+                      {...field}
+                      disabled
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -152,7 +161,7 @@ const EditVehicle = () => {
                 <FormItem>
                   <FormLabel className="text-lg">Color</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter color" {...field} />
+                    <Input placeholder="Enter color" {...field} disabled />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -175,8 +184,12 @@ const EditVehicle = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="yes">Yes</SelectItem>
-                      <SelectItem value="no">No</SelectItem>
+                      <SelectItem value="yes" disabled>
+                        Yes
+                      </SelectItem>
+                      <SelectItem value="no" disabled>
+                        No
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -191,9 +204,15 @@ const EditVehicle = () => {
                   name="policyHolderName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg">Policy Holder Name</FormLabel>
+                      <FormLabel className="text-lg">
+                        Policy Holder Name
+                      </FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter policy holder name" {...field} />
+                        <Input
+                          placeholder="Enter policy holder name"
+                          {...field}
+                          disabled
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -207,7 +226,11 @@ const EditVehicle = () => {
                     <FormItem>
                       <FormLabel className="text-lg">Policy Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter policy number" {...field} />
+                        <Input
+                          placeholder="Enter policy number"
+                          {...field}
+                          disabled
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -221,7 +244,11 @@ const EditVehicle = () => {
                     <FormItem>
                       <FormLabel className="text-lg">IC Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter IC number" {...field} />
+                        <Input
+                          placeholder="Enter IC number"
+                          {...field}
+                          disabled
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -229,10 +256,6 @@ const EditVehicle = () => {
                 />
               </>
             )}
-
-            <Button type="submit" className="w-full">
-              Save Changes
-            </Button>
           </form>
         </Form>
       </CardContent>

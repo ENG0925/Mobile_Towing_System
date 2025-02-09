@@ -1,10 +1,8 @@
 import React from "react";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
-  Shield,
-  UserCog,
   Car,
   Star,
   CalendarCheck,
@@ -16,7 +14,7 @@ import { useRouter } from "next/navigation";
 
 const ManagementAdminSidebar = () => {
   const router = useRouter();
-  const [activeItem, setActiveItem] = useState("dashboard");
+  const pathname = usePathname();
 
   const menuItems = [
     { id: "dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -28,8 +26,11 @@ const ManagementAdminSidebar = () => {
   ];
 
   const handleMenuClick = (itemId: string) => {
-    setActiveItem(itemId);
     router.push(`/management-admin/${itemId}`);
+  };
+
+  const isActivePath = (itemId: string) => {
+    return pathname?.startsWith(`/management-admin/${itemId}`);
   };
 
   return (
@@ -47,7 +48,7 @@ const ManagementAdminSidebar = () => {
                 className={cn(
                   "flex items-center w-full p-3 rounded-lg transition-colors",
                   "hover:bg-[#2C634F]",
-                  activeItem === item.id
+                  isActivePath(item.id)
                     ? "bg-[#C2F970] text-[#1B4D3E]"
                     : "text-white"
                 )}
