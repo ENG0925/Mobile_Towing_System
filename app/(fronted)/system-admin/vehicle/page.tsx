@@ -24,14 +24,14 @@ const Vehicle = () => {
     const response = [
       {
         id: 1,
-        userID: 123456,
+        name: "John Doe",
         plateNumber: "WNA8822",
         model:"Honda",
         color:"White",
       },
       {
         id: 2,
-        userID: 282828,
+        name: "John Doe",
         plateNumber: "JHR8787",
         model:"Proton",
         color:"Black",
@@ -54,8 +54,9 @@ const Vehicle = () => {
       return {
         id: 1,
         name: "John Doe",
-        phoneNumber: 312312,
-        password: "123456"
+        plateNumber: "WNA8822",
+        model:"Honda",
+        color:"White",
       };
     } catch (error) {
       console.error("Error: ", error);
@@ -131,27 +132,16 @@ const Vehicle = () => {
   return (
     <>
       <SheetForm
-        key={key} // Add key prop here
+        key={key}
         open={open}
         setOpen={setOpen}
-        title={isEditing ? "Edit Admin" : "Add Admin"}
-        description={isEditing ? "Edit admin information" : "Add new admin"}
+        title={isEditing ? "Edit Vehicle" : "Add Vehicle"}
+        description={isEditing ? "Edit vehicle information" : "Add new vehicle"}
         fields={[
-          {
-            type: "text",
-            name: "name",
-            label: "Name",
-          },
-          {
-            type: "number",
-            name: "phoneNumber",
-            label: "Phone Number",
-          },
-          {
-            type: "text",
-            name: "password",
-            label: "Password",
-          },
+          { name: "name", type: "text", label: "Name" },
+          { name: "plateNumber", type: "text", label: "Plate Number" },
+          { name: "model", type: "text", label: "Model" },
+          { name: "color", type: "text", label: "Color" },
         ]}
         onSubmit={handleSubmit}
         fetchData={isEditing ? fetchAdminData : undefined}

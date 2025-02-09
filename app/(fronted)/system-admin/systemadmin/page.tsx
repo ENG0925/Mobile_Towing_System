@@ -146,7 +146,7 @@ const SystemAdmin = () => {
         open={open}
         setOpen={setOpen}
         title={isEditing ? "Edit System Admin" : "Add System Admin"}
-        description={isEditing ? "Edit admin information" : "Add new system admin"}
+        description={isEditing ? "Edit system admin information" : "Add new system admin"}
         fields={[
           { label: "Name", name: "name", type: "text" },
           { 

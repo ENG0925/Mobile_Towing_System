@@ -67,7 +67,9 @@ const Driver = () => {
         id: 1,
         name: "John Doe",
         phoneNumber: 312312,
-        password: "123456"
+        password: "123456",
+        accountStatus: true,
+        loginStatus: true,
       };
     } catch (error) {
       console.error("Error: ", error);
@@ -151,8 +153,8 @@ const Driver = () => {
         key={key} // Add key prop here
         open={open}
         setOpen={setOpen}
-        title={isEditing ? "Edit Admin" : "Add Admin"}
-        description={isEditing ? "Edit admin information" : "Add new admin"}
+        title={isEditing ? "Edit Driver" : "Add Driver"}
+        description={isEditing ? "Edit driver information" : "Add new driver"}
         fields={[
           {
             type: "text",

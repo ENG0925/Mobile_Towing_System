@@ -13,7 +13,7 @@ import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableCo
 
 export interface vehicle {
   id: number;
-  userID: number;
+  name: string;
   plateNumber:string;
   model:string;
   color:string;
@@ -31,9 +31,9 @@ export const columns = ({
     header: "ID",
   },
   {
-    accessorKey: "userID",
+    accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="User ID" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
   },
   {

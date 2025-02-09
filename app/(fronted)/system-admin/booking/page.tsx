@@ -100,10 +100,16 @@ const Booking = () => {
       // const response = await getAdmin(selectedId);
       // return response?.data.data;
       return {
-        id: 1,
+        bookingNo: 1,
         name: "John Doe",
-        adminLevel: "Admin",
-        password: "123456"
+        vehicle: "Car",
+        bookingDate: "2022-01-01",
+        serviceLocation: "Location 1",
+        towingLocation: "Location 2",
+        distance: 100,
+        status: "payment",
+        estimateCost: 100,
+        isWaive: false
       };
     } catch (error) {
       console.error("Error: ", error);
@@ -188,8 +194,8 @@ const Booking = () => {
         key={key} 
         open={open}
         setOpen={setOpen}
-        title={isEditing ? "Edit Admin" : "Add Admin"}
-        description={isEditing ? "Edit admin information" : "Add new admin"}
+        title={isEditing ? "Edit Booking Detail" : "Add Booking"}
+        description={isEditing ? "Edit booking detail" : "Add new booking"}
         fields={[
           { label: "Name", type: "text", name: "name" },
           { label: "Vehicle Model", type: "text", name: "vehicle" },
@@ -242,7 +248,7 @@ const Booking = () => {
               })}
               data={data}
               filterData="name"
-              filterName="Filter name..."
+              filterName="Filter username..."
             />
           </div>
         </div>

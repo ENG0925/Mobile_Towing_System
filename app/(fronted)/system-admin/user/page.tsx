@@ -145,8 +145,8 @@ const User = () => {
         key={key} // Add key prop here
         open={open}
         setOpen={setOpen}
-        title={isEditing ? "Edit Admin" : "Add Admin"}
-        description={isEditing ? "Edit admin information" : "Add new admin"}
+        title={isEditing ? "Edit User" : "Add User"}
+        description={isEditing ? "Edit user information" : "Add new user"}
         fields={[
           {
             type: "text",

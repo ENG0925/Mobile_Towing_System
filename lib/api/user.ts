@@ -1,29 +1,5 @@
 import axios from "axios";
 
-interface ReqRegisterData {
-    account: {
-        confirmPassword: string;
-        contactNumber: string;
-        email: string;
-        password: string;
-        username: string;
-    };
-    policy: {
-        hasPolicy: boolean;
-        policyNumber: string;
-        icNumber: string;
-        policyHolderName: string;
-        
-    };
-    vehicle: {
-        color: string;
-        plateNumber: string;
-        vehicleType: string;
-    };
-    uploadFile: File | null;
-}
-
-
 interface ReqInsertTowBookingData {
     userID: number;
     vehicleID: number;
