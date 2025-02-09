@@ -45,6 +45,14 @@ export const columns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Level" />
     ),
+    cell: ({ row }) => {
+      const isSuper = row.original.adminLevel === "SuperAdmin";
+      return (
+        <span style={{ color: isSuper ? "green" : "" }}>
+          {isSuper ? "Super Admin" : "Normal Admin"}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "password",
@@ -57,12 +65,28 @@ export const columns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Account Status" />
     ),
+    cell: ({ row }) => {
+      const isActive = row.original.accountStatus === true;
+      return (
+        <span style={{ color: isActive ? "green" : "red" }}>
+          {row.original.accountStatus ? "Active" : "No Active"}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "loginStatus",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Login Status" />
     ),
+    cell: ({ row }) => {
+      const isLogin = row.original.loginStatus === true;
+      return (
+        <span style={{ color: isLogin ? "green" : "red" }}>
+          {row.original.loginStatus ? "Login" : "Logout"}
+        </span>
+      );
+    },
   },
   {
     id: "actions",

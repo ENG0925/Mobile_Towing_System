@@ -26,7 +26,7 @@ const SystemAdmin = () => {
           {
             id: 1,
             name: "John Doe",
-            adminLevel: "Admin",
+            adminLevel: "SuperAdmin",
             password: "123456",
             accountStatus: true,
             loginStatus: true,
@@ -58,8 +58,10 @@ const SystemAdmin = () => {
       return {
         id: 1,
         name: "John Doe",
-        adminLevel: "Admin",
-        password: "123456"
+        adminLevel: "Super Admin",
+        password: "123456",
+        accountStatus: true,
+        loginStatus: true,
       };
     } catch (error) {
       console.error("Error: ", error);
@@ -146,21 +148,34 @@ const SystemAdmin = () => {
         title={isEditing ? "Edit System Admin" : "Add System Admin"}
         description={isEditing ? "Edit admin information" : "Add new system admin"}
         fields={[
-          {
-            id: 1,
-            name: "John Doe",
-            adminLevel: "Admin",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
+          { label: "Name", name: "name", type: "text" },
+          { 
+            label: "Admin Level", 
+            name: "adminLevel", 
+            type: "select",
+            options: [                        
+              { label: "Super Admin", value: "SuperAdmin" },
+              { label: "Normal Admin", value: "Admin" },
+            ] 
           },
-          {
-            id: 2,
-            name: "Jane Doe",
-            adminLevel: "Admin",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
+          { label: "Password", name: "password", type: "text" },
+          { 
+            label: "Account Status", 
+            type: "select", 
+            name: "accountStatus",
+            options: [                        
+              { label: "Active", value: true },
+              { label: "No Active", value: false },
+            ] 
+          },
+          { 
+            label: "Login Status", 
+            type: "select", 
+            name: "loginStatus",
+            options: [                        
+              { label: "Login", value: true },
+              { label: "Logout", value: false },
+            ] 
           },
         ]}
         onSubmit={handleSubmit}

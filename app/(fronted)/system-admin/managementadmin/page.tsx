@@ -66,8 +66,10 @@ const ManagementAdmin = () => {
       return {
         id: 1,
         name: "John Doe",
-        adminLevel: "Admin",
-        password: "123456"
+        department: "IT",
+        password: "123456",
+        accountStatus: true,
+        loginStatus: true,
       };
     } catch (error) {
       console.error("Error: ", error);
@@ -155,28 +157,37 @@ const ManagementAdmin = () => {
         description={isEditing ? "Edit management admin information" : "Add new Management admin"}
         fields={[
           {
-            id: 1,
-            name: "John Doe",
-            department: "IT",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
+            type: "text",
+            name: "name",
+            label: "Name",
           },
           {
-            id: 2,
-            name: "Jane Doe",
-            department: "engineering",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
+            type: "text",
+            name: "department",
+            label: "Department",
           },
           {
-            id: 3,
-            name: "Jay Chou",
-            department: "Marketing",
-            password: "123456",
-            accountStatus: true,
-            loginStatus: true,
+            type: "text",
+            name: "password",
+            label: "Password",
+          },
+          { 
+            label: "Account Status", 
+            type: "select", 
+            name: "accountStatus",
+            options: [                        
+              { label: "Active", value: true },
+              { label: "No Active", value: false },
+            ] 
+          },
+          { 
+            label: "Login Status", 
+            type: "select", 
+            name: "loginStatus",
+            options: [                        
+              { label: "Login", value: true },
+              { label: "Logout", value: false },
+            ] 
           },
         ]}
         onSubmit={handleSubmit}

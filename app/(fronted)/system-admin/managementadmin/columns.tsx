@@ -10,15 +10,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableColumnHeader";
-import SheetButton from "@/components/common/SheetForm";
 
 export interface managementadmin {
   id: number;
   name: string;
   department: string;
   password: string;
-  accountStatus: string;
-  loginStatus: string;
+  accountStatus: boolean;
+  loginStatus: boolean;
 }
 
 interface Props {
@@ -57,14 +56,29 @@ export const columns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Account Status" />
     ),
+    cell: ({ row }) => {
+      const isActive = row.original.accountStatus === true;
+      return (
+        <span style={{ color: isActive ? "green" : "red" }}>
+          {row.original.accountStatus ? "Active" : "No Active"}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "loginStatus",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Login Status" />
     ),
+    cell: ({ row }) => {
+      const isLogin = row.original.loginStatus === true;
+      return (
+        <span style={{ color: isLogin ? "green" : "red" }}>
+          {row.original.loginStatus ? "Login" : "Logout"}
+        </span>
+      );
+    },
   },
-
   {
     id: "actions",
     cell: ({ row }) => {

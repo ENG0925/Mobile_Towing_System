@@ -25,30 +25,21 @@ const User = () => {
     const response = [
       {
         id: 1,
-        name: "Jayden Lai",
-        email: "jayden@gmail.com",
-        status: "active",
-        joinDate: "2024-02-6",
+        name: "John Doe",
+        email: "123@gmail.com",
+        phoneNumber: 312312,
+        password: "123456",
+        accountStatus: true,
+        loginStatus: true,
       },
       {
         id: 2,
-        name: "Jason Tan",
-        email: "john@gmail.com",
-        status: "active",
-        joinDate: "2024-04-11",
-      },
-      {
-        id: 3,
-        name: "William Eng",
-        email: "Eng@gmail.com",
-        status: "active",
-        joinDate: "2024-09-25",
-      },{
-        id: 4,
-        name: "Soukmead Ong",
-        email: "Song@gmail.com",
-        status: "active",
-        joinDate: "2024-08-17",
+        name: "Jane Doe",
+        email: "123@gmail.com",
+        phoneNumber: 312312,
+        password: "123456",
+        accountStatus: true,
+        loginStatus: true,
       },
     ];
         setData(response);

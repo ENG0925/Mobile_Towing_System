@@ -63,8 +63,9 @@ const Rating = () => {
       return {
         id: 1,
         name: "John Doe",
-        adminLevel: "Admin",
-        password: "123456"
+        comment: "Good Service !",
+        rating: "5",
+        numlike: 10,
       };
     } catch (error) {
       console.error("Error: ", error);
@@ -151,27 +152,21 @@ const Rating = () => {
         title={isEditing ? "Edit Rating" : "Add Rating"}
         description={isEditing ? "Edit rating information" : "Add new rating"}
         fields={[
-          {
-            id: 1,
-            name: "name",
-            comment: "comment",
-            rating: "rating",
-            numlike: "numlike",
+          { name: "name", label: "Name", type: "text" },
+          { name: "comment", label: "Comment", type: "description" },
+          { 
+            name: "rating", 
+            label: "Rating", 
+            type: "select",
+            options: [                        
+              { label: "1", value: 1 },
+              { label: "2", value: 2 },
+              { label: "3", value: 3 },
+              { label: "4", value: 4 },
+              { label: "5", value: 5 },
+            ] 
           },
-          {
-            id: 2,
-            name: "name",
-            comment: "Normal Service",
-            rating: "3",
-            numlike: 5,
-          },
-          {
-            id: 3,
-            name: "Jay Chou",
-            comment: "What a good service !!",
-            rating: "5",
-            numlike: 1000,
-          },
+          { name: "numlike", label: "Number Like", type: "number" },
         ]}
         onSubmit={handleSubmit}
         fetchData={isEditing ? fetchAdminData : undefined}

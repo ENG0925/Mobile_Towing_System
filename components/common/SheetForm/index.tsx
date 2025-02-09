@@ -29,7 +29,7 @@ interface Field {
     label: string;
     type: Type;
     name: string;
-    options?: { label: string; value: string | boolean }[]; // Only for "select" type
+    options?: { label: string; value: string | boolean | number }[]; // Only for "select" type
 }
 
 interface SheetSheetFormProps {

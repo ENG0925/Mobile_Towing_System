@@ -24,7 +24,7 @@ const SystemAdminSidebar = () => {
     { id: "user", icon: Users, label: "User" },
     { id: "booking", icon: CalendarCheck, label: "Booking" },
     { id: "driver", icon: UserCircle2, label: "Driver" },
-    { id: "feedback", icon: Star, label: "Feedback" },
+    { id: "rating", icon: Star, label: "Rating" },
   ];
 
   const handleMenuClick = (itemId: string) => {
@@ -38,7 +38,7 @@ const SystemAdminSidebar = () => {
   return (
     <div className="min-h-screen h-full">
       <div className="w-64 bg-[#1B4D3E] text-white p-4 flex flex-col h-full">
-        <div className="text-xl font-bold mb-8 text-[#C2F970]">Admin Panel</div>
+        <div className="text-xl font-bold mb-8 text-[#C2F970]">System Admin Panel</div>
 
         <nav className="space-y-2 flex-grow">
           {menuItems.map((item) => {
