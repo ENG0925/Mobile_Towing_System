@@ -10,76 +10,51 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableColumnHeader";
-import SheetButton from "@/components/common/SheetForm";
 
-export interface driver {
+export interface vehicle {
   id: number;
-  name: string;
-  phoneNumber: string;
-  password: string;
-  accountStatus: boolean;
-  loginStatus: boolean;
+  userID: number;
+  plateNumber:string;
+  model:string;
+  color:string;
 }
-
 interface Props {
   handlePassEdit: (id: number) => void;
   handleDelete: (id: number) => void;
 }
-
 export const columns = ({
   handlePassEdit,
   handleDelete,
-}: Props): ColumnDef<driver>[] => [
+}: Props): ColumnDef<vehicle>[] => [
   {
     accessorKey: "id",
     header: "ID",
   },
   {
-    accessorKey: "name",
+    accessorKey: "userID",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="User ID" />
     ),
   },
   {
-    accessorKey: "phoneNumber",
+    accessorKey: "plateNumber",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Phone Number" />
+      <DataTableColumnHeader column={column} title="Plate Number" />
     ),
   },
   {
-    accessorKey: "password",
+    accessorKey: "model",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Password" />
+      <DataTableColumnHeader column={column} title="Model" />
     ),
   },
   {
-    accessorKey: "accountStatus",
+    accessorKey: "color",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Account Status" />
+      <DataTableColumnHeader column={column} title="Color" />
     ),
-    cell: ({ row }) => {
-      const isActive = row.original.accountStatus === true;
-      return (
-        <span style={{ color: isActive ? "green" : "red" }}>
-          {row.original.accountStatus ? "Active" : "No Active"}
-        </span>
-      );
-    },
   },
-  {
-    accessorKey: "loginStatus",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Login Status" />
-    ),
-    cell: ({ row }) => {
-      const isLogin = row.original.loginStatus === true;
-      return (
-        <span style={{ color: isLogin ? "green" : "red" }}>
-          {row.original.loginStatus ? "Login" : "Logout"}
-        </span>
-      );
-    },
-  },
+  
   {
     id: "actions",
     cell: ({ row }) => {

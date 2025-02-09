@@ -12,12 +12,13 @@ import {
 import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableColumnHeader";
 import SheetButton from "@/components/common/SheetForm";
 
-export interface vehicle {
+export interface driver {
   id: number;
-  userID: number;
-  plateNumber:string;
-  model:string;
-  color:string;
+  name: string;
+  phoneNumber: string;
+  password: string;
+  accountStatus: boolean;
+  loginStatus: boolean;
 }
 
 interface Props {
@@ -28,36 +29,57 @@ interface Props {
 export const columns = ({
   handlePassEdit,
   handleDelete,
-}: Props): ColumnDef<user>[] => [
+}: Props): ColumnDef<driver>[] => [
   {
     accessorKey: "id",
     header: "ID",
   },
   {
-    accessorKey: "userID",
+    accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="User ID" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
   },
   {
-    accessorKey: "plateNumber",
+    accessorKey: "phoneNumber",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Plate Number" />
+      <DataTableColumnHeader column={column} title="Phone Number" />
     ),
   },
   {
-    accessorKey: "model",
+    accessorKey: "password",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Model" />
+      <DataTableColumnHeader column={column} title="Password" />
     ),
   },
   {
-    accessorKey: "color",
+    accessorKey: "accountStatus",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Color" />
+      <DataTableColumnHeader column={column} title="Account Status" />
     ),
+    cell: ({ row }) => {
+      const isActive = row.original.accountStatus === true;
+      return (
+        <span style={{ color: isActive ? "green" : "red" }}>
+          {row.original.accountStatus ? "Active" : "No Active"}
+        </span>
+      );
+    },
   },
-  
+  {
+    accessorKey: "loginStatus",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Login Status" />
+    ),
+    cell: ({ row }) => {
+      const isLogin = row.original.loginStatus === true;
+      return (
+        <span style={{ color: isLogin ? "green" : "red" }}>
+          {row.original.loginStatus ? "Login" : "Logout"}
+        </span>
+      );
+    },
+  },
   {
     id: "actions",
     cell: ({ row }) => {

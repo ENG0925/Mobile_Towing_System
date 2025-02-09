@@ -15,7 +15,6 @@ const Vehicle = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [key, setKey] = useState(0); // Add this to force re-render of SheetController
-
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
@@ -47,7 +46,6 @@ const Vehicle = () => {
     };
     fetchData();
   }, []);
-
   const fetchAdminData = async () => {
     if (!selectedId) return null;
     try {
@@ -64,7 +62,6 @@ const Vehicle = () => {
       return null;
     }
   };
-
   const handleDelete = async (id: number) => {
     try {
       console.log("Delete ID: ", id);
@@ -88,21 +85,18 @@ const Vehicle = () => {
       });
     }
   };
-
   const handlePassEdit = (id: number) => {
     setSelectedId(id);
     setIsEditing(true);
     setKey(prevKey => prevKey + 1); // Increment key to force re-render
     setOpen(true);
   };
-
   const handleAdd = () => {
     setSelectedId(null);
     setIsEditing(false);
     setKey(prevKey => prevKey + 1); // Increment key to force re-render
     setOpen(true);
   };
-
   const handleSubmit = async (formData: any) => {
     try {
       if (isEditing) {
@@ -134,7 +128,6 @@ const Vehicle = () => {
       });
     }
   };
-
   return (
     <>
       <SheetForm

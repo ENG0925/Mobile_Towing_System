@@ -6,6 +6,7 @@ import {
   Shield,
   UserCog,
   Star,
+  Car,
   CalendarCheck,
   UserCircle2,
   LogOut,
@@ -23,8 +24,10 @@ const SystemAdminSidebar = () => {
     { id: "managementadmin", icon: UserCog, label: "Management Admin" },
     { id: "user", icon: Users, label: "User" },
     { id: "booking", icon: CalendarCheck, label: "Booking" },
+    { id: "vehicle", icon: Car, label: "Vehicle" },
     { id: "driver", icon: UserCircle2, label: "Driver" },
     { id: "rating", icon: Star, label: "Rating" },
+
   ];
 
   const handleMenuClick = (itemId: string) => {
