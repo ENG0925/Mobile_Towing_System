@@ -2,11 +2,10 @@ import { DBConfig } from '@/config/db';
 import mysql from 'mysql2/promise';
 import { NextResponse, NextRequest } from "next/server";
 
-interface User {
+interface Booking {
   id: number;
   name: string;
-  email: string;
-  phoneNumber: number;
+  department:string;
   password: string;
   accountStatus: boolean;
   loginStatus: boolean;
@@ -18,16 +17,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
     
     const connection = await mysql.createConnection(DBConfig);
     
-    const [queryUser] = await connection.execute(`SELECT * FROM user WHERE userID = ? `, [id]);
+    const [queryBooking] = await connection.execute(`SELECT * FROM booking WHERE userID = ? `, [id]);
     
-    const user = queryUser as User[];
+    const user = queryBooking as Booking[];
 
     connection.end();
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Get user info successfully',
-      data: user[0]
+      message: 'Get booking info successfully',
+      data: booking[0]
     });
   } catch (err) {
     return NextResponse.json({ 
