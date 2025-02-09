@@ -21,13 +21,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-type Type = "text" | "email" | "number" | "description";
+type Type = "text" | "email" | "number" | "description" | "select";
 
 interface Field {
     label: string;
     type: Type;
     name: string;
+    options?: { label: string; value: string }[]; // Only for "select" type
 }
 
 interface SheetSheetFormProps {
@@ -67,6 +69,8 @@ const SheetForm: React.FC<SheetSheetFormProps> = ({
                         invalid_type_error: "Must be a number",
                     })
                     .refine((val) => !isNaN(val), "Must be a valid number");
+            } else if (field.type === "select") {
+                validation = z.string().min(1, `${field.label} is required`);
             } else {
                 validation = z.string().min(1, `${field.label} is required`);
             }
@@ -140,10 +144,27 @@ const SheetForm: React.FC<SheetSheetFormProps> = ({
                                                     className="resize-none"
                                                     disabled={isLoading}
                                                 />
+                                            ) : field.type === "select" && field.options ? (
+                                                <Select
+                                                    onValueChange={(value) => formField.onChange(value)}
+                                                    value={formField.value}
+                                                    disabled={isLoading}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder={`Select ${field.label}`} />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {field.options.map((option) => (
+                                                            <SelectItem key={option.value} value={option.value}>
+                                                                {option.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
                                             ) : (
                                                 <Input
                                                     {...formField}
-                                                    type="text" 
+                                                    type={field.type === "number" ? "text" : field.type}
                                                     onChange={(e) => {
                                                         const value = e.target.value;
                                                         if (field.type === "number") {

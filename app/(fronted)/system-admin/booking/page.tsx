@@ -151,27 +151,19 @@ const Booking = () => {
         title={isEditing ? "Edit Admin" : "Add Admin"}
         description={isEditing ? "Edit admin information" : "Add new admin"}
         fields={[
-          {
-            id: 1,
-            name: "John Doe",
-            comment: "Good Service !",
-            rating: "5",
-            numlike: 10,
-          },
-          {
-            id: 2,
-            name: "Jane Doe",
-            comment: "Normal Service",
-            rating: "3",
-            numlike: 5,
-          },
-          {
-            id: 3,
-            name: "Jay Chou",
-            comment: "What a good service !!",
-            rating: "5",
-            numlike: 1000,
-          },
+          { label: "Full Name", type: "text", name: "fullName" },
+          { label: "Email", type: "email", name: "email" },
+          { label: "Age", type: "number", name: "age" },
+          { 
+            label: "Role", 
+            type: "select", 
+            name: "role", 
+            options: [
+              { label: "Admin", value: "admin" },
+              { label: "User", value: "user" },
+              { label: "Guest", value: "guest" }
+            ] 
+          }
         ]}
         onSubmit={handleSubmit}
         fetchData={isEditing ? fetchAdminData : undefined}
