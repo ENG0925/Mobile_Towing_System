@@ -1,16 +1,15 @@
-
 import { DBConfig } from '@/config/db';
 import mysql from 'mysql2/promise';
 import { NextResponse, NextRequest } from "next/server";
 
-
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function PUT(req: NextRequest, res: NextResponse) {
     try {
         const { 
             name, 
             email, 
             phomeNumber, 
-            password
+            password,
+            id
         } = await req.json();
 
         const buffer = Buffer.from(password);
@@ -20,7 +19,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         await connection.beginTransaction();
 
         const [queryName] = await connection.execute(
-            'SELECT id FROM user WHERE name = ? AND accountStatus = true', 
+            'SELECT id FROM user WHERE id = ? AND accountStatus = true', 
             [name]
         );
         const nameExists = queryName as [];
@@ -64,16 +63,16 @@ export async function POST(req: NextRequest, res: NextResponse) {
         }
 
         await connection.execute(
-            'INSERT INTO user (name, email, phoneNumber, password, accountStatus, loginStatus) VALUES (?, ?, ?)', 
-            [name, email, phomeNumber, hashedPassword, true, false]
+            'UPDATE user SET name = ?, email = ?, phoneNumber = ?, password = ? WHERE userID = ?', 
+            [name, email, phomeNumber, hashedPassword, id]
         );
-
+        
         await connection.commit();
         connection.end();
 
         return NextResponse.json({ 
             success: true, 
-            message: 'User successfully added.' 
+            message: 'User updated successfully' 
         });
     } catch (err) {
         return NextResponse.json({ 

@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-type Type = "text" | "email" | "number" | "description" | "select";
+type Type = "text" | "email" | "number" | "description" | "select" | "date";
 
 interface Field {
     label: string;

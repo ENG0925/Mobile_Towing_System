@@ -145,20 +145,27 @@ const Booking = () => {
   return (
     <>
       <SheetForm
-        key={key} // Add key prop here
+        key={key} 
         open={open}
         setOpen={setOpen}
         title={isEditing ? "Edit Admin" : "Add Admin"}
         description={isEditing ? "Edit admin information" : "Add new admin"}
         fields={[
-          { label: "Full Name", type: "text", name: "fullName" },
-          { label: "Email", type: "email", name: "email" },
+          { label: "Name", type: "text", name: "name" },
+          { label: "Vehicle Model", type: "text", name: "vehicle" },
+          { label: "Booking Date", type: "date", name: "bookingDate" },
+          { label: "Service Location", type: "text", name: "serviceLocation" },
+          { label: "Towing Location", type: "text", name: "towingLocation" },
+          { label: "Distance", type: "number", name: "distance" },
+          { label: "Estimate Cost", type: "number", name: "estimateCost" },
+          { label: "Status", type: "text", name: "status" },
+          { label: "Waive", type: "checkbox", name: "isWaive" },
           { label: "Age", type: "number", name: "age" },
           { 
             label: "Role", 
             type: "select", 
             name: "role", 
-            options: [
+            options: [                                                                                                                                                                        
               { label: "Admin", value: "admin" },
               { label: "User", value: "user" },
               { label: "Guest", value: "guest" }

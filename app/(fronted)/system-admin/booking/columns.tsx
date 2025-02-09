@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableColumnHeader";
-import SheetButton from "@/components/common/SheetForm";
 
 export interface booking {
   bookingNo: number;
@@ -37,8 +36,8 @@ export const columns = ({
   handleDelete,
 }: Props): ColumnDef<booking>[] => [
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: "bookingNo",
+    header: "Booking No",
   },
   {
     accessorKey: "name",
@@ -102,21 +101,6 @@ export const columns = ({
                 onClick={() => handlePassEdit(row.original.id)}
               >
                 Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={async () => handleDelete(row.original.id)}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel>Status</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={async () => handleDelete(row.original.id)}
-              >
-                Delete
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={async () => handleDelete(row.original.id)}
