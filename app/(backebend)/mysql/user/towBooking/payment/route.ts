@@ -24,6 +24,11 @@ export async function POST (req: NextRequest, res: NextResponse) {
             [data.bookingNo, data.amount, data.paymentDate, data.paymentMethod]
         );
 
+        await connection.execute(
+            'UPDATE towbooking SET status = ? WHERE bookingNo = ?', 
+            ['complete', data.bookingNo]
+        );
+
         await connection.commit();
         connection.end();
 

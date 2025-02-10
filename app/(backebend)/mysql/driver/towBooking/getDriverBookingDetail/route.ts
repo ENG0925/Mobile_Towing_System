@@ -2,20 +2,17 @@ import { DBConfig } from '@/config/db';
 import mysql from 'mysql2/promise';
 import { NextResponse, NextRequest } from "next/server";
 
-interface TowBooking {
-    bookingNo: number;
-    userID: number;
-    vehicleID: number;
-    driverID: number;
-    bookingDate: string;
+interface BookingDetail {
+    bookingNo: string;
+    customerName: string;
+    contactNumber: string;
+    vehicleType: string;
+    plateNumber: string;
     serviceLocation: string;
     towingLocation: string;
-    distance: number;
     status: string;
-    estimatedCost: number;
-    isWaive: boolean;
-    isCompleted: boolean;
-}
+    bookingDate: string;
+  }
 
 export async function POST (req: NextRequest, res: NextResponse) {
     try {
@@ -23,9 +20,24 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
         const connection = await mysql.createConnection(DBConfig);
 
-        const [queryTowBooking] = await connection.execute('SELECT * FROM towbooking WHERE bookingNo = ?', [bookingNo]);
-        const towbooking = queryTowBooking as TowBooking[];
-
+        const [queryTowBooking] = await connection.execute(`
+            SELECT 
+                tb.bookingNo AS bookingNo,
+                u.name AS customerName,
+                u.phoneNumber AS contactNumber,
+                v.model AS vehicleType,
+                v.plateNumber AS plateNumber,
+                tb.serviceLocation,
+                tb.towingLocation,
+                tb.status,
+                CAST(tb.bookingDate AS CHAR) AS bookingDate
+            FROM towbooking tb
+            JOIN user u ON tb.userID = u.id
+            JOIN vehicle v ON tb.vehicleID = v.id
+            WHERE tb.bookingNo = ?
+            `, [bookingNo]
+        );
+        const towbooking = queryTowBooking as BookingDetail[];
         connection.end();
 
         return NextResponse.json({ 

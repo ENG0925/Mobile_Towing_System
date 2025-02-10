@@ -12,7 +12,6 @@ interface ReqData {
     distance: number;
     estimatedCost: number;
     status: string;
-    isWaive: any;
 }
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -20,42 +19,18 @@ export async function POST(req: NextRequest, res: NextResponse) {
         const response = await req.json();
         const data: ReqData = response.data;
 
-        // Convert `isWaive` to boolean
-        data.isWaive = data.isWaive === "true";
-
         const connection = await mysql.createConnection(DBConfig);
         await connection.beginTransaction();
 
         // Insert booking
         const [resultBooking]: any = await connection.execute(
             `INSERT INTO towbooking 
-                (userID, vehicleID, driverID, bookingDate, serviceLocation, towingLocation, distance, estimatedCost, isCompleted, status, isWaive) 
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, false, ?, ?)`, 
-            [data.userID, data.vehicleID, data.driverID, data.bookingDate, data.serviceLocation, data.towingLocation, data.distance, data.estimatedCost, data.status, data.isWaive]
+                (userID, vehicleID, driverID, bookingDate, serviceLocation, towingLocation, distance, estimatedCost, status) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+            [data.userID, data.vehicleID, data.driverID, data.bookingDate, data.serviceLocation, data.towingLocation, data.distance, data.estimatedCost, data.status]
         );
         const bookingNo = resultBooking.insertId;
 
-        // Handle payments if status is "payment"
-        if (data.status === "payment") {
-            await connection.execute(
-                `INSERT INTO payment (bookingNo, amount, date, method) 
-                 VALUES (?, ?, ?, ?)`, 
-                [bookingNo, data.estimatedCost, data.bookingDate, 'admin payment']
-            );
-
-            await connection.execute(
-                `UPDATE towbooking SET status = ?, isCompleted = true WHERE bookingNo = ?`, 
-                ['booking complete', bookingNo]
-            );
-        }
-
-        if (data.status === "booking complete") {
-            await connection.execute(
-                `UPDATE towbooking SET status = ?, isCompleted = true WHERE bookingNo = ?`, 
-                ['booking complete', bookingNo]
-            );
-        }
-        
         await connection.commit();
         connection.end();
 

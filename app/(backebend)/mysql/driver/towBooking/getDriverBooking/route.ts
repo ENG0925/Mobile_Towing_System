@@ -13,13 +13,13 @@ interface Response {
     bookingDate: string;
 }
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest, res: NextResponse) {
     try {
-        const driverID = Number(localStorage.getItem('driverID'));
+        const { driverID } = await req.json();
 
         const connection = await mysql.createConnection(DBConfig);
 
-        // Single query with JOIN to fetch required data
+        // Fetch today's bookings sorted by bookingNo (biggest to smallest)
         const [rows] = await connection.execute(`
             SELECT 
                 tb.bookingNo AS id,
@@ -29,29 +29,17 @@ export async function GET(req: NextRequest, res: NextResponse) {
                 tb.serviceLocation,
                 tb.towingLocation,
                 tb.status,
-                tb.bookingDate
+                CAST(tb.bookingDate AS CHAR) AS bookingDate
             FROM towbooking tb
             JOIN user u ON tb.userID = u.id
             JOIN vehicle v ON tb.vehicleID = v.id
-            WHERE tb.driverID = ?
-            `, [driverID]
-        );
+            WHERE tb.driverID = ? 
+            AND DATE(tb.bookingDate) = CURDATE()  -- Filter for today's bookings
+            ORDER BY tb.bookingNo DESC  -- Sort from highest to lowest bookingNo
+        `, [driverID]);
 
         connection.end();
 
-        // Map the query result to match the Response interface
-        const responseData: Response[] = (rows as any[]).map(row => ({
-            id: row.id,
-            customerName: row.customerName,
-            vehicleType: row.vehicleType,
-            plateNumber: row.plateNumber,
-            serviceLocation: row.serviceLocation,
-            towingLocation: row.towingLocation,
-            status: row.status,
-            bookingDate: row.bookingDate,
-        }));
-
-        console.log('Data fetched successfully', rows);
         return NextResponse.json({ 
             success: true, 
             message: 'Data fetched successfully',   

@@ -14,14 +14,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
         CAST(tb.bookingDate AS CHAR) AS bookingDate,
         CAST(tb.distance AS CHAR) AS distance,
         CAST(tb.estimatedCost AS CHAR) AS estimatedCost,
-        CASE 
-          WHEN MAX(p.bookingNo) IS NOT NULL THEN 'payment' 
-          ELSE tb.status 
-        END AS status,
-        CASE 
-          WHEN tb.isWaive = 1 THEN TRUE 
-          ELSE FALSE 
-        END AS isWaive
+        tb.status 
       FROM 
         towbooking tb
       LEFT JOIN 
@@ -31,7 +24,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       LEFT JOIN
         payment p ON tb.bookingNo = p.bookingNo
       GROUP BY 
-        tb.bookingNo, u.name, vehicle, bookingDate, distance, estimatedCost, tb.status, tb.isWaive;
+        tb.bookingNo, u.name, vehicle, bookingDate, distance, estimatedCost, tb.status;
     `);
 
     connection.end();

@@ -12,11 +12,29 @@ export const login = async (username: string, password: string) => {
     }
 };
 
-export const getAllDrivers = async () => {
+export const getAllDriverBooking = async (driverID: any) => {
     try {
-        const response = await axios.get('/mysql/driver/towBooking/getDriverBooking');
+        const response = await axios.post('/mysql/driver/towBooking/getDriverBooking', { driverID });
         return response.data;
     } catch (error) {
         console.error("Error: ", error);
     }
 };
+
+export const getDriverBookingDetail = async (bookingNo: any) => {
+    try {
+        const response = await axios.post('/mysql/driver/towBooking/getDriverBookingDetail', { bookingNo });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+};
+
+export const completeBooking = async (bookingNo: any) => {
+    try {
+        const response = await axios.put('/mysql/driver/towBooking/completeBooking', { bookingNo });
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}

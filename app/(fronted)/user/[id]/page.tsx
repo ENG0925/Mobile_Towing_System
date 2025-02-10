@@ -15,7 +15,7 @@ interface OrderDetails {
     serviceLocation: string;
     towingLocation: string;
     estimatedCost: number;
-    isWaive: number;
+    status: string;
   };
 
   vehicle: {
@@ -37,7 +37,7 @@ const mockOrderData: OrderDetails = {
     serviceLocation: "123 Main St",
     towingLocation: "456 Elm St",
     estimatedCost: 100,
-    isWaive: 1,
+    status: "in-progress",
   },
   vehicle: {
     model: "Proton Saga",
@@ -117,7 +117,7 @@ const BookingDetail = ({ params }: Props) => {
 
         <CardContent className="space-y-6 pt-6">
           {/* Real-time Tracking Section */}
-          {orderDetails.driver?.phoneNumber && <>
+        {orderDetails.driver?.phoneNumber && <>
           <div className="space-y-4">
             <h3 className="font-semibold flex items-center gap-2 text-emerald-800">
               <Truck className="h-5 w-5 text-emerald-600" />
@@ -141,7 +141,7 @@ const BookingDetail = ({ params }: Props) => {
               </div>
             </div>
           </div>
-          </>}
+        </>}
           {/* Vehicle Details */}
           <div className="space-y-3">
             <h3 className="font-semibold text-emerald-800">Vehicle Details</h3>
@@ -208,31 +208,15 @@ const BookingDetail = ({ params }: Props) => {
           {/* Payment Details */}
           <div className="border-t border-emerald-100 pt-4">
             <div className="flex justify-between items-center text-emerald-800">
-              <div>Estimate Cost</div>
+              {orderDetails.towBooking.status === "unpaid"  || orderDetails.towBooking.status === "complete" ? (<>
+                <div>Total Amount</div>
+              </>) : (<>
+                <div>Estimate Cost</div>
+              </>)}
               <div>RM {orderDetails.towBooking.estimatedCost.toFixed(2)}</div>
             </div>
-            {orderDetails.towBooking.isWaive && (<>
-            <div className="flex justify-between items-center mb-3 mt-2">
-              <div className="text-emerald-600">Payment Status</div>
-              <Badge
-                variant="outline"
-                className="bg-emerald-50 text-emerald-700"
-              >
-                {orderDetails.towBooking.isWaive
-                  ? "Fully Waived"
-                  : "Not Waived"}
-              </Badge>
-            </div>
-            <div className="flex justify-between items-center font-semibold text-emerald-800">
-              <div>Total Amount</div>
-              <div>
-                RM{" "}
-                {orderDetails.towBooking.isWaive
-                  ? "0.00"
-                  : orderDetails.towBooking.estimatedCost.toFixed(2)}
-              </div>
-            </div>
-            </>)}
+            
+            
           </div>
         </CardContent>
       </Card>

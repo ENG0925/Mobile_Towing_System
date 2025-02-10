@@ -6,7 +6,7 @@ INSERT INTO User (name, email, phoneNumber, password, accountStatus, loginStatus
 -- Seeding data for Driver table
 INSERT INTO Driver (name, phoneNumber, password, accountStatus, loginStatus) VALUES
 ('Charlie Davis', 1234567892, 'MTIzNDU2', 1, 1),
-('David Clark', 1234567893, 'MTIzNDU2', 'Inactive', 0);
+('David Clark', 1234567893, 'MTIzNDU2', 1, 0);
 
 -- Seeding data for SystemAdmin table
 INSERT INTO SystemAdmin (name, adminLevel, password, accountStatus, loginStatus) VALUES
@@ -35,13 +35,15 @@ INSERT INTO Vehicle (userID, plateNumber, model, color, isDeleted) VALUES
 
 -- Seeding data for InsurancePolicy table
 INSERT INTO InsurancePolicy (vehicleID, policyNo, policyholderName, icNumber, policyFile) VALUES
-(1, 'POLICY001', 'Alice Johnson', 900101011234, 'policy001.pdf'),
-(2, 'POLICY002', 'Bob Smith', 880202022345, 'policy002.pdf');
+(1, 'POLICY001', 'Alice Johnson', 900101011234, '1.pdf'),
+(2, 'POLICY002', 'Bob Smith', 880202022345, '2.pdf');
 
 -- Seeding data for TowBooking table
-INSERT INTO TowBooking (userID, vehicleID, driverID, bookingDate, serviceLocation, towingLocation, distance, status, estimatedCost, isWaive) VALUES
-(1, 1, 1, '2025-01-15', '123 Main St', '456 Elm St', 15.5, 'booking complete', 100.00, 0),
-(2, 2, 2, '2025-01-16', '789 Oak St', '321 Pine St', 10.0, 'in progress', 80.00, 1);
+INSERT INTO TowBooking (userID, vehicleID, driverID, bookingDate, serviceLocation, towingLocation, distance, status, estimatedCost) VALUES
+(1, 1, 1, '2025-01-15', '123 Main St', '456 Elm St', 15.5, 'complete', 100.00),
+(2, 2, 2, '2025-01-16', '789 Oak St', '321 Pine St', 10.0, 'in-progress', 80.00),
+(2, 2, 2, '2025-01-16', '789 Oak St', '321 Pine St', 10.0, 'pending', 80.00),
+(2, 2, 2, '2025-01-16', '789 Oak St', '321 Pine St', 10.0, 'unpaid', 80.00);
 
 -- Seeding data for Payment table
 INSERT INTO Payment (bookingNo, amount, date, method) VALUES

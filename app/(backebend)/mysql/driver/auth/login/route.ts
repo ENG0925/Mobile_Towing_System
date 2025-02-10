@@ -36,7 +36,6 @@ export async function POST (req: NextRequest, res: NextResponse) {
       });
     }
 
-    
 
     await connection.execute('UPDATE driver SET loginStatus = ? WHERE id = ?', [true, driver[0].id]);
     
@@ -45,6 +44,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
     return NextResponse.json({ 
       success: true,
       message: 'Login success', 
+      id: driver[0].id
     });
     
   } catch (err) {

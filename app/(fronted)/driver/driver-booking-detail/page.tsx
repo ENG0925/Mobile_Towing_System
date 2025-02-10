@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MapPin, Phone } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { completeBooking, getDriverBookingDetail } from "@/lib/api/driver";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface BookingDetail {
-  id: string;
+  bookingNo: string;
   customerName: string;
   contactNumber: string;
   vehicleType: string;
@@ -26,67 +29,47 @@ const DriverBookingDetail = () => {
   const [booking, setBooking] = useState<BookingDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isChecked, setIsChecked] = useState(false); // Track checkbox state
 
   const bookingId = encodedData ? JSON.parse(atob(encodedData)) : null;
 
-  // Mock single booking data
-  const mockBooking: BookingDetail = {
-    id: "B001",
-    customerName: "John Doe",
-    contactNumber: "+60123456789",
-    vehicleType: "Proton Saga",
-    plateNumber: "ABC1234",
-    serviceLocation: "MITM, Cyberjaya",
-    towingLocation: "KFC, Puchong",
-    status: "in-progress",
-    bookingDate: "2025-01-08 10:30",
-    isCompleted: false,
-  };
-
   useEffect(() => {
-    if (!bookingId) {
-      setError("No booking ID provided");
-      setLoading(false);
-      return;
-    }
-
-    // Set mock data
-    if (bookingId === mockBooking.id) {
-      setBooking(mockBooking);
-    } else {
-      setError("Booking not found");
-    }
-    setLoading(false);
-
-    // Commented API fetch for future implementation
-    /*
-    const fetchBookingData = async () => {
-      try {
-        const response = await fetch(`/api/bookings/${bookingId}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch booking data');
-        }
-        const data = await response.json();
-        setBooking(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
+    const fetchData = async () => {
+      if (!bookingId) {
+        setError("No booking ID provided");
         setLoading(false);
+        return;
       }
+
+      const response = await getDriverBookingDetail(bookingId);
+      if (!response.success) {
+        setError("Booking not found");
+        setLoading(false);
+        return;
+      }
+
+      if (bookingId === response.data.bookingNo) {
+        setBooking(response.data);
+      } else {
+        setError("Booking not found");
+      }
+      setLoading(false);
     };
 
-    fetchBookingData();
-    */
+    fetchData();
   }, [bookingId]);
 
-  const handleComplete = () => {
+  const handleComplete = async() => {
     if (!booking) return;
+    const response = await completeBooking(booking.bookingNo);
+    toast(response?.message, {
+      position: "top-center",
+      autoClose: 5000,
+      theme: "light",
+      type: response?.success === true ? "success" : "error",
+    });
+    if (!response?.success) return;
 
-    // setBooking({
-    //   ...booking,
-    //   status: "completed",
-    // });
-    console.log(booking);
     router.push("/driver/driver-booking");
   };
 
@@ -106,17 +89,13 @@ const DriverBookingDetail = () => {
     );
   }
 
-  //   const isAllChecked = Object.values(booking.completionChecklist).every(
-  //     Boolean
-  //   );
-
   return (
     <div className="min-h-screen bg-emerald-50 p-4">
       <Card className="max-w-2xl mx-auto">
         <CardHeader className="border-b border-emerald-100">
           <div className="flex justify-between items-center">
             <CardTitle className="text-xl text-black-800">
-              Booking #{booking.id}
+              Booking #{booking.bookingNo}
             </CardTitle>
             <span className="text-sm text-emerald-600">
               {booking.bookingDate}
@@ -172,6 +151,8 @@ const DriverBookingDetail = () => {
           </div>
 
           {/* Completion Checklist */}
+          {booking.status === "in-progress" && (
+            <>
           <div className="space-y-4">
             <h3 className="font-semibold text-emerald-800">
               Completion Checklist
@@ -180,13 +161,8 @@ const DriverBookingDetail = () => {
               <div className="flex items-start space-x-2">
                 <Checkbox
                   id="safeDelivery"
-                  checked={booking.isCompleted}
-                  onCheckedChange={(checked) =>
-                    setBooking(
-                      (prev) =>
-                        prev && { ...prev, isCompleted: checked === true }
-                    )
-                  }
+                  checked={isChecked}
+                  onCheckedChange={(checked) => setIsChecked(checked === true)}
                   className="mt-1 border-emerald-500 text-emerald-600"
                 />
                 <div className="space-y-1">
@@ -201,12 +177,29 @@ const DriverBookingDetail = () => {
             </div>
           </div>
 
-          <Button
-            onClick={handleComplete}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-          >
-            Complete Booking
-          </Button>
+          
+            <Button
+              onClick={handleComplete}
+              disabled={!isChecked} // Disable button until checkbox is checked
+              className={`w-full ${
+                isChecked
+                  ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              Complete Booking
+            </Button>
+            </>
+          )}
+          
+          {booking.status !== "in-progress" && (
+            <Button
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+              onClick={() => router.push("/driver/driver-booking")}
+            >
+              Back
+            </Button>
+          )}
         </CardContent>
       </Card>
     </div>

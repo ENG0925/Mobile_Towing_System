@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { getAllDrivers } from "@/lib/api/driver";
+import { getAllDriverBooking } from "@/lib/api/driver";
 
 interface Booking {
   id: string;
@@ -25,11 +25,21 @@ const DriverBookings = () => {
   useEffect(() => {
     const fetchData = async () => {
       // Fetch bookings data
-      const response = await getAllDrivers();
+      const response = await getAllDriverBooking(localStorage.getItem('driverID'));
       setBookings(response.data);
     };
+
+    fetchData();
   }, []);
   
+  const statusClasses: Record<string, string> = {
+    "complete": "bg-emerald-100 text-emerald-800 border-emerald-200",
+    "unpaid": "bg-blue-100 text-blue-800 border-blue-200",
+    "in-progress": "bg-yellow-100 text-yellow-800 border-yellow-200",
+    "canceled": "bg-red-100 text-red-800 border-red-200",
+    "pending": "bg-gray-100 text-gray-800 border-gray-200",
+  };
+
   const handleBookingClick = (bookingId: string) => {
     // // Navigate to booking detail page
     // console.log(`Navigating to booking ${bookingId}`);
@@ -64,16 +74,7 @@ const DriverBookings = () => {
                       {booking.bookingDate}
                     </p>
                   </div>
-                  <Badge
-                    variant="outline"
-                    className={
-                      booking.status === "completed"
-                        ? "bg-emerald-100 text-emerald-800 border-emerald-200"
-                        : booking.status === "in-progress"
-                        ? "bg-yellow-100 text-yellow-800 border-yellow-200"
-                        : "bg-red-100 text-red-800 border-red-200"
-                    }
-                  >
+                  <Badge variant="outline" className={statusClasses[booking.status] || statusClasses["pending"]}>
                     {booking.status.charAt(0).toUpperCase() +
                       booking.status.slice(1)}
                   </Badge>

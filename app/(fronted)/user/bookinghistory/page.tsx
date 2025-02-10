@@ -32,11 +32,13 @@ const BookingHistory = () => {
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case "booking complete":
+      case "complete":
         return "bg-emerald-100 text-emerald-700";
-      case "payment":
-        return "bg-emerald-100 text-emerald-700";
-      case "in progress":
+      case "pending":
+        return "bg-gray-100 text-gray-700"
+      case "unpaid":
+        return "bg-blue-100 text-blue-700";
+      case "in-progress":
         return "bg-orange-100 text-orange-700";
       case "cancel":
         return "bg-red-100 text-red-700";
@@ -47,11 +49,13 @@ const BookingHistory = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
-      case "booking complete":
+      case "complete":
         return <CheckCircle className="w-4 h-4" />;
-      case "payment":
-        return <CheckCircle className="w-4 h-4" />;
-      case "in progress":
+      case "pending":
+        return <Clock className="w-4 h-4" />;
+      case "unpaid":
+        return <Clock className="w-4 h-4" />;
+      case "in-progress":
         return <Clock className="w-4 h-4" />;
       case "cancel":
         return <XCircle className="w-4 h-4" />;
@@ -145,15 +149,12 @@ const BookingHistory = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => handlePayment(Number(booking.bookingNo), Number(booking.estimatedCost))}
-                        disabled={booking.status === "booking complete" || booking.status === "payment"}
-                        className={booking.status === "booking complete" || booking.status === "payment" ? "opacity-50 cursor-not-allowed" : ""}
+                        disabled={booking.status !== "unpaid"}
+                        className={booking.status !== "unpaid" ? "opacity-50 cursor-not-allowed" : ""}
                       >
                         <CreditCard className="w-4 h-4 mr-2" />
                         Make Payment
                       </DropdownMenuItem>
-
-
-
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

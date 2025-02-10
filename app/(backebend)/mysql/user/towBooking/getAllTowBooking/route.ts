@@ -14,11 +14,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
             SELECT 
                 towbooking.bookingNo,
                 CAST(towbooking.bookingDate AS CHAR) AS bookingDate,
-                CASE 
-                    WHEN MAX(payment.bookingNo) IS NOT NULL THEN 'payment' 
-                    ELSE towbooking.status 
-                END AS status,
-                towbooking.estimatedCost,
+                towbooking.status,
+                CAST(towbooking.estimatedCost AS CHAR) AS estimatedCost,
                 vehicle.model
             FROM 
                 towbooking 
@@ -31,7 +28,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
             GROUP BY 
                 towbooking.bookingNo, towbooking.bookingDate, towbooking.status, 
                 towbooking.estimatedCost, vehicle.model;
-
             `, 
             [userID]
         );

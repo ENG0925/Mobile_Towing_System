@@ -13,8 +13,6 @@ interface TowBooking {
     distance: number;
     status: string;
     estimatedCost: number;
-    isWaive: boolean;
-    isCompleted: boolean;
 }
 
 interface User {

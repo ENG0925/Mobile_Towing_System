@@ -12,7 +12,6 @@ export interface booking {
   distance: number;
   status: string;
   estimatedCost: number;
-  isWaive: boolean;
 }
 
 export const columns = ({}): ColumnDef<booking>[] => [
@@ -57,30 +56,16 @@ export const columns = ({}): ColumnDef<booking>[] => [
     ),
     cell: ({ row }) => {
       const statusColorMap: Record<string, string> = {
-        "payment": "green",
-        "booking complete": "#adc2ec",
-        "in progress": "orange",
+        "complete": "green",
+        "unpaid": "blue",
+        "in-progress": "#adc2ec",
+        "pending": "orange",
         "cancel": "red",
       };
     
       const color = statusColorMap[row.original.status] || "black"; // Default color if status is unknown
     
       return <span style={{ color }}>{row.original.status}</span>;
-    },
-  },
-  
-  {
-    accessorKey: "isWaive",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Waive" />
-    ),
-    cell: ({ row }) => {
-      const isGreen = row.original.isWaive;
-      return (
-        <span style={{ color: isGreen ? "green" : "red" }}>
-          {isGreen ? "Waive" : "No Waive"}
-        </span>
-      );
     },
   },
 ];

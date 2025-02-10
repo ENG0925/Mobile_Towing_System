@@ -174,19 +174,10 @@ const Booking = () => {
             type: "select", 
             name: "status",
             options: [                        
-              { label: "Payment", value: "payment" },                                                                                                                                                
-              { label: "Complete", value: "booking complete" },
-              { label: "In Progress", value: "in progress" },
+              { label: "Complete", value: "complete" },                                                                                                                                                
+              { label: "Unpaid", value: "unpaid" },
+              { label: "In Progress", value: "in-progress" },
               { label: "Cancel", value: "cancel" }
-            ] 
-          },
-          { 
-            label: "Waive", 
-            type: "select", 
-            name: "isWaive",
-            options: [                        
-              { label: "Waive", value: true },                                                                                                                                                
-              { label: "No Waive", value: false },
             ] 
           }
         ]}

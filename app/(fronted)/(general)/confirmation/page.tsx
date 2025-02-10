@@ -118,8 +118,6 @@ const Confirmation: React.FC = () => {
       estimateCost,
     };
 
-    console.log(orderData);
-
     const response = await insertBooking(orderData);
     toast(response?.message, {
       position: "top-center",

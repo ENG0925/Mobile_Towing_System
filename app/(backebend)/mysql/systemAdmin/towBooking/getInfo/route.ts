@@ -18,14 +18,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         tb.towingLocation,
         CAST(tb.distance AS CHAR) AS distance,
         CAST(tb.estimatedCost AS CHAR) AS estimatedCost,
-        CASE 
-          WHEN MAX(p.bookingNo) IS NOT NULL THEN 'payment' 
-          ELSE tb.status 
-        END AS status,
-        CASE 
-          WHEN tb.isWaive = 1 THEN TRUE 
-          ELSE FALSE 
-        END AS isWaive
+        tb.status 
       FROM 
         towbooking tb
       LEFT JOIN
@@ -33,7 +26,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       WHERE 
         tb.bookingNo = ?
       GROUP BY 
-        tb.bookingNo, tb.userID, tb.vehicleID, tb.driverID, bookingDate, tb.serviceLocation, tb.towingLocation, distance, estimatedCost, tb.status, tb.isWaive;
+        tb.bookingNo, tb.userID, tb.vehicleID, tb.driverID, bookingDate, tb.serviceLocation, tb.towingLocation, distance, estimatedCost, tb.status;
     `, [bookingNo]);
     
     const towBooking = queryTowBooking as any[];
