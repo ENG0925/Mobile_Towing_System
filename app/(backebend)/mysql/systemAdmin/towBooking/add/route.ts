@@ -49,6 +49,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
             );
         }
 
+        if (data.status === "booking complete") {
+            await connection.execute(
+                `UPDATE towbooking SET status = ?, isCompleted = true WHERE bookingNo = ?`, 
+                ['booking complete', bookingNo]
+            );
+        }
+        
         await connection.commit();
         connection.end();
 

@@ -15,7 +15,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
     const connection = await mysql.createConnection(DBConfig);
 
-    const [queryManagementmAdmin] = await connection.execute('SELECT id, password FROM managementadmin WHERE name = ?',[username]);
+    const [queryManagementmAdmin] = await connection.execute('SELECT id, password FROM managementadmin WHERE name = ? AND accountStatus = true',[username]);
     const managementAdmin = queryManagementmAdmin as ManagementAdmin[];
     
     

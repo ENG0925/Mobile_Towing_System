@@ -11,6 +11,9 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { logout } from "@/lib/api/management_admin";
 
 const ManagementAdminSidebar = () => {
   const router = useRouter();
@@ -22,7 +25,7 @@ const ManagementAdminSidebar = () => {
     { id: "booking", icon: CalendarCheck, label: "Booking" },
     { id: "vehicle", icon: Car, label: "Vehicle" },
     { id: "driver", icon: UserCircle2, label: "Driver" },
-    { id: "feedback", icon: Star, label: "Feedback" },
+    { id: "rating", icon: Star, label: "Feedback" },
   ];
 
   const handleMenuClick = (itemId: string) => {
@@ -33,10 +36,23 @@ const ManagementAdminSidebar = () => {
     return pathname?.startsWith(`/management-admin/${itemId}`);
   };
 
+  const handleLouOut = async() => {
+    const response = await logout(localStorage.getItem("managementAdminID"));
+    toast(response?.message, {
+      position: "top-center",
+      autoClose: 5000,
+      theme: "light",
+      type: response?.success === true ? "success" : "error",
+    });
+    if (!response?.success) return;
+    localStorage.removeItem("managementAdminID");
+    router.push("/management-admin-login");
+  };
+
   return (
     <div className="min-h-screen h-full">
       <div className="w-64 bg-[#1B4D3E] text-white p-4 flex flex-col h-full">
-        <div className="text-xl font-bold mb-8 text-[#C2F970]">Admin Panel</div>
+        <div className="text-xl font-bold mb-8 text-[#C2F970]">Management Admin Panel</div>
 
         <nav className="space-y-2 flex-grow">
           {menuItems.map((item) => {
@@ -60,7 +76,10 @@ const ManagementAdminSidebar = () => {
           })}
         </nav>
 
-        <button className="flex items-center w-full p-3 rounded-lg mt-auto text-white hover:bg-red-700 bg-red-600">
+        <button 
+          className="flex items-center w-full p-3 rounded-lg mt-auto text-white hover:bg-red-700 bg-red-600"
+          onClick={handleLouOut}
+        >
           <LogOut className="w-5 h-5 mr-3" />
           <span>Log Out</span>
         </button>

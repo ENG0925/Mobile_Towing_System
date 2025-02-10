@@ -51,10 +51,11 @@ export async function GET(req: NextRequest, res: NextResponse) {
             bookingDate: row.bookingDate,
         }));
 
+        console.log('Data fetched successfully', rows);
         return NextResponse.json({ 
             success: true, 
             message: 'Data fetched successfully',   
-            data: responseData,
+            data: rows,
         });
     } catch (error) {
         console.error(error);

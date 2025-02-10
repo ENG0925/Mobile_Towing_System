@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { getAllDrivers } from "@/lib/api/driver";
 
 interface Booking {
   id: string;
@@ -17,41 +18,18 @@ interface Booking {
 }
 
 const DriverBookings = () => {
+  const [bookings, setBookings] = useState<Booking[]>([]);
   // Mock data array
   const router = useRouter();
-  const bookings: Booking[] = [
-    {
-      id: "B001",
-      customerName: "John Doe",
-      vehicleType: "Proton Saga",
-      plateNumber: "ABC1234",
-      serviceLocation: "MITM, Cyberjaya",
-      towingLocation: "KFC, Puchong",
-      status: "in-progress",
-      bookingDate: "2025-01-08 10:30",
-    },
-    {
-      id: "B002",
-      customerName: "Jane Smith",
-      vehicleType: "Toyota Camry",
-      plateNumber: "DEF5678",
-      serviceLocation: "Sunway Pyramid",
-      towingLocation: "Honda Service Center",
-      status: "pending",
-      bookingDate: "2025-01-08 11:45",
-    },
-    {
-      id: "B003",
-      customerName: "Alex Wong",
-      vehicleType: "Honda Civic",
-      plateNumber: "GHI9012",
-      serviceLocation: "IOI City Mall",
-      towingLocation: "AutoCity Service",
-      status: "completed",
-      bookingDate: "2025-01-08 09:15",
-    },
-  ];
 
+  useEffect(() => {
+    const fetchData = async () => {
+      // Fetch bookings data
+      const response = await getAllDrivers();
+      setBookings(response.data);
+    };
+  }, []);
+  
   const handleBookingClick = (bookingId: string) => {
     // // Navigate to booking detail page
     // console.log(`Navigating to booking ${bookingId}`);
@@ -67,6 +45,9 @@ const DriverBookings = () => {
         </h1>
 
         <div className="space-y-4">
+          {bookings.length === 0 && (
+            <p className="text-black-800 text-center">No bookings found</p>
+          )}
           {bookings.map((booking) => (
             <Card
               key={booking.id}

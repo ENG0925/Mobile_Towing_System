@@ -36,22 +36,34 @@ export async function PUT(req: NextRequest, res: NextResponse) {
             await connection.execute("DELETE FROM payment WHERE bookingNo = ?", [data.bookingNo]);
         }
 
+        await connection.execute(
+            `UPDATE towBooking 
+             SET userID = ?, vehicleID = ?, driverID = ?, bookingDate = ?, 
+                 serviceLocation = ?, towingLocation = ?, distance = ?, 
+                 status = ?, estimatedCost = ?, isWaive = ?, isCompleted = false
+             WHERE bookingNo = ?`, 
+            [data.userID, data.vehicleID, data.driverID, data.bookingDate, data.serviceLocation, data.towingLocation, data.distance, data.status, data.estimatedCost, data.isWaive, data.bookingNo]
+        );
+
         if (data.status === 'payment') {
             await connection.execute(
                 `INSERT INTO payment (bookingNo, amount, date, method) 
                  VALUES (?, ?, ?, ?)`, 
                 [data.bookingNo, data.estimatedCost, data.bookingDate, 'admin payment']
             );
+
+            await connection.execute(
+                `UPDATE towbooking SET status = ?, isCompleted = true WHERE bookingNo = ?`, 
+                ['booking complete', data.bookingNo]
+            );
         }
 
-        await connection.execute(
-            `UPDATE towBooking 
-             SET userID = ?, vehicleID = ?, driverID = ?, bookingDate = ?, 
-                 serviceLocation = ?, towingLocation = ?, distance = ?, 
-                 status = ?, estimatedCost = ?, isWaive = ? 
-             WHERE bookingNo = ?`, 
-            [data.userID, data.vehicleID, data.driverID, data.bookingDate, data.serviceLocation, data.towingLocation, data.distance, data.status, data.estimatedCost, data.isWaive, data.bookingNo]
-        );
+        if (data.status === "booking complete") {
+            await connection.execute(
+                `UPDATE towbooking SET status = ?, isCompleted = true WHERE bookingNo = ?`, 
+                ['booking complete', data.bookingNo]
+            );
+        }
 
         await connection.commit();
         connection.end();

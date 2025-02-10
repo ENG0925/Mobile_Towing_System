@@ -4,6 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { login } from "@/lib/api/driver";
 
 interface LoginFormData {
   username: string;
@@ -21,9 +24,19 @@ const DriverLogin = () => {
     password: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
+    const response = await login(formData.username, formData.password);
+    toast(response?.message, {
+      position: "top-center",
+      autoClose: 5000,
+      theme: "light",
+      type: response?.success === true ? "success" : "error",
+    });
+
+    if (!response?.success) return;
+
+    localStorage.setItem("driverID", response.id);
     router.push(`/driver/driver-booking`);
   };
 

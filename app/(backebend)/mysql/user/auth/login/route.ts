@@ -15,7 +15,13 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
     const connection = await mysql.createConnection(DBConfig);
 
-    const [queryUser] = await connection.execute('SELECT id, password FROM user WHERE name = ? OR email = ?',[username, username]);
+    const [queryUser] = await connection.execute(
+      `SELECT id, password FROM user 
+       WHERE (name = ? OR email = ?) 
+       AND accountStatus = true`, 
+      [username, username]
+    );
+    
     const user = queryUser as User[];
     
     

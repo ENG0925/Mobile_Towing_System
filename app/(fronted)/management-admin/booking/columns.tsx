@@ -1,40 +1,21 @@
 import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/common/DataTable/DataTableColumnHeader";
 
 export interface booking {
   bookingNo: number;
   name: string;
   vehicle: string;
-  bookingDate: number;
+  bookingDate: string;
   serviceLocation: string;
   towingLocation: string;
   distance: number;
   status: string;
-  estimateCost: number;
+  estimatedCost: number;
   isWaive: boolean;
 }
 
-interface Props {
-  handlePassEdit: (id: number) => void;
-  handleDelete: (id: number) => void;
-}
-
-export const columns = ({
-  handlePassEdit,
-  handleDelete,
-}: Props): ColumnDef<booking>[] => [
+export const columns = ({}): ColumnDef<booking>[] => [
   {
     accessorKey: "bookingNo",
     header: "Booking No",
@@ -64,9 +45,9 @@ export const columns = ({
     ),
   },
   {
-    accessorKey: "estimateCost",
+    accessorKey: "estimatedCost",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Estimate Cost" />
+      <DataTableColumnHeader column={column} title="Cost" />
     ),
   },
   {
@@ -74,42 +55,31 @@ export const columns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
+    cell: ({ row }) => {
+      const statusColorMap: Record<string, string> = {
+        "payment": "green",
+        "booking complete": "#adc2ec",
+        "in progress": "orange",
+        "cancel": "red",
+      };
+    
+      const color = statusColorMap[row.original.status] || "black"; // Default color if status is unknown
+    
+      return <span style={{ color }}>{row.original.status}</span>;
+    },
   },
+  
   {
     accessorKey: "isWaive",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Is Waive" />
     ),
-  },
-  
-  {
-    id: "actions",
     cell: ({ row }) => {
+      const isGreen = row.original.isWaive;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={() => handlePassEdit(row.original.id)}
-              >
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={async () => handleDelete(row.original.id)}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <span style={{ color: isGreen ? "green" : "red" }}>
+          {isGreen ? "Waive" : "No Waive"}
+        </span>
       );
     },
   },

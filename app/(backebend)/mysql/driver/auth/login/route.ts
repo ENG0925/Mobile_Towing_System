@@ -15,7 +15,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
 
     const connection = await mysql.createConnection(DBConfig);
 
-    const [queryDriver] = await connection.execute('SELECT id, password FROM driver WHERE name = ? OR email = ?',[username, username]);
+    const [queryDriver] = await connection.execute('SELECT id, password FROM driver WHERE name = ? AND accountStatus = true',[username]);
     const driver = queryDriver as Driver[];
     
     if (driver.length === 0) {
@@ -36,7 +36,7 @@ export async function POST (req: NextRequest, res: NextResponse) {
       });
     }
 
-    localStorage.setItem("driverID", driver[0].id.toString());
+    
 
     await connection.execute('UPDATE driver SET loginStatus = ? WHERE id = ?', [true, driver[0].id]);
     
