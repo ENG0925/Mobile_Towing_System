@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Clock, LogOut, Menu } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { logout } from "@/lib/api/driver";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DriverNavbar = () => {
   const pathname: any = usePathname();
@@ -68,8 +71,16 @@ const DriverNavbar = () => {
           <Button
             variant="ghost"
             className="gap-2"
-            onClick={() => {
-              // Add your logout logic here
+            onClick={async() => {
+              const response = await logout(localStorage.getItem("driverID"));
+              toast(response?.message, {
+                position: "top-center",
+                autoClose: 5000,
+                theme: "light",
+                type: response?.success === true ? "success" : "error",
+              });
+              if (!response.success) return;
+              localStorage.removeItem("driverID");
               router.push("/driver-login");
             }}
           >
