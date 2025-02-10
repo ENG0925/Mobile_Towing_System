@@ -373,3 +373,11 @@ export const deleteFeedback = async (id: number) => {
 }
 
 // dashboard
+export const getDashboardInfo = async () => {
+    try {
+        const response = await axios.get('/mysql/systemAdmin/dashboard/getDashboardInfo');
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}

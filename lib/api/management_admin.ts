@@ -62,3 +62,12 @@ export const getAllVehicles = async () => {
         console.error("Error: ", error);
     }
 }
+
+export const getDashboardInfo = async () => {
+    try {
+        const response = await axios.get('/mysql/managementAdmin/dashboard/getDashboardInfo');
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+}

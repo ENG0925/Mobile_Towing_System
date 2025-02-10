@@ -41,7 +41,7 @@ export default function AdminLogin() {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Usernam</label>
+              <label className="text-sm font-medium">Username</label>
               <Input
                 type="username"
                 value={formData.username}
