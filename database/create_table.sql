@@ -8,9 +8,9 @@ CREATE TABLE User (
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     phoneNumber BIGINT NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    accountStatus VARCHAR(30) NOT NULL,
-    loginStatus VARCHAR(30) NOT NULL
+    password TEXT NOT NULL,
+    accountStatus BOOLEAN NOT NULL,
+    loginStatus BOOLEAN NOT NULL
 );
 
 -- Table: Driver
@@ -18,9 +18,9 @@ CREATE TABLE Driver (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     phoneNumber BIGINT NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    accountStatus VARCHAR(30) NOT NULL,
-    loginStatus VARCHAR(30) NOT NULL
+    password TEXT NOT NULL,
+    accountStatus BOOLEAN NOT NULL,
+    loginStatus BOOLEAN NOT NULL
 );
 
 -- Table: SystemAdmin
@@ -28,9 +28,9 @@ CREATE TABLE SystemAdmin (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     adminLevel VARCHAR(30) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    accountStatus VARCHAR(30) NOT NULL,
-    loginStatus VARCHAR(30) NOT NULL
+    password TEXT NOT NULL,
+    accountStatus BOOLEAN NOT NULL,
+    loginStatus BOOLEAN NOT NULL
 );
 
 -- Table: ManagementAdmin
@@ -38,9 +38,9 @@ CREATE TABLE ManagementAdmin (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     department VARCHAR(30) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    accountStatus VARCHAR(30) NOT NULL,
-    loginStatus VARCHAR(30) NOT NULL
+    password TEXT NOT NULL,
+    accountStatus BOOLEAN NOT NULL,
+    loginStatus BOOLEAN NOT NULL
 );
 
 -- Table: Feedback
