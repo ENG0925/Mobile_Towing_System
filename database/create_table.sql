@@ -80,7 +80,7 @@ CREATE TABLE InsurancePolicy (
     policyNo VARCHAR(255) NOT NULL,
     policyholderName VARCHAR(255) NOT NULL,
     icNumber BIGINT NOT NULL,
-    policyFile VARCHAR(255),
+    policyFile VARCHAR(255) NOT NULL,
     FOREIGN KEY (vehicleID) REFERENCES Vehicle(id)
 );
 
