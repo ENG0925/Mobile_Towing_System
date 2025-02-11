@@ -28,10 +28,9 @@ const SystemAdminSidebar = () => {
     { id: "user", icon: Users, label: "User" },
     { id: "driver", icon: UserCircle2, label: "Driver" },
     { id: "booking", icon: CalendarCheck, label: "Booking" },
-    { id: "vehicle", icon: Car, label: "Vehicle" },
-    
-    { id: "rating", icon: Star, label: "Rating" },
+    //{ id: "vehicle", icon: Car, label: "Vehicle" },
 
+    { id: "rating", icon: Star, label: "Rating" },
   ];
 
   const handleMenuClick = (itemId: string) => {
@@ -42,7 +41,7 @@ const SystemAdminSidebar = () => {
     return pathname?.startsWith(`/system-admin/${itemId}`);
   };
 
-  const handleLouOut = async() => {
+  const handleLouOut = async () => {
     const response = await logout(localStorage.getItem("systemAdminID"));
     toast(response?.message, {
       position: "top-center",
@@ -58,7 +57,9 @@ const SystemAdminSidebar = () => {
   return (
     <div className="min-h-screen h-full">
       <div className="w-64 bg-[#1B4D3E] text-white p-4 flex flex-col h-full">
-        <div className="text-xl font-bold mb-8 text-[#C2F970]">System Admin Panel</div>
+        <div className="text-xl font-bold mb-8 text-[#C2F970]">
+          System Admin Panel
+        </div>
 
         <nav className="space-y-2 flex-grow">
           {menuItems.map((item) => {
@@ -82,7 +83,7 @@ const SystemAdminSidebar = () => {
           })}
         </nav>
 
-        <button 
+        <button
           className="flex items-center w-full p-3 rounded-lg mt-auto text-white hover:bg-red-700 bg-red-600"
           onClick={handleLouOut}
         >
