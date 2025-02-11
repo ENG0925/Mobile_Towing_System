@@ -8,6 +8,7 @@ import {
   CalendarCheck,
   UserCircle2,
   LogOut,
+  Umbrella,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,7 @@ const ManagementAdminSidebar = () => {
     { id: "user", icon: Users, label: "User" },
     { id: "booking", icon: CalendarCheck, label: "Booking" },
     { id: "vehicle", icon: Car, label: "Vehicle" },
+    { id: "insurance", icon: Umbrella, label: "Insurance" },
     { id: "driver", icon: UserCircle2, label: "Driver" },
     { id: "rating", icon: Star, label: "Feedback" },
   ];

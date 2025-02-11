@@ -71,3 +71,12 @@ export const getDashboardInfo = async () => {
         console.error("Error: ", error);
     }
 }
+
+export const getInsuranceInfo = async () => {
+    try {
+        const response = await axios.get(`/mysql/managementAdmin/insurance/getAllInfo`);
+        return response.data;
+    } catch (error) {
+        console.error("Error: ", error);
+    }
+};
