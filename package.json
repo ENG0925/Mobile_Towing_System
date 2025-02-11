@@ -26,6 +26,7 @@
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
     "formidable": "^3.5.2",
     "geographiclib": "^1.52.2",
     "lucide-react": "^0.473.0",
