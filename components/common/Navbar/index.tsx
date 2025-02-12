@@ -52,10 +52,18 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Right menu items */}
         <Link
-          href="/bookingflow"
-          className="text-gray-600 hover:text-green-800"
+          href={localStorage.getItem("userId") ? "/bookingflow" : "#"}
+          className={`text-gray-600 ${
+            localStorage.getItem("userId")
+              ? "hover:text-green-800"
+              : "opacity-50 cursor-not-allowed"
+          }`}
+          onClick={(e) => {
+            if (!localStorage.getItem("userId")) {
+              e.preventDefault(); // Prevent navigation
+            }
+          }}
         >
           Service
         </Link>
