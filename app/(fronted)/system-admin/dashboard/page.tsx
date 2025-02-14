@@ -48,7 +48,7 @@ const DashboardPage = () => {
               <CalendarCheck className="w-6 h-6 text-green-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Confirm Bookings</p>
+              <p className="text-sm text-gray-500">Complete Bookings</p>
               <h3 className="text-2xl font-bold">{confirmBookings}</h3>
             </div>
           </div>
