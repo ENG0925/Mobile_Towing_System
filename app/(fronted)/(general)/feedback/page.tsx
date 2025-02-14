@@ -88,6 +88,7 @@ const Feedback = () => {
           const response = await getAllFeedback(0);
           setRatingItem(response?.data);
         }
+        
       } catch (error) {
         console.error("Error: ", error);
       } finally {
