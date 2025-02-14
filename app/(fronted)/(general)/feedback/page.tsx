@@ -84,6 +84,9 @@ const Feedback = () => {
             Number(localStorage.getItem("userId"))
           );
           setRatingItem(response?.data);
+        } else {
+          const response = await getAllFeedback(0);
+          setRatingItem(response?.data);
         }
       } catch (error) {
         console.error("Error: ", error);
